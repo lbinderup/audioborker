@@ -10,7 +10,7 @@
 #
 # Sandbox rules apply to this file: no names starting with an underscore, no
 # augmented assignment on attributes, no sum/any/all builtins. Keep it ASCII.
-VERSION = '1.1.0'
+VERSION = '1.2.0'
 
 # An import failure here must not stop the agent classes below from being
 # defined: an agent that never registers simply vanishes from Plex's agent
@@ -107,6 +107,13 @@ def set_poster(metadata, url, force):
     metadata.posters.validate_keys([url])
 
 
+def set_embedded_poster(metadata, key, data):
+    # A hand-tagged book's cover is the one embedded in its file.
+    if key not in metadata.posters:
+        metadata.posters[key] = Proxy.Media(data, sort_order=0)
+    metadata.posters.validate_keys([key])
+
+
 def add_to_collection(media, name):
     # Best effort: a refused edit must never cost the book its metadata.
     rating_key = getattr(media, 'id', None)
@@ -194,7 +201,10 @@ class AudioborkerAlbum(Agent.Album):
         set_values(metadata.genres, info['genres'])
         set_values(metadata.styles, info['styles'])
         set_values(metadata.moods, info['moods'])
-        set_poster(metadata, info['poster'], force)
+        if info['cover_bytes']:
+            set_embedded_poster(metadata, info['cover_key'], info['cover_bytes'])
+        else:
+            set_poster(metadata, info['poster'], force)
         if info['collection']:
             add_to_collection(media, info['collection'])
         Log.Info('Updated book %s (%s); fields from the file: %s; sources: %s',

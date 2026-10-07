@@ -218,6 +218,24 @@ class GlueTest(unittest.TestCase):
         self.assertAlmostEqual(md.rating, 9.2)
         self.assertEqual(len(md.posters), 1)
 
+    def test_hand_tagged_book(self):
+        env = load_glue([('127.0.0.1:32400/library/metadata/6747', PLEX_ITEM),
+                         ('127.0.0.1:32400/library/sections/', b'')])
+        album = [c for c in env['registered'] if c.__name__ == 'AudioborkerAlbum'][0]()
+        media, tree = album_media(os.path.join(FIXTURES, 'manual.m4b'), 701 * 60000)
+        results = NS(items=[])
+        results.Append = results.items.append
+        album.search(results, media, 'en', False)
+        self.assertEqual([r['id'] for r in results.items], ['local_6f0c1a52-1b8e-4f0e-9a51-3c6c1f7d2e10'])
+        md = metadata(results.items[0]['id'])
+        album.update(md, tree, 'en', False)
+        self.assertEqual((md.title, md.studio), ('Mockingjay', 'Scholastic Audio'))
+        self.assertEqual(list(md.posters), [k for k in md.posters if k.startswith('embedded-')])
+        self.assertEqual(len(md.posters), 1)
+        catalog_calls = [u for u in env['HTTP'].calls if '127.0.0.1' not in u]
+        self.assertEqual(catalog_calls, [], 'a hand-tagged book needs no catalog')
+        self.assertIn('=The%20Hunger%20Games', env['HTTP'].methods[0][1])
+
     def test_collection_failure_does_not_cost_the_metadata(self):
         routes = [('127.0.0.1:32400', HTTPError(401))] + locke_routes()
         env = load_glue(routes)

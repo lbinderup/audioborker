@@ -55,9 +55,15 @@ def book(tags):
         'release_date': '',
         'year': '',
     }
-    g = first(n, 'genre')
-    if g != '':
-        b['genres'] = [g]
+    # The genre atom holds one value, the one players show. audioborker also
+    # writes every genre and sub-genre into a GENRES atom, "; "-separated.
+    gs = split_list(first(n, 'genres'))
+    if gs:
+        b['genres'] = gs
+    else:
+        g = first(n, 'genre')
+        if g != '':
+            b['genres'] = [g]
     date = first(n, 'date', 'releasetime', 'originaldate', 'recording_date', 'year')
     if date != '':
         raw = date.encode('utf-8')
@@ -130,6 +136,18 @@ def split_people(s):
         if sep in s:
             return [p.strip() for p in s.split(sep) if p.strip() != '']
     return [s.strip()]
+
+
+def split_list(s):
+    """Splits a "; "-separated list, dropping blanks (Go's strings.TrimSpace
+    set, as everywhere in this port)."""
+    from .match import go_trim_space
+    out = []
+    for part in text(s).split(';'):
+        p = go_trim_space(part)
+        if p != '':
+            out.append(p)
+    return out
 
 
 def leading_year(s):

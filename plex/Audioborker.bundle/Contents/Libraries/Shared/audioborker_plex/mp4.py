@@ -71,9 +71,10 @@ MP4_EXTENSIONS = ('.m4b', '.m4a', '.mp4', '.aac', '.m4p', '.mov')
 
 
 class Mp4Info(object):
-    def __init__(self, tags, duration_ms):
+    def __init__(self, tags, duration_ms, cover=None):
         self.tags = tags              # dict of ffprobe-style key -> text
         self.duration_ms = duration_ms  # 0 when unknown
+        self.cover = cover            # embedded cover image bytes, or None
 
 
 def is_mp4_path(path):
@@ -87,9 +88,9 @@ def read(path):
     if moov is None:
         return None
     tags = {}
-    duration_ms = [0]
-    walk(moov, tags, duration_ms)
-    return Mp4Info(tags, duration_ms[0])
+    found = {'duration_ms': 0, 'cover': None}
+    walk(moov, tags, found)
+    return Mp4Info(tags, found['duration_ms'], found['cover'])
 
 
 def fs_path(path):
@@ -152,17 +153,17 @@ def boxes(data):
     return out
 
 
-def walk(data, tags, duration_ms):
+def walk(data, tags, found):
     for kind, payload in boxes(data):
         if kind == b'mvhd':
-            duration_ms[0] = mvhd_duration_ms(payload)
+            found['duration_ms'] = mvhd_duration_ms(payload)
         elif kind == b'meta':
-            walk(meta_children(payload), tags, duration_ms)
+            walk(meta_children(payload), tags, found)
         elif kind in CONTAINERS:
             if kind == b'ilst':
-                read_ilst(payload, tags)
+                read_ilst(payload, tags, found)
             else:
-                walk(payload, tags, duration_ms)
+                walk(payload, tags, found)
 
 
 def meta_children(payload):
@@ -188,8 +189,14 @@ def mvhd_duration_ms(payload):
     return int(duration * 1000 // timescale)
 
 
-def read_ilst(payload, tags):
+def read_ilst(payload, tags, found):
     for kind, item in boxes(payload):
+        if kind == b'covr':
+            # The cover is already in memory with the rest of moov, so keeping
+            # it costs nothing; only the first image counts.
+            if found['cover'] is None:
+                found['cover'] = cover_bytes(item)
+            continue
         if kind == b'----':
             key, value = freeform(item)
         elif kind in ATOM_KEYS:
@@ -201,6 +208,15 @@ def read_ilst(payload, tags):
         # First occurrence wins, matching ffprobe's handling of repeats.
         if key and value and key not in tags:
             tags[key] = value
+
+
+def cover_bytes(item):
+    """The image in a covr atom (data type 13 = JPEG, 14 = PNG, 0 = some
+    writers' 'implicit'), or None."""
+    type_code, value = first_data(item)
+    if value and type_code in (0, 13, 14, 27):
+        return value
+    return None
 
 
 def first_data(item):

@@ -95,7 +95,7 @@ def audible_search_url(region, keywords='', title='', author=''):
         'num_results': '25',
         'products_sort_by': 'Relevance',
         'response_groups': 'contributors,product_desc,media,product_attrs',
-        'image_sizes': '500',
+        'image_sizes': '500,1000',
     }
     if keywords:
         params['keywords'] = keywords
@@ -134,9 +134,15 @@ def parse_audible_search(body, region):
             'year': year_of(p.get('release_date')),
             'language': text(p.get('language')),
             'runtime_min': int_or_zero(p.get('runtime_length_min')),
-            'cover_url': text((p.get('product_images') or {}).get('500')),
+            'cover_url': search_cover(p.get('product_images') or {}),
         })
     return out
+
+
+def search_cover(images):
+    """audible.searchCover: the 1000 size names the full-size artwork; the 500
+    size is a separate, low-resolution asset."""
+    return text(images.get('1000')) or text(images.get('500'))
 
 
 def audible_product_url(asin, region):

@@ -350,3 +350,53 @@ class FetchPolicyTest(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+MANUAL = os.path.join(FIXTURES, 'manual.m4b')
+MANUAL_ID = 'local_6f0c1a52-1b8e-4f0e-9a51-3c6c1f7d2e10'
+
+
+class ManualBookTest(unittest.TestCase):
+    """Books audioborker tagged by hand (its last-resort flow) are their own
+    metadata source: matched by the ID in the file, never searched."""
+
+    def test_matches_without_touching_the_network(self):
+        fetch = FakeFetch([])
+        local = core.gather([(MANUAL, 701 * 60000)])
+        self.assertEqual(local.manual_id(), MANUAL_ID)
+        rows = core.search_album(fetch, local, core.Settings())
+        self.assertEqual([(r['id'], r['score']) for r in rows], [(MANUAL_ID, 100)])
+        self.assertIn('tagged by hand', rows[0]['name'])
+        self.assertEqual(fetch.calls, [])
+
+    def test_fix_match_lists_it_first(self):
+        fetch = FakeFetch(locke_routes())
+        rows = core.search_album(fetch, core.gather([(MANUAL, None)]), core.Settings(), manual=True,
+                                 manual_text='The Lies of Locke Lamora')
+        self.assertEqual(rows[0]['id'], MANUAL_ID)
+        self.assertGreater(len(rows), 1)
+
+    def test_metadata_comes_from_the_file(self):
+        fetch = FakeFetch([])
+        md = core.album_metadata(fetch, MANUAL_ID, core.gather([(MANUAL, None)], measure=False), core.Settings())
+        self.assertEqual(fetch.calls, [])
+        self.assertEqual(md['title'], 'Mockingjay')
+        self.assertEqual(md['title_sort'], 'The Hunger Games 3 - Mockingjay')
+        self.assertEqual(md['genres'], ['Teen & Young Adult', 'Science Fiction & Fantasy', 'Dystopian'])
+        self.assertEqual(md['styles'], ['Carolyn McCormick'])
+        self.assertEqual(md['moods'], ['Suzanne Collins', 'Series: The Hunger Games'])
+        self.assertEqual(md['studio'], 'Scholastic Audio')
+        self.assertEqual(md['originally_available_at'], datetime.date(2010, 8, 24))
+        self.assertEqual(md['collection'], 'The Hunger Games')
+        self.assertTrue(md['cover_bytes'].startswith(b'\xff\xd8'))
+        self.assertTrue(md['cover_key'].startswith('embedded-'))
+        self.assertIsNone(md['rating'])
+
+    def test_unreadable_file_is_an_error_not_an_empty_book(self):
+        local = core.gather([('/gone/book.m4b', None)], reader=lambda p: None)
+        self.assertRaises(catalog.SourceError, core.album_metadata, FakeFetch([]), MANUAL_ID, local, core.Settings())
+
+    def test_marker_without_an_id_is_ignored(self):
+        def reader(path):
+            return core.mp4.Mp4Info({'AUDIOBORKER_SOURCE': 'manual', 'title': 'X'}, 0)
+        self.assertEqual(core.gather([('/b/x.m4b', None)], reader=reader).manual_id(), '')

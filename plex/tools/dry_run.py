@@ -88,6 +88,8 @@ def main():
     md = core.album_metadata(fetch, top['id'], local, settings, log=lambda m: print('  ' + m))
     md['summary'] = md['summary'][:160] + ('…' if len(md['summary']) > 160 else '')
     md['originally_available_at'] = str(md['originally_available_at'])
+    if md.get('cover_bytes'):
+        md['cover_bytes'] = '<%d bytes embedded in the file>' % len(md['cover_bytes'])
     print(json.dumps(md, indent=2, ensure_ascii=False))
 
 

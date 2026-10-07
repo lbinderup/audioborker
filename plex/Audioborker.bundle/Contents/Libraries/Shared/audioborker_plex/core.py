@@ -21,6 +21,7 @@ carry whatever per-field choices were made on the match screen.
 from __future__ import absolute_import, unicode_literals
 
 import datetime
+import hashlib
 import re
 
 from . import aggregate, catalog, embedded, genres, match, mp4
@@ -76,6 +77,17 @@ class Local(object):
         self.hint_title = ''      # Plex's album hint (tags it read, or folder)
         self.hint_author = ''
         self.name_for_import = ''  # what audioborker's Import screen would see
+        self.cover = None         # embedded cover image of the first MP4 file
+
+    def manual_id(self):
+        """'local_<id>' for a book audioborker tagged by hand (its manual,
+        last-resort flow, for editions no catalog has), else ''. Such a file
+        is its own metadata source: nothing to search, nothing to fetch."""
+        n = embedded.normalize(self.tags)
+        if n.get('audioborker_source', '').lower() != 'manual':
+            return ''
+        ident = re.sub(r'[^A-Za-z0-9-]', '', n.get('audioborker_id', ''))
+        return 'local_' + ident if ident else ''
 
     def claimed_asins(self):
         """ASINs the book names for itself, strongest first."""
@@ -162,6 +174,7 @@ def gather(entries, album_hint='', artist_hint='', reader=mp4.read, log=null_log
         if info is not None and info.tags:
             local.tags = info.tags
             local.file_book = embedded.book(info.tags)
+            local.cover = info.cover
 
     # Runtime: Plex's own part durations when it has them all (no I/O), else
     # the MP4 headers. A partial total would mis-rank candidates, so any gap
@@ -265,6 +278,10 @@ def search_album(fetch, local, settings, manual=False, manual_text='', log=null_
     if manual:
         return manual_album_rows(fetch, local, settings, region, text(manual_text), log)
 
+    if local.manual_id():
+        log("Tagged by hand in audioborker; using the file's own tags")
+        return [manual_row(local)]
+
     for asin in local.claimed_asins():
         row = asin_row(fetch, asin, region, local, settings, log, try_other_regions=True)
         if row is not None:
@@ -325,6 +342,8 @@ def manual_album_rows(fetch, local, settings, region, typed, log):
         return [row] if row is not None else []
 
     rows, listed = [], set()
+    if local.manual_id():
+        append_ranked(rows, manual_row(local), SURE)
     # The book's own claim leads the list, so re-applying it is one click.
     for asin in local.claimed_asins():
         row = asin_row(fetch, asin, region, local, settings, log, try_other_regions=True)
@@ -481,10 +500,23 @@ def split_id(metadata_id, default_region):
     return asin, region
 
 
+def manual_row(local):
+    fb = local.file_book or {}
+    r = {'asin': local.manual_id(), 'region': '', 'title': fb.get('title') or local.hint_title,
+         'authors': fb.get('authors') or [], 'narrators': fb.get('narrators') or [],
+         'year': fb.get('year') or '', 'runtime_min': local.runtime_min}
+    row = result_row(r, local, SURE)
+    row['id'] = local.manual_id()
+    row['name'] += ' (tagged by hand)'
+    return row
+
+
 def album_metadata(fetch, metadata_id, local, settings, log=null_log):
     """The values to store on a Plex album, as a dict. Raises
     catalog.SourceError when Audnexus is unavailable, so Plex keeps the old
     metadata instead of storing a degraded book."""
+    if text(metadata_id).startswith('local_'):
+        return manual_metadata(local, settings, log)
     asin, region = split_id(metadata_id, settings.region)
     res = aggregate.get_book(fetch, asin, region, settings.audnexus_url)
     for note in res.notes:
@@ -536,10 +568,50 @@ def album_metadata(fetch, metadata_id, local, settings, log=null_log):
         'moods': dedupe(moods),
         'rating': catalog.audnexus_rating(res.raw_audnexus) * 2 or None,
         'poster': book['cover_url'],
+        'cover_bytes': None,
+        'cover_key': '',
         'sources': book.get('sources') or {},
         'from_file': from_file,
         # Plex's album model has no collections; the glue adds the book to one
         # through the server's API instead (plexlibrary.py).
+        'collection': book['series_name'] if settings.series_collections else '',
+    }
+
+
+def manual_metadata(local, settings, log=null_log):
+    """A hand-tagged book's metadata comes from its file alone: the user
+    reviewed every field in audioborker, and no catalog has this edition."""
+    fb = (local.file_book if local is not None else None) or {}
+    if not fb.get('title'):
+        raise catalog.SourceError("the book's file could not be read; its tags are its only metadata")
+    book = catalog.empty_book()
+    book.update(dict((k, v) for k, v in fb.items() if k in book))
+    log("Using the file's own tags (tagged by hand in audioborker)")
+    moods = []
+    if settings.authors_as_moods:
+        moods.extend(a for a in book['authors'] if not re.match(r'.+? -', a))
+    if book['series_name']:
+        moods.append('Series: ' + book['series_name'])
+    cover = local.cover
+    return {
+        'asin': '',
+        'region': '',
+        'title': book['title'],
+        'title_sort': local.sort_title() or default_sort(book),
+        'summary': aggregate.blurb(book),
+        'studio': book['publisher'],
+        'originally_available_at': release_date(book),
+        'genres': dedupe(book['genres']),
+        'styles': dedupe(book['narrators']),
+        'moods': dedupe(moods),
+        'rating': None,
+        'poster': '',
+        # Plex keys posters by name; a digest keeps it stable across refreshes
+        # and changes it when the cover does.
+        'cover_bytes': cover,
+        'cover_key': ('embedded-' + hashlib.sha1(cover).hexdigest()) if cover else '',
+        'sources': dict((k, 'file') for k in ('title', 'authors', 'narrators', 'series', 'genres')),
+        'from_file': ['everything'],
         'collection': book['series_name'] if settings.series_collections else '',
     }
 

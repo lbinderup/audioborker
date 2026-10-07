@@ -57,6 +57,9 @@ This agent instead:
   album's collections, so after updating a book the agent adds it to a
   collection named after its series through the Plex server's own API.
   Collections already on the book, including your own, are kept.
+- **trusts books tagged by hand.** A file from audioborker's "Tag by hand"
+  page carries an `AUDIOBORKER_ID`; the agent matches it by that ID and takes
+  all metadata, cover included, from the file.
 - **ignores podcasts.** Audible's search mixes podcast episodes in with books
   (a fan podcast titled "The Last Colony - John Scalzi" outranked the book);
   they are filtered out, here and in audioborker.
