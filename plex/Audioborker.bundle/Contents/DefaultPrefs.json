@@ -1,0 +1,54 @@
+[
+    {
+        "id": "region",
+        "label": "Audible storefront to search (use the same region as audioborker)",
+        "type": "enum",
+        "values": [
+            "us",
+            "ca",
+            "uk",
+            "au",
+            "fr",
+            "de",
+            "jp",
+            "it",
+            "in",
+            "es"
+        ],
+        "default": "us"
+    },
+    {
+        "id": "auto_match",
+        "label": "Apply search results automatically: audioborker = only when runtime, title and language all agree (as audioborker pre-selects); lenient = also on a clear title and author match",
+        "type": "enum",
+        "values": [
+            "audioborker",
+            "lenient"
+        ],
+        "default": "audioborker"
+    },
+    {
+        "id": "store_author_as_mood",
+        "label": "Add authors as Mood tags",
+        "type": "bool",
+        "default": "true"
+    },
+    {
+        "id": "sort_author_by_last_name",
+        "label": "Sort authors by last name (Last, First)",
+        "type": "bool",
+        "default": "true"
+    },
+    {
+        "id": "series_collections",
+        "label": "Put books in a collection named after their series",
+        "type": "bool",
+        "default": "true"
+    },
+    {
+        "id": "audnexus_url",
+        "label": "Audnexus API URL (same as audioborker's setting)",
+        "type": "text",
+        "default": "https://api.audnex.us"
+    }
+]

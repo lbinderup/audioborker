@@ -149,6 +149,16 @@ why it is a separate binary.
 - Region matters: an ASIN from audible.co.uk does not exist in the `us` region.
   Set your default region in Settings and per-book on Match.
 
+## Plex agent
+
+[`plex/Audioborker.bundle`](plex/README.md) is a Plex metadata agent for
+audiobook libraries that matches books with audioborker's own logic: the ASIN
+in a file's tags or name first, then the same search, runtime-aware scoring
+and strict auto-select as the match screen. It fills in the same merged
+Audnexus + Audible metadata, and for files audioborker tagged, the values in
+the file win. It runs stand-alone inside Plex and works on books that never
+passed through audioborker too. See [plex/README.md](plex/README.md).
+
 ## Development
 
 ```bash

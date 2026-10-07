@@ -1,0 +1,5816 @@
+{
+  "normalize": [
+    {
+      "in": "Project Hail Mary [Unabridged] (2021).mp3",
+      "out": "Project Hail Mary"
+    },
+    {
+      "in": "01 - The Way of Kings",
+      "out": "The Way of Kings"
+    },
+    {
+      "in": "andy_weir-the_martian_64k",
+      "out": "andy weir-the martian"
+    },
+    {
+      "in": "Dune (Complete Audiobook) {Frank Herbert}",
+      "out": "Dune"
+    },
+    {
+      "in": "Émile Zola - Germinal",
+      "out": "Emile Zola - Germinal"
+    },
+    {
+      "in": "The.Hobbit.m4b",
+      "out": "The Hobbit"
+    },
+    {
+      "in": "1984",
+      "out": ""
+    },
+    {
+      "in": "",
+      "out": ""
+    },
+    {
+      "in": "Scott Lynch - The Lies of Locke Lamora [B004K50434]",
+      "out": "Scott Lynch - The Lies of Locke Lamora"
+    },
+    {
+      "in": "The Colour of Magic [B09LYZPFLZ].m4b",
+      "out": "The Colour of Magic"
+    },
+    {
+      "in": "Terry Pratchett/Discworld/The Colour of Magic",
+      "out": "The Colour of Magic"
+    },
+    {
+      "in": "C:\\Books\\Brandon Sanderson - Mistborn 01 - The Final Empire (Retail MP3)",
+      "out": "Brandon Sanderson - Mistborn 01 - The Final Empire"
+    },
+    {
+      "in": "  The   Name of the Wind  [128k] .m4a",
+      "out": "The Name of the Wind"
+    },
+    {
+      "in": "Ærø – Ålborg Ñandú.flac",
+      "out": "AEro – Alborg Nandu"
+    },
+    {
+      "in": "Book.With.Many.Dots.audiobook",
+      "out": "Book With Many Dots"
+    },
+    {
+      "in": "Dune.ä",
+      "out": "Dune"
+    },
+    {
+      "in": "trailing/slashes///",
+      "out": "slashes"
+    },
+    {
+      "in": "Œuvres complètes - Volume 2_Disc 1",
+      "out": "OEuvres completes - Volume 2 Disc 1"
+    }
+  ],
+  "split_author_title": [
+    {
+      "in": "Andy Weir - Project Hail Mary",
+      "author": "Andy Weir",
+      "title": "Project Hail Mary"
+    },
+    {
+      "in": "Project Hail Mary",
+      "author": "",
+      "title": "Project Hail Mary"
+    },
+    {
+      "in": "The Long And Winding Road Of Many Words - Special Edition",
+      "author": "",
+      "title": "The Long And Winding Road Of Many Words - Special Edition"
+    },
+    {
+      "in": "A - B - C",
+      "author": "A",
+      "title": "B - C"
+    },
+    {
+      "in": "Brandon Sanderson - Mistborn 01 - The Final Empire",
+      "author": "Brandon Sanderson",
+      "title": "Mistborn 01 - The Final Empire"
+    },
+    {
+      "in": " - Leading dash",
+      "author": "",
+      "title": "Leading dash"
+    }
+  ],
+  "language_for_region": [
+    {
+      "region": "us",
+      "language": "english"
+    },
+    {
+      "region": "uk",
+      "language": "english"
+    },
+    {
+      "region": "au",
+      "language": "english"
+    },
+    {
+      "region": "ca",
+      "language": "english"
+    },
+    {
+      "region": "in",
+      "language": "english"
+    },
+    {
+      "region": "de",
+      "language": "german"
+    },
+    {
+      "region": "fr",
+      "language": "french"
+    },
+    {
+      "region": "es",
+      "language": "spanish"
+    },
+    {
+      "region": "it",
+      "language": "italian"
+    },
+    {
+      "region": "jp",
+      "language": "japanese"
+    },
+    {
+      "region": "zz",
+      "language": ""
+    },
+    {
+      "region": "",
+      "language": ""
+    },
+    {
+      "region": "UK",
+      "language": "english"
+    }
+  ],
+  "score": [
+    {
+      "name": "title ordering",
+      "signals": {
+        "title": "Project Hail Mary",
+        "author": "Andy Weir",
+        "runtime_min": 0,
+        "language": ""
+      },
+      "results": [
+        {
+          "asin": "R1",
+          "region": "",
+          "title": "Project Hail Mary: Deluxe Edition",
+          "subtitle": "",
+          "authors": [
+            "Andy Weir"
+          ],
+          "narrators": null,
+          "year": "",
+          "language": "",
+          "runtime_min": 0,
+          "cover_url": ""
+        },
+        {
+          "asin": "R2",
+          "region": "",
+          "title": "Project Hail Mary",
+          "subtitle": "",
+          "authors": [
+            "Andy Weir"
+          ],
+          "narrators": null,
+          "year": "",
+          "language": "",
+          "runtime_min": 0,
+          "cover_url": ""
+        },
+        {
+          "asin": "R3",
+          "region": "",
+          "title": "Artemis",
+          "subtitle": "",
+          "authors": [
+            "Andy Weir"
+          ],
+          "narrators": null,
+          "year": "",
+          "language": "",
+          "runtime_min": 0,
+          "cover_url": ""
+        }
+      ],
+      "ranked": [
+        {
+          "asin": "R2",
+          "score": 99,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "R1",
+          "score": 94,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "R3",
+          "score": 70,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        }
+      ],
+      "auto_select": false
+    },
+    {
+      "name": "runtime separates editions",
+      "signals": {
+        "title": "Project Hail Mary",
+        "author": "Andy Weir",
+        "runtime_min": 970,
+        "language": ""
+      },
+      "results": [
+        {
+          "asin": "R1",
+          "region": "",
+          "title": "Project Hail Mary",
+          "subtitle": "",
+          "authors": [
+            "Andy Weir"
+          ],
+          "narrators": null,
+          "year": "",
+          "language": "",
+          "runtime_min": 420,
+          "cover_url": ""
+        },
+        {
+          "asin": "R2",
+          "region": "",
+          "title": "Project Hail Mary",
+          "subtitle": "",
+          "authors": [
+            "Andy Weir"
+          ],
+          "narrators": null,
+          "year": "",
+          "language": "",
+          "runtime_min": 969,
+          "cover_url": ""
+        },
+        {
+          "asin": "R3",
+          "region": "",
+          "title": "Project Hail Mary",
+          "subtitle": "",
+          "authors": [
+            "Andy Weir"
+          ],
+          "narrators": null,
+          "year": "",
+          "language": "",
+          "runtime_min": 1500,
+          "cover_url": ""
+        }
+      ],
+      "ranked": [
+        {
+          "asin": "R2",
+          "score": 124,
+          "runtime_match": "exact",
+          "runtime_delta_min": -1
+        },
+        {
+          "asin": "R1",
+          "score": 70,
+          "runtime_match": "off",
+          "runtime_delta_min": -550
+        },
+        {
+          "asin": "R3",
+          "score": 68,
+          "runtime_match": "off",
+          "runtime_delta_min": 530
+        }
+      ],
+      "auto_select": true
+    },
+    {
+      "name": "runtime never outranks author",
+      "signals": {
+        "title": "Project Hail Mary",
+        "author": "Andy Weir",
+        "runtime_min": 970,
+        "language": ""
+      },
+      "results": [
+        {
+          "asin": "R1",
+          "region": "",
+          "title": "Project Hail Mary",
+          "subtitle": "",
+          "authors": [
+            "Someone Else"
+          ],
+          "narrators": null,
+          "year": "",
+          "language": "",
+          "runtime_min": 970,
+          "cover_url": ""
+        },
+        {
+          "asin": "R2",
+          "region": "",
+          "title": "Project Hail Mary",
+          "subtitle": "",
+          "authors": [
+            "Andy Weir"
+          ],
+          "narrators": null,
+          "year": "",
+          "language": "",
+          "runtime_min": 1000,
+          "cover_url": ""
+        }
+      ],
+      "ranked": [
+        {
+          "asin": "R2",
+          "score": 102,
+          "runtime_match": "near",
+          "runtime_delta_min": 30
+        },
+        {
+          "asin": "R1",
+          "score": 15,
+          "runtime_match": "exact",
+          "runtime_delta_min": 0
+        }
+      ],
+      "auto_select": false
+    },
+    {
+      "name": "unknown local runtime",
+      "signals": {
+        "title": "A Book",
+        "author": "",
+        "runtime_min": 0,
+        "language": ""
+      },
+      "results": [
+        {
+          "asin": "R1",
+          "region": "",
+          "title": "A Book",
+          "subtitle": "",
+          "authors": null,
+          "narrators": null,
+          "year": "",
+          "language": "",
+          "runtime_min": 100,
+          "cover_url": ""
+        }
+      ],
+      "ranked": [
+        {
+          "asin": "R1",
+          "score": 100,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        }
+      ],
+      "auto_select": false
+    },
+    {
+      "name": "lone exact match",
+      "signals": {
+        "title": "Project Hail Mary",
+        "author": "Andy Weir",
+        "runtime_min": 970,
+        "language": ""
+      },
+      "results": [
+        {
+          "asin": "R1",
+          "region": "",
+          "title": "Project Hail Mary",
+          "subtitle": "",
+          "authors": [
+            "Andy Weir"
+          ],
+          "narrators": null,
+          "year": "",
+          "language": "",
+          "runtime_min": 970,
+          "cover_url": ""
+        }
+      ],
+      "ranked": [
+        {
+          "asin": "R1",
+          "score": 125,
+          "runtime_match": "exact",
+          "runtime_delta_min": 0
+        }
+      ],
+      "auto_select": true
+    },
+    {
+      "name": "two exact editions",
+      "signals": {
+        "title": "Project Hail Mary",
+        "author": "Andy Weir",
+        "runtime_min": 970,
+        "language": ""
+      },
+      "results": [
+        {
+          "asin": "R1",
+          "region": "",
+          "title": "Project Hail Mary",
+          "subtitle": "",
+          "authors": [
+            "Andy Weir"
+          ],
+          "narrators": null,
+          "year": "",
+          "language": "",
+          "runtime_min": 970,
+          "cover_url": ""
+        },
+        {
+          "asin": "R2",
+          "region": "",
+          "title": "Project Hail Mary",
+          "subtitle": "",
+          "authors": [
+            "Andy Weir"
+          ],
+          "narrators": null,
+          "year": "",
+          "language": "",
+          "runtime_min": 970,
+          "cover_url": ""
+        }
+      ],
+      "ranked": [
+        {
+          "asin": "R1",
+          "score": 125,
+          "runtime_match": "exact",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "R2",
+          "score": 124,
+          "runtime_match": "exact",
+          "runtime_delta_min": 0
+        }
+      ],
+      "auto_select": false
+    },
+    {
+      "name": "runtime off",
+      "signals": {
+        "title": "Project Hail Mary",
+        "author": "Andy Weir",
+        "runtime_min": 970,
+        "language": ""
+      },
+      "results": [
+        {
+          "asin": "R1",
+          "region": "",
+          "title": "Project Hail Mary",
+          "subtitle": "",
+          "authors": [
+            "Andy Weir"
+          ],
+          "narrators": null,
+          "year": "",
+          "language": "",
+          "runtime_min": 500,
+          "cover_url": ""
+        }
+      ],
+      "ranked": [
+        {
+          "asin": "R1",
+          "score": 70,
+          "runtime_match": "off",
+          "runtime_delta_min": -470
+        }
+      ],
+      "auto_select": false
+    },
+    {
+      "name": "no runtime on either side",
+      "signals": {
+        "title": "Project Hail Mary",
+        "author": "",
+        "runtime_min": 0,
+        "language": ""
+      },
+      "results": [
+        {
+          "asin": "R1",
+          "region": "",
+          "title": "Project Hail Mary",
+          "subtitle": "",
+          "authors": [
+            "Andy Weir"
+          ],
+          "narrators": null,
+          "year": "",
+          "language": "",
+          "runtime_min": 0,
+          "cover_url": ""
+        }
+      ],
+      "ranked": [
+        {
+          "asin": "R1",
+          "score": 100,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        }
+      ],
+      "auto_select": false
+    },
+    {
+      "name": "coincidental runtime, wrong title",
+      "signals": {
+        "title": "Project Hail Mary",
+        "author": "Andy Weir",
+        "runtime_min": 970,
+        "language": ""
+      },
+      "results": [
+        {
+          "asin": "R1",
+          "region": "",
+          "title": "Something Entirely Different",
+          "subtitle": "",
+          "authors": null,
+          "narrators": null,
+          "year": "",
+          "language": "",
+          "runtime_min": 970,
+          "cover_url": ""
+        }
+      ],
+      "ranked": [
+        {
+          "asin": "R1",
+          "score": 81,
+          "runtime_match": "exact",
+          "runtime_delta_min": 0
+        }
+      ],
+      "auto_select": false
+    },
+    {
+      "name": "empty title hint",
+      "signals": {
+        "title": "",
+        "author": "",
+        "runtime_min": 970,
+        "language": ""
+      },
+      "results": [
+        {
+          "asin": "R1",
+          "region": "",
+          "title": "Project Hail Mary",
+          "subtitle": "",
+          "authors": [
+            "Andy Weir"
+          ],
+          "narrators": null,
+          "year": "",
+          "language": "",
+          "runtime_min": 970,
+          "cover_url": ""
+        }
+      ],
+      "ranked": [
+        {
+          "asin": "R1",
+          "score": 125,
+          "runtime_match": "exact",
+          "runtime_delta_min": 0
+        }
+      ],
+      "auto_select": false
+    },
+    {
+      "name": "foreign edition",
+      "signals": {
+        "title": "Project Hail Mary",
+        "author": "",
+        "runtime_min": 970,
+        "language": "english"
+      },
+      "results": [
+        {
+          "asin": "R1",
+          "region": "",
+          "title": "Project Hail Mary",
+          "subtitle": "",
+          "authors": [
+            "Andy Weir"
+          ],
+          "narrators": null,
+          "year": "",
+          "language": "spanish",
+          "runtime_min": 970,
+          "cover_url": ""
+        }
+      ],
+      "ranked": [
+        {
+          "asin": "R1",
+          "score": 100,
+          "runtime_match": "exact",
+          "runtime_delta_min": 0
+        }
+      ],
+      "auto_select": false
+    },
+    {
+      "name": "language preference",
+      "signals": {
+        "title": "Harry Potter",
+        "author": "",
+        "runtime_min": 498,
+        "language": "english"
+      },
+      "results": [
+        {
+          "asin": "R1",
+          "region": "",
+          "title": "Harry Potter",
+          "subtitle": "",
+          "authors": null,
+          "narrators": null,
+          "year": "",
+          "language": "spanish",
+          "runtime_min": 498,
+          "cover_url": ""
+        },
+        {
+          "asin": "R2",
+          "region": "",
+          "title": "Harry Potter",
+          "subtitle": "",
+          "authors": null,
+          "narrators": null,
+          "year": "",
+          "language": "english",
+          "runtime_min": 505,
+          "cover_url": ""
+        }
+      ],
+      "ranked": [
+        {
+          "asin": "R2",
+          "score": 111,
+          "runtime_match": "close",
+          "runtime_delta_min": 7
+        },
+        {
+          "asin": "R1",
+          "score": 100,
+          "runtime_match": "exact",
+          "runtime_delta_min": 0
+        }
+      ],
+      "auto_select": false
+    },
+    {
+      "name": "close, near and off bands",
+      "signals": {
+        "title": "Band",
+        "author": "",
+        "runtime_min": 1000,
+        "language": ""
+      },
+      "results": [
+        {
+          "asin": "R1",
+          "region": "",
+          "title": "Band",
+          "subtitle": "",
+          "authors": null,
+          "narrators": null,
+          "year": "",
+          "language": "",
+          "runtime_min": 1015,
+          "cover_url": ""
+        },
+        {
+          "asin": "R2",
+          "region": "",
+          "title": "Band",
+          "subtitle": "",
+          "authors": null,
+          "narrators": null,
+          "year": "",
+          "language": "",
+          "runtime_min": 1040,
+          "cover_url": ""
+        },
+        {
+          "asin": "R3",
+          "region": "",
+          "title": "Band",
+          "subtitle": "",
+          "authors": null,
+          "narrators": null,
+          "year": "",
+          "language": "",
+          "runtime_min": 1100,
+          "cover_url": ""
+        },
+        {
+          "asin": "R4",
+          "region": "",
+          "title": "Band",
+          "subtitle": "",
+          "authors": null,
+          "narrators": null,
+          "year": "",
+          "language": "",
+          "runtime_min": 1200,
+          "cover_url": ""
+        },
+        {
+          "asin": "R5",
+          "region": "",
+          "title": "Band",
+          "subtitle": "",
+          "authors": null,
+          "narrators": null,
+          "year": "",
+          "language": "",
+          "runtime_min": 1005,
+          "cover_url": ""
+        }
+      ],
+      "ranked": [
+        {
+          "asin": "R5",
+          "score": 121,
+          "runtime_match": "exact",
+          "runtime_delta_min": 5
+        },
+        {
+          "asin": "R1",
+          "score": 112,
+          "runtime_match": "close",
+          "runtime_delta_min": 15
+        },
+        {
+          "asin": "R2",
+          "score": 102,
+          "runtime_match": "near",
+          "runtime_delta_min": 40
+        },
+        {
+          "asin": "R3",
+          "score": 86,
+          "runtime_match": "off",
+          "runtime_delta_min": 100
+        },
+        {
+          "asin": "R4",
+          "score": 67,
+          "runtime_match": "off",
+          "runtime_delta_min": 200
+        }
+      ],
+      "auto_select": false
+    },
+    {
+      "name": "subtitle containment",
+      "signals": {
+        "title": "The Way of Kings",
+        "author": "Brandon Sanderson",
+        "runtime_min": 0,
+        "language": ""
+      },
+      "results": [
+        {
+          "asin": "R1",
+          "region": "",
+          "title": "The Way of Kings: Book One of the Stormlight Archive",
+          "subtitle": "",
+          "authors": [
+            "Brandon Sanderson"
+          ],
+          "narrators": null,
+          "year": "",
+          "language": "",
+          "runtime_min": 0,
+          "cover_url": ""
+        },
+        {
+          "asin": "R2",
+          "region": "",
+          "title": "The Way",
+          "subtitle": "",
+          "authors": [
+            "Brandon Sanderson"
+          ],
+          "narrators": null,
+          "year": "",
+          "language": "",
+          "runtime_min": 0,
+          "cover_url": ""
+        },
+        {
+          "asin": "R3",
+          "region": "",
+          "title": "Way of Kings",
+          "subtitle": "",
+          "authors": [
+            "Kate Reading",
+            "Brandon Sanderson"
+          ],
+          "narrators": null,
+          "year": "",
+          "language": "",
+          "runtime_min": 0,
+          "cover_url": ""
+        }
+      ],
+      "ranked": [
+        {
+          "asin": "R1",
+          "score": 90,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "R3",
+          "score": 90,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "R2",
+          "score": 81,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        }
+      ],
+      "auto_select": false
+    },
+    {
+      "name": "diacritics and case folding",
+      "signals": {
+        "title": "Les Misérables",
+        "author": "Victor Hugo",
+        "runtime_min": 0,
+        "language": ""
+      },
+      "results": [
+        {
+          "asin": "R1",
+          "region": "",
+          "title": "LES MISERABLES",
+          "subtitle": "",
+          "authors": [
+            "VICTOR HUGO"
+          ],
+          "narrators": null,
+          "year": "",
+          "language": "",
+          "runtime_min": 0,
+          "cover_url": ""
+        },
+        {
+          "asin": "R2",
+          "region": "",
+          "title": "Les Misérables",
+          "subtitle": "",
+          "authors": [
+            "Víctor Húgo"
+          ],
+          "narrators": null,
+          "year": "",
+          "language": "",
+          "runtime_min": 0,
+          "cover_url": ""
+        },
+        {
+          "asin": "R3",
+          "region": "",
+          "title": "Ænid & Œdipus",
+          "subtitle": "",
+          "authors": [
+            "Æsop"
+          ],
+          "narrators": null,
+          "year": "",
+          "language": "",
+          "runtime_min": 0,
+          "cover_url": ""
+        }
+      ],
+      "ranked": [
+        {
+          "asin": "R1",
+          "score": 100,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "R2",
+          "score": 99,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "R3",
+          "score": -26,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        }
+      ],
+      "auto_select": false
+    },
+    {
+      "name": "final sigma and dotted I",
+      "signals": {
+        "title": "ΣΟΦΙΑΣ İstanbul",
+        "author": "",
+        "runtime_min": 0,
+        "language": ""
+      },
+      "results": [
+        {
+          "asin": "R1",
+          "region": "",
+          "title": "σοφιασ istanbul",
+          "subtitle": "",
+          "authors": null,
+          "narrators": null,
+          "year": "",
+          "language": "",
+          "runtime_min": 0,
+          "cover_url": ""
+        },
+        {
+          "asin": "R2",
+          "region": "",
+          "title": "Σοφίας Istanbul",
+          "subtitle": "",
+          "authors": null,
+          "narrators": null,
+          "year": "",
+          "language": "",
+          "runtime_min": 0,
+          "cover_url": ""
+        }
+      ],
+      "ranked": [
+        {
+          "asin": "R1",
+          "score": 100,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "R2",
+          "score": 95,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        }
+      ],
+      "auto_select": false
+    },
+    {
+      "name": "live: Locke Lamora from file tags",
+      "signals": {
+        "title": "The Lies of Locke Lamora",
+        "author": "Scott Lynch",
+        "runtime_min": 1319,
+        "language": "english"
+      },
+      "results": [
+        {
+          "asin": "0593163389",
+          "region": "us",
+          "title": "The Lies of Locke Lamora",
+          "subtitle": "Gentleman Bastard, Book 1",
+          "authors": [
+            "Scott Lynch"
+          ],
+          "narrators": [
+            "Michael Page"
+          ],
+          "year": "2019",
+          "language": "english",
+          "runtime_min": 1356,
+          "cover_url": "https://m.media-amazon.com/images/I/51SUOw0KeOL._SL500_.jpg"
+        },
+        {
+          "asin": "B004K50434",
+          "region": "us",
+          "title": "The Lies of Locke Lamora",
+          "subtitle": "The deviously twisty fantasy adventure you will not want to put down",
+          "authors": [
+            "Scott Lynch"
+          ],
+          "narrators": [
+            "Michael Page"
+          ],
+          "year": "2011",
+          "language": "english",
+          "runtime_min": 1319,
+          "cover_url": "https://m.media-amazon.com/images/I/51xxdlfMIrL._SL500_.jpg"
+        }
+      ],
+      "ranked": [
+        {
+          "asin": "B004K50434",
+          "score": 124,
+          "runtime_match": "exact",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "0593163389",
+          "score": 103,
+          "runtime_match": "near",
+          "runtime_delta_min": 37
+        }
+      ],
+      "auto_select": true
+    },
+    {
+      "name": "live: Locke Lamora, other edition's runtime",
+      "signals": {
+        "title": "The Lies of Locke Lamora",
+        "author": "Scott Lynch",
+        "runtime_min": 1356,
+        "language": "english"
+      },
+      "results": [
+        {
+          "asin": "0593163389",
+          "region": "us",
+          "title": "The Lies of Locke Lamora",
+          "subtitle": "Gentleman Bastard, Book 1",
+          "authors": [
+            "Scott Lynch"
+          ],
+          "narrators": [
+            "Michael Page"
+          ],
+          "year": "2019",
+          "language": "english",
+          "runtime_min": 1356,
+          "cover_url": "https://m.media-amazon.com/images/I/51SUOw0KeOL._SL500_.jpg"
+        },
+        {
+          "asin": "B004K50434",
+          "region": "us",
+          "title": "The Lies of Locke Lamora",
+          "subtitle": "The deviously twisty fantasy adventure you will not want to put down",
+          "authors": [
+            "Scott Lynch"
+          ],
+          "narrators": [
+            "Michael Page"
+          ],
+          "year": "2011",
+          "language": "english",
+          "runtime_min": 1319,
+          "cover_url": "https://m.media-amazon.com/images/I/51xxdlfMIrL._SL500_.jpg"
+        }
+      ],
+      "ranked": [
+        {
+          "asin": "0593163389",
+          "score": 125,
+          "runtime_match": "exact",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "B004K50434",
+          "score": 102,
+          "runtime_match": "near",
+          "runtime_delta_min": -37
+        }
+      ],
+      "auto_select": true
+    },
+    {
+      "name": "live: Colour of Magic with runtime",
+      "signals": {
+        "title": "The Colour of Magic",
+        "author": "Terry Pratchett",
+        "runtime_min": 478,
+        "language": "english"
+      },
+      "results": [
+        {
+          "asin": "B09LYZPFLZ",
+          "region": "us",
+          "title": "The Colour of Magic",
+          "subtitle": "Discworld, Book 1",
+          "authors": [
+            "Terry Pratchett"
+          ],
+          "narrators": [
+            "Colin Morgan",
+            "Peter Serafinowicz",
+            "Bill Nighy"
+          ],
+          "year": "2022",
+          "language": "english",
+          "runtime_min": 478,
+          "cover_url": "https://m.media-amazon.com/images/I/51wiNNsH2JL._SL500_.jpg"
+        },
+        {
+          "asin": "B0DBRXBKSD",
+          "region": "us",
+          "title": "The Colour Out of Space",
+          "subtitle": "",
+          "authors": [
+            "H.P. Lovecraft",
+            "Leslie S. Klinger - editor"
+          ],
+          "narrators": [
+            "Gregory Connors"
+          ],
+          "year": "2024",
+          "language": "english",
+          "runtime_min": 82,
+          "cover_url": "https://m.media-amazon.com/images/I/51KX1wVcJCL._SL500_.jpg"
+        },
+        {
+          "asin": "B0032N8UOU",
+          "region": "us",
+          "title": "The Colour of Magic",
+          "subtitle": "Discworld 1",
+          "authors": [
+            "Terry Pratchett"
+          ],
+          "narrators": [
+            "Tony Robinson"
+          ],
+          "year": "2007",
+          "language": "english",
+          "runtime_min": 184,
+          "cover_url": "https://m.media-amazon.com/images/I/61EtkgdVQfL._SL500_.jpg"
+        },
+        {
+          "asin": "B07LCV3R2F",
+          "region": "us",
+          "title": "The Color Purple",
+          "subtitle": "",
+          "authors": [
+            "Alice Walker"
+          ],
+          "narrators": [
+            "Alice Walker"
+          ],
+          "year": "2018",
+          "language": "english",
+          "runtime_min": 478,
+          "cover_url": "https://m.media-amazon.com/images/I/51eI2s8oSxL._SL500_.jpg"
+        },
+        {
+          "asin": "B0F7M5D2XG",
+          "region": "us",
+          "title": "Exodus Blue",
+          "subtitle": "The Colour of Blood, Book 1",
+          "authors": [
+            "Elliot Kincaid"
+          ],
+          "narrators": [
+            "Adam R Watson"
+          ],
+          "year": "2025",
+          "language": "english",
+          "runtime_min": 644,
+          "cover_url": "https://m.media-amazon.com/images/I/41Orj9w8bXL._SL500_.jpg"
+        },
+        {
+          "asin": "B0HHKXNJG1",
+          "region": "us",
+          "title": "The Color of Magic",
+          "subtitle": "",
+          "authors": [
+            "Ellen Kennon"
+          ],
+          "narrators": [
+            "Olivia Benton"
+          ],
+          "year": "2026",
+          "language": "english",
+          "runtime_min": 253,
+          "cover_url": "https://m.media-amazon.com/images/I/51u8Eo8EzHL._SL500_.jpg"
+        },
+        {
+          "asin": "B0F1C59BLW",
+          "region": "us",
+          "title": "The Colour of Courage",
+          "subtitle": "Codename Odile - Based On A True Story",
+          "authors": [
+            "Hannah Byron"
+          ],
+          "narrators": [
+            "Virtual Voice"
+          ],
+          "year": "2025",
+          "language": "english",
+          "runtime_min": 692,
+          "cover_url": "https://m.media-amazon.com/images/I/41nwojRPjzL._SL500_.jpg"
+        },
+        {
+          "asin": "B0747SYKJF",
+          "region": "us",
+          "title": "The Color of Law",
+          "subtitle": "A Forgotten History of How Our Government Segregated America",
+          "authors": [
+            "Richard Rothstein"
+          ],
+          "narrators": [
+            "Adam Grupper"
+          ],
+          "year": "2017",
+          "language": "english",
+          "runtime_min": 572,
+          "cover_url": "https://m.media-amazon.com/images/I/51wmP58ticL._SL500_.jpg"
+        },
+        {
+          "asin": "B002V5BN3U",
+          "region": "us",
+          "title": "The Color of Lightning",
+          "subtitle": "A Novel",
+          "authors": [
+            "Paulette Jiles"
+          ],
+          "narrators": [
+            "Jack Garrett"
+          ],
+          "year": "2009",
+          "language": "english",
+          "runtime_min": 814,
+          "cover_url": "https://m.media-amazon.com/images/I/51CFJ8i0pYL._SL500_.jpg"
+        },
+        {
+          "asin": "B07BZ5SZ8J",
+          "region": "us",
+          "title": "The Colour out of Space",
+          "subtitle": "",
+          "authors": [
+            "H. P. Lovecraft"
+          ],
+          "narrators": [
+            "H.P. Lovecraft Historical Society"
+          ],
+          "year": "2018",
+          "language": "english",
+          "runtime_min": 77,
+          "cover_url": "https://m.media-amazon.com/images/I/61A+-FEly6L._SL500_.jpg"
+        },
+        {
+          "asin": "B0CY62DJ7L",
+          "region": "us",
+          "title": "The Museum of Forgotten Colors and Other Stories",
+          "subtitle": "",
+          "authors": [
+            "E. T. Pax"
+          ],
+          "narrators": [
+            "Virtual Voice"
+          ],
+          "year": "2026",
+          "language": "english",
+          "runtime_min": 181,
+          "cover_url": "https://m.media-amazon.com/images/I/41LDkFPXotL._SL500_.jpg"
+        },
+        {
+          "asin": "B0CZQ65XZX",
+          "region": "us",
+          "title": "Inkworld: The Color of Revenge",
+          "subtitle": "",
+          "authors": [
+            "Cornelia Funke"
+          ],
+          "narrators": [
+            "Allan Corduner",
+            "Cornelia Funke"
+          ],
+          "year": "2024",
+          "language": "english",
+          "runtime_min": 579,
+          "cover_url": "https://m.media-amazon.com/images/I/51ZTrxPZvgL._SL500_.jpg"
+        },
+        {
+          "asin": "0063137399",
+          "region": "us",
+          "title": "The Color of Dragons",
+          "subtitle": "",
+          "authors": [
+            "R. A. Salvatore",
+            "Erika Lewis"
+          ],
+          "narrators": [
+            "Aline Stokes",
+            "John York"
+          ],
+          "year": "2021",
+          "language": "english",
+          "runtime_min": 628,
+          "cover_url": "https://m.media-amazon.com/images/I/51QlSdNLKQL._SL500_.jpg"
+        },
+        {
+          "asin": "B099P3XZWF",
+          "region": "us",
+          "title": "Cold as Hell",
+          "subtitle": "Black Badge Series, Book 1",
+          "authors": [
+            "Rhett C. Bruno",
+            "Jaime Castle"
+          ],
+          "narrators": [
+            "Roger Clark"
+          ],
+          "year": "2022",
+          "language": "english",
+          "runtime_min": 771,
+          "cover_url": "https://m.media-amazon.com/images/I/51zAXYBHq0L._SL500_.jpg"
+        },
+        {
+          "asin": "B00A4FS7YM",
+          "region": "us",
+          "title": "Discount Armageddon",
+          "subtitle": "InCryptid, Book 1",
+          "authors": [
+            "Seanan McGuire"
+          ],
+          "narrators": [
+            "Emily Bauer"
+          ],
+          "year": "2012",
+          "language": "english",
+          "runtime_min": 680,
+          "cover_url": "https://m.media-amazon.com/images/I/51X2R50cVmL._SL500_.jpg"
+        },
+        {
+          "asin": "B005GFQ5WQ",
+          "region": "us",
+          "title": "The Count of Monte Cristo",
+          "subtitle": "",
+          "authors": [
+            "Alexandre Dumas"
+          ],
+          "narrators": [
+            "Bill Homewood"
+          ],
+          "year": "2011",
+          "language": "english",
+          "runtime_min": 3161,
+          "cover_url": "https://m.media-amazon.com/images/I/611Eot7+zJL._SL500_.jpg"
+        },
+        {
+          "asin": "B0DJHC1TFK",
+          "region": "us",
+          "title": "The Compound: A GMA Book Club Pick",
+          "subtitle": "A Novel",
+          "authors": [
+            "Aisling Rawle"
+          ],
+          "narrators": [
+            "Lucy Boynton"
+          ],
+          "year": "2025",
+          "language": "english",
+          "runtime_min": 604,
+          "cover_url": "https://m.media-amazon.com/images/I/51Zu5sBZXHL._SL500_.jpg"
+        },
+        {
+          "asin": "B00NMP9REK",
+          "region": "us",
+          "title": "The Color of Water",
+          "subtitle": "A Black Man's Tribute to His White Mother",
+          "authors": [
+            "James McBride"
+          ],
+          "narrators": [
+            "JD Jackson",
+            "Susan Denaker"
+          ],
+          "year": "2014",
+          "language": "english",
+          "runtime_min": 526,
+          "cover_url": "https://m.media-amazon.com/images/I/41Ko1tmNuLL._SL500_.jpg"
+        },
+        {
+          "asin": "8401023629",
+          "region": "us",
+          "title": "El Color de la Magia [The Color of Magic]",
+          "subtitle": "",
+          "authors": [
+            "Terry Pratchett",
+            "Cristina Macía Orio"
+          ],
+          "narrators": [
+            "Raúl Lloréns"
+          ],
+          "year": "2019",
+          "language": "spanish",
+          "runtime_min": 494,
+          "cover_url": "https://m.media-amazon.com/images/I/61GNEhpOAGL._SL500_.jpg"
+        },
+        {
+          "asin": "B0CZY59J9Y",
+          "region": "us",
+          "title": "The Colour of Mystery",
+          "subtitle": "Ellie McEwan Mysteries, Book 2",
+          "authors": [
+            "Joy Ellis"
+          ],
+          "narrators": [
+            "Sophie Rundle"
+          ],
+          "year": "2024",
+          "language": "english",
+          "runtime_min": 667,
+          "cover_url": "https://m.media-amazon.com/images/I/51CQbD3BVKL._SL500_.jpg"
+        },
+        {
+          "asin": "B0HL79QPVS",
+          "region": "us",
+          "title": "Christmas Magic in Acrylic",
+          "subtitle": "A Beginner’s Guide to Painting Festive Scenes, Ornaments, Snowmen, and Holiday Favorites",
+          "authors": [
+            "Amanda Cohn"
+          ],
+          "narrators": [
+            "Virtual Voice"
+          ],
+          "year": "2026",
+          "language": "english",
+          "runtime_min": 162,
+          "cover_url": "https://m.media-amazon.com/images/I/51nQZq3bk-L._SL500_.jpg"
+        },
+        {
+          "asin": "B0DXXF44VQ",
+          "region": "us",
+          "title": "The Color of Death",
+          "subtitle": "A Novel",
+          "authors": [
+            "Trey Gowdy",
+            "Christopher Greyson"
+          ],
+          "narrators": [
+            "Toby Ricketts"
+          ],
+          "year": "2025",
+          "language": "english",
+          "runtime_min": 518,
+          "cover_url": "https://m.media-amazon.com/images/I/51duJN3Y3GL._SL500_.jpg"
+        },
+        {
+          "asin": "B06XC7K4TL",
+          "region": "us",
+          "title": "The Color of Our Sky",
+          "subtitle": "A Novel",
+          "authors": [
+            "Amita Trasi"
+          ],
+          "narrators": [
+            "Zehra Jane Naqvi",
+            "Sneha Mathan"
+          ],
+          "year": "2017",
+          "language": "english",
+          "runtime_min": 710,
+          "cover_url": "https://m.media-amazon.com/images/I/51WDpsSlAQL._SL500_.jpg"
+        },
+        {
+          "asin": "0061999881",
+          "region": "us",
+          "title": "The Chronicles of Narnia Complete Audio Collection",
+          "subtitle": "",
+          "authors": [
+            "C. S. Lewis"
+          ],
+          "narrators": [
+            "Kenneth Branagh",
+            "Alex Jennings",
+            "Michael York",
+            "Lynn Redgrave",
+            "Derek Jacobi",
+            "Jeremy Northam",
+            "Patrick Stewart"
+          ],
+          "year": "2019",
+          "language": "english",
+          "runtime_min": 2025,
+          "cover_url": "https://m.media-amazon.com/images/I/51K+xUkrkaL._SL500_.jpg"
+        },
+        {
+          "asin": "B01JQSAN94",
+          "region": "us",
+          "title": "The Collected Stories of Arthur C. Clarke",
+          "subtitle": "",
+          "authors": [
+            "Arthur C. Clarke"
+          ],
+          "narrators": [
+            "Ralph Lister",
+            "Ray Porter",
+            "Jonathan Davis"
+          ],
+          "year": "2016",
+          "language": "english",
+          "runtime_min": 3064,
+          "cover_url": "https://m.media-amazon.com/images/I/517YqC90OcL._SL500_.jpg"
+        }
+      ],
+      "ranked": [
+        {
+          "asin": "B09LYZPFLZ",
+          "score": 125,
+          "runtime_match": "exact",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "B0032N8UOU",
+          "score": 68,
+          "runtime_match": "off",
+          "runtime_delta_min": -294
+        },
+        {
+          "asin": "8401023629",
+          "score": 12,
+          "runtime_match": "near",
+          "runtime_delta_min": 16
+        },
+        {
+          "asin": "B07LCV3R2F",
+          "score": -16,
+          "runtime_match": "exact",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "B0DXXF44VQ",
+          "score": -55,
+          "runtime_match": "off",
+          "runtime_delta_min": 40
+        },
+        {
+          "asin": "B0DBRXBKSD",
+          "score": -69,
+          "runtime_match": "off",
+          "runtime_delta_min": -396
+        },
+        {
+          "asin": "B00NMP9REK",
+          "score": -69,
+          "runtime_match": "off",
+          "runtime_delta_min": 48
+        },
+        {
+          "asin": "0063137399",
+          "score": -74,
+          "runtime_match": "off",
+          "runtime_delta_min": 150
+        },
+        {
+          "asin": "B0HHKXNJG1",
+          "score": -77,
+          "runtime_match": "off",
+          "runtime_delta_min": -225
+        },
+        {
+          "asin": "B0747SYKJF",
+          "score": -77,
+          "runtime_match": "off",
+          "runtime_delta_min": 94
+        },
+        {
+          "asin": "B07BZ5SZ8J",
+          "score": -77,
+          "runtime_match": "off",
+          "runtime_delta_min": -401
+        },
+        {
+          "asin": "B06XC7K4TL",
+          "score": -88,
+          "runtime_match": "off",
+          "runtime_delta_min": 232
+        },
+        {
+          "asin": "B099P3XZWF",
+          "score": -91,
+          "runtime_match": "off",
+          "runtime_delta_min": 293
+        },
+        {
+          "asin": "B0CZY59J9Y",
+          "score": -91,
+          "runtime_match": "off",
+          "runtime_delta_min": 189
+        },
+        {
+          "asin": "B002V5BN3U",
+          "score": -94,
+          "runtime_match": "off",
+          "runtime_delta_min": 336
+        },
+        {
+          "asin": "B0F1C59BLW",
+          "score": -98,
+          "runtime_match": "off",
+          "runtime_delta_min": 214
+        },
+        {
+          "asin": "B0F7M5D2XG",
+          "score": -104,
+          "runtime_match": "off",
+          "runtime_delta_min": 166
+        },
+        {
+          "asin": "B00A4FS7YM",
+          "score": -106,
+          "runtime_match": "off",
+          "runtime_delta_min": 202
+        },
+        {
+          "asin": "B0CZQ65XZX",
+          "score": -107,
+          "runtime_match": "off",
+          "runtime_delta_min": 101
+        },
+        {
+          "asin": "B005GFQ5WQ",
+          "score": -113,
+          "runtime_match": "off",
+          "runtime_delta_min": 2683
+        },
+        {
+          "asin": "B0DJHC1TFK",
+          "score": -118,
+          "runtime_match": "off",
+          "runtime_delta_min": 126
+        },
+        {
+          "asin": "B0HL79QPVS",
+          "score": -122,
+          "runtime_match": "off",
+          "runtime_delta_min": -316
+        },
+        {
+          "asin": "B0CY62DJ7L",
+          "score": -132,
+          "runtime_match": "off",
+          "runtime_delta_min": -297
+        },
+        {
+          "asin": "B01JQSAN94",
+          "score": -150,
+          "runtime_match": "off",
+          "runtime_delta_min": 2586
+        },
+        {
+          "asin": "0061999881",
+          "score": -165,
+          "runtime_match": "off",
+          "runtime_delta_min": 1547
+        }
+      ],
+      "auto_select": true
+    },
+    {
+      "name": "live: Colour of Magic keywords only",
+      "signals": {
+        "title": "the colour of magic",
+        "author": "",
+        "runtime_min": 0,
+        "language": "english"
+      },
+      "results": [
+        {
+          "asin": "B09LYZPFLZ",
+          "region": "us",
+          "title": "The Colour of Magic",
+          "subtitle": "Discworld, Book 1",
+          "authors": [
+            "Terry Pratchett"
+          ],
+          "narrators": [
+            "Colin Morgan",
+            "Peter Serafinowicz",
+            "Bill Nighy"
+          ],
+          "year": "2022",
+          "language": "english",
+          "runtime_min": 478,
+          "cover_url": "https://m.media-amazon.com/images/I/51wiNNsH2JL._SL500_.jpg"
+        },
+        {
+          "asin": "B0DBRXBKSD",
+          "region": "us",
+          "title": "The Colour Out of Space",
+          "subtitle": "",
+          "authors": [
+            "H.P. Lovecraft",
+            "Leslie S. Klinger - editor"
+          ],
+          "narrators": [
+            "Gregory Connors"
+          ],
+          "year": "2024",
+          "language": "english",
+          "runtime_min": 82,
+          "cover_url": "https://m.media-amazon.com/images/I/51KX1wVcJCL._SL500_.jpg"
+        },
+        {
+          "asin": "B0032N8UOU",
+          "region": "us",
+          "title": "The Colour of Magic",
+          "subtitle": "Discworld 1",
+          "authors": [
+            "Terry Pratchett"
+          ],
+          "narrators": [
+            "Tony Robinson"
+          ],
+          "year": "2007",
+          "language": "english",
+          "runtime_min": 184,
+          "cover_url": "https://m.media-amazon.com/images/I/61EtkgdVQfL._SL500_.jpg"
+        },
+        {
+          "asin": "B07LCV3R2F",
+          "region": "us",
+          "title": "The Color Purple",
+          "subtitle": "",
+          "authors": [
+            "Alice Walker"
+          ],
+          "narrators": [
+            "Alice Walker"
+          ],
+          "year": "2018",
+          "language": "english",
+          "runtime_min": 478,
+          "cover_url": "https://m.media-amazon.com/images/I/51eI2s8oSxL._SL500_.jpg"
+        },
+        {
+          "asin": "B0F7M5D2XG",
+          "region": "us",
+          "title": "Exodus Blue",
+          "subtitle": "The Colour of Blood, Book 1",
+          "authors": [
+            "Elliot Kincaid"
+          ],
+          "narrators": [
+            "Adam R Watson"
+          ],
+          "year": "2025",
+          "language": "english",
+          "runtime_min": 644,
+          "cover_url": "https://m.media-amazon.com/images/I/41Orj9w8bXL._SL500_.jpg"
+        },
+        {
+          "asin": "B0HHKXNJG1",
+          "region": "us",
+          "title": "The Color of Magic",
+          "subtitle": "",
+          "authors": [
+            "Ellen Kennon"
+          ],
+          "narrators": [
+            "Olivia Benton"
+          ],
+          "year": "2026",
+          "language": "english",
+          "runtime_min": 253,
+          "cover_url": "https://m.media-amazon.com/images/I/51u8Eo8EzHL._SL500_.jpg"
+        },
+        {
+          "asin": "B0F1C59BLW",
+          "region": "us",
+          "title": "The Colour of Courage",
+          "subtitle": "Codename Odile - Based On A True Story",
+          "authors": [
+            "Hannah Byron"
+          ],
+          "narrators": [
+            "Virtual Voice"
+          ],
+          "year": "2025",
+          "language": "english",
+          "runtime_min": 692,
+          "cover_url": "https://m.media-amazon.com/images/I/41nwojRPjzL._SL500_.jpg"
+        },
+        {
+          "asin": "B0747SYKJF",
+          "region": "us",
+          "title": "The Color of Law",
+          "subtitle": "A Forgotten History of How Our Government Segregated America",
+          "authors": [
+            "Richard Rothstein"
+          ],
+          "narrators": [
+            "Adam Grupper"
+          ],
+          "year": "2017",
+          "language": "english",
+          "runtime_min": 572,
+          "cover_url": "https://m.media-amazon.com/images/I/51wmP58ticL._SL500_.jpg"
+        },
+        {
+          "asin": "B002V5BN3U",
+          "region": "us",
+          "title": "The Color of Lightning",
+          "subtitle": "A Novel",
+          "authors": [
+            "Paulette Jiles"
+          ],
+          "narrators": [
+            "Jack Garrett"
+          ],
+          "year": "2009",
+          "language": "english",
+          "runtime_min": 814,
+          "cover_url": "https://m.media-amazon.com/images/I/51CFJ8i0pYL._SL500_.jpg"
+        },
+        {
+          "asin": "B07BZ5SZ8J",
+          "region": "us",
+          "title": "The Colour out of Space",
+          "subtitle": "",
+          "authors": [
+            "H. P. Lovecraft"
+          ],
+          "narrators": [
+            "H.P. Lovecraft Historical Society"
+          ],
+          "year": "2018",
+          "language": "english",
+          "runtime_min": 77,
+          "cover_url": "https://m.media-amazon.com/images/I/61A+-FEly6L._SL500_.jpg"
+        },
+        {
+          "asin": "B0CY62DJ7L",
+          "region": "us",
+          "title": "The Museum of Forgotten Colors and Other Stories",
+          "subtitle": "",
+          "authors": [
+            "E. T. Pax"
+          ],
+          "narrators": [
+            "Virtual Voice"
+          ],
+          "year": "2026",
+          "language": "english",
+          "runtime_min": 181,
+          "cover_url": "https://m.media-amazon.com/images/I/41LDkFPXotL._SL500_.jpg"
+        },
+        {
+          "asin": "B0CZQ65XZX",
+          "region": "us",
+          "title": "Inkworld: The Color of Revenge",
+          "subtitle": "",
+          "authors": [
+            "Cornelia Funke"
+          ],
+          "narrators": [
+            "Allan Corduner",
+            "Cornelia Funke"
+          ],
+          "year": "2024",
+          "language": "english",
+          "runtime_min": 579,
+          "cover_url": "https://m.media-amazon.com/images/I/51ZTrxPZvgL._SL500_.jpg"
+        },
+        {
+          "asin": "0063137399",
+          "region": "us",
+          "title": "The Color of Dragons",
+          "subtitle": "",
+          "authors": [
+            "R. A. Salvatore",
+            "Erika Lewis"
+          ],
+          "narrators": [
+            "Aline Stokes",
+            "John York"
+          ],
+          "year": "2021",
+          "language": "english",
+          "runtime_min": 628,
+          "cover_url": "https://m.media-amazon.com/images/I/51QlSdNLKQL._SL500_.jpg"
+        },
+        {
+          "asin": "B099P3XZWF",
+          "region": "us",
+          "title": "Cold as Hell",
+          "subtitle": "Black Badge Series, Book 1",
+          "authors": [
+            "Rhett C. Bruno",
+            "Jaime Castle"
+          ],
+          "narrators": [
+            "Roger Clark"
+          ],
+          "year": "2022",
+          "language": "english",
+          "runtime_min": 771,
+          "cover_url": "https://m.media-amazon.com/images/I/51zAXYBHq0L._SL500_.jpg"
+        },
+        {
+          "asin": "B00A4FS7YM",
+          "region": "us",
+          "title": "Discount Armageddon",
+          "subtitle": "InCryptid, Book 1",
+          "authors": [
+            "Seanan McGuire"
+          ],
+          "narrators": [
+            "Emily Bauer"
+          ],
+          "year": "2012",
+          "language": "english",
+          "runtime_min": 680,
+          "cover_url": "https://m.media-amazon.com/images/I/51X2R50cVmL._SL500_.jpg"
+        },
+        {
+          "asin": "B005GFQ5WQ",
+          "region": "us",
+          "title": "The Count of Monte Cristo",
+          "subtitle": "",
+          "authors": [
+            "Alexandre Dumas"
+          ],
+          "narrators": [
+            "Bill Homewood"
+          ],
+          "year": "2011",
+          "language": "english",
+          "runtime_min": 3161,
+          "cover_url": "https://m.media-amazon.com/images/I/611Eot7+zJL._SL500_.jpg"
+        },
+        {
+          "asin": "B0DJHC1TFK",
+          "region": "us",
+          "title": "The Compound: A GMA Book Club Pick",
+          "subtitle": "A Novel",
+          "authors": [
+            "Aisling Rawle"
+          ],
+          "narrators": [
+            "Lucy Boynton"
+          ],
+          "year": "2025",
+          "language": "english",
+          "runtime_min": 604,
+          "cover_url": "https://m.media-amazon.com/images/I/51Zu5sBZXHL._SL500_.jpg"
+        },
+        {
+          "asin": "B00NMP9REK",
+          "region": "us",
+          "title": "The Color of Water",
+          "subtitle": "A Black Man's Tribute to His White Mother",
+          "authors": [
+            "James McBride"
+          ],
+          "narrators": [
+            "JD Jackson",
+            "Susan Denaker"
+          ],
+          "year": "2014",
+          "language": "english",
+          "runtime_min": 526,
+          "cover_url": "https://m.media-amazon.com/images/I/41Ko1tmNuLL._SL500_.jpg"
+        },
+        {
+          "asin": "8401023629",
+          "region": "us",
+          "title": "El Color de la Magia [The Color of Magic]",
+          "subtitle": "",
+          "authors": [
+            "Terry Pratchett",
+            "Cristina Macía Orio"
+          ],
+          "narrators": [
+            "Raúl Lloréns"
+          ],
+          "year": "2019",
+          "language": "spanish",
+          "runtime_min": 494,
+          "cover_url": "https://m.media-amazon.com/images/I/61GNEhpOAGL._SL500_.jpg"
+        },
+        {
+          "asin": "B0CZY59J9Y",
+          "region": "us",
+          "title": "The Colour of Mystery",
+          "subtitle": "Ellie McEwan Mysteries, Book 2",
+          "authors": [
+            "Joy Ellis"
+          ],
+          "narrators": [
+            "Sophie Rundle"
+          ],
+          "year": "2024",
+          "language": "english",
+          "runtime_min": 667,
+          "cover_url": "https://m.media-amazon.com/images/I/51CQbD3BVKL._SL500_.jpg"
+        },
+        {
+          "asin": "B0HL79QPVS",
+          "region": "us",
+          "title": "Christmas Magic in Acrylic",
+          "subtitle": "A Beginner’s Guide to Painting Festive Scenes, Ornaments, Snowmen, and Holiday Favorites",
+          "authors": [
+            "Amanda Cohn"
+          ],
+          "narrators": [
+            "Virtual Voice"
+          ],
+          "year": "2026",
+          "language": "english",
+          "runtime_min": 162,
+          "cover_url": "https://m.media-amazon.com/images/I/51nQZq3bk-L._SL500_.jpg"
+        },
+        {
+          "asin": "B0DXXF44VQ",
+          "region": "us",
+          "title": "The Color of Death",
+          "subtitle": "A Novel",
+          "authors": [
+            "Trey Gowdy",
+            "Christopher Greyson"
+          ],
+          "narrators": [
+            "Toby Ricketts"
+          ],
+          "year": "2025",
+          "language": "english",
+          "runtime_min": 518,
+          "cover_url": "https://m.media-amazon.com/images/I/51duJN3Y3GL._SL500_.jpg"
+        },
+        {
+          "asin": "B06XC7K4TL",
+          "region": "us",
+          "title": "The Color of Our Sky",
+          "subtitle": "A Novel",
+          "authors": [
+            "Amita Trasi"
+          ],
+          "narrators": [
+            "Zehra Jane Naqvi",
+            "Sneha Mathan"
+          ],
+          "year": "2017",
+          "language": "english",
+          "runtime_min": 710,
+          "cover_url": "https://m.media-amazon.com/images/I/51WDpsSlAQL._SL500_.jpg"
+        },
+        {
+          "asin": "0061999881",
+          "region": "us",
+          "title": "The Chronicles of Narnia Complete Audio Collection",
+          "subtitle": "",
+          "authors": [
+            "C. S. Lewis"
+          ],
+          "narrators": [
+            "Kenneth Branagh",
+            "Alex Jennings",
+            "Michael York",
+            "Lynn Redgrave",
+            "Derek Jacobi",
+            "Jeremy Northam",
+            "Patrick Stewart"
+          ],
+          "year": "2019",
+          "language": "english",
+          "runtime_min": 2025,
+          "cover_url": "https://m.media-amazon.com/images/I/51K+xUkrkaL._SL500_.jpg"
+        },
+        {
+          "asin": "B01JQSAN94",
+          "region": "us",
+          "title": "The Collected Stories of Arthur C. Clarke",
+          "subtitle": "",
+          "authors": [
+            "Arthur C. Clarke"
+          ],
+          "narrators": [
+            "Ralph Lister",
+            "Ray Porter",
+            "Jonathan Davis"
+          ],
+          "year": "2016",
+          "language": "english",
+          "runtime_min": 3064,
+          "cover_url": "https://m.media-amazon.com/images/I/517YqC90OcL._SL500_.jpg"
+        }
+      ],
+      "ranked": [
+        {
+          "asin": "B09LYZPFLZ",
+          "score": 100,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "B0032N8UOU",
+          "score": 98,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "B0HHKXNJG1",
+          "score": 93,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "B0747SYKJF",
+          "score": 83,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "B0F1C59BLW",
+          "score": 82,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "B0DBRXBKSD",
+          "score": 81,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "B07LCV3R2F",
+          "score": 79,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "B002V5BN3U",
+          "score": 76,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "0063137399",
+          "score": 76,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "B07BZ5SZ8J",
+          "score": 73,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "B00NMP9REK",
+          "score": 73,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "B0CZY59J9Y",
+          "score": 69,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "B0DXXF44VQ",
+          "score": 67,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "B0F7M5D2XG",
+          "score": 66,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "B06XC7K4TL",
+          "score": 62,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "B099P3XZWF",
+          "score": 59,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "B005GFQ5WQ",
+          "score": 57,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "B00A4FS7YM",
+          "score": 54,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "B0CZQ65XZX",
+          "score": 53,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "B0DJHC1TFK",
+          "score": 42,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "B0HL79QPVS",
+          "score": 38,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "B01JQSAN94",
+          "score": 20,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "B0CY62DJ7L",
+          "score": 18,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "8401023629",
+          "score": 9,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "0061999881",
+          "score": 5,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        }
+      ],
+      "auto_select": false
+    },
+    {
+      "name": "live: Last Colony typed with the author (a podcast episode is filtered out)",
+      "signals": {
+        "title": "The Last Colony John Scalzi",
+        "author": "",
+        "runtime_min": 0,
+        "language": "english"
+      },
+      "results": [
+        {
+          "asin": "B002VA9CAQ",
+          "region": "us",
+          "title": "The Last Colony",
+          "subtitle": "",
+          "authors": [
+            "John Scalzi"
+          ],
+          "narrators": [
+            "William Dufris"
+          ],
+          "year": "2008",
+          "language": "english",
+          "runtime_min": 591,
+          "cover_url": "https://m.media-amazon.com/images/I/51tPK4B2wYL._SL500_.jpg"
+        },
+        {
+          "asin": "B06XRHXZ5L",
+          "region": "us",
+          "title": "The Last Colony",
+          "subtitle": "Military Science Fiction Adventure",
+          "authors": [
+            "John Scalzi"
+          ],
+          "narrators": [
+            "William Dufris"
+          ],
+          "year": "2017",
+          "language": "english",
+          "runtime_min": 591,
+          "cover_url": "https://m.media-amazon.com/images/I/615pSnQno0L._SL500_.jpg"
+        },
+        {
+          "asin": "B0GW9RV1TN",
+          "region": "us",
+          "title": "The Last Complete Series",
+          "subtitle": "Books 1-9",
+          "authors": [
+            "Michael John Grist",
+            "Mike Grist"
+          ],
+          "narrators": [
+            "Virtual Voice"
+          ],
+          "year": "2026",
+          "language": "english",
+          "runtime_min": 3345,
+          "cover_url": "https://m.media-amazon.com/images/I/51E7+xf+dVL._SL500_.jpg"
+        },
+        {
+          "asin": "B00893WAG2",
+          "region": "us",
+          "title": "Star Wars: The Thrawn Trilogy, Book 3: The Last Command",
+          "subtitle": "",
+          "authors": [
+            "Timothy Zahn"
+          ],
+          "narrators": [
+            "Marc Thompson"
+          ],
+          "year": "2012",
+          "language": "english",
+          "runtime_min": 947,
+          "cover_url": "https://m.media-amazon.com/images/I/51ELKfEF3fL._SL500_.jpg"
+        },
+        {
+          "asin": "B0DLQ2VFHR",
+          "region": "us",
+          "title": "The Last Colony Ship",
+          "subtitle": "",
+          "authors": [
+            "A K Mitchell"
+          ],
+          "narrators": [
+            "Larry Mitchell"
+          ],
+          "year": "2024",
+          "language": "english",
+          "runtime_min": 254,
+          "cover_url": "https://m.media-amazon.com/images/I/518tgP2+KsL._SL500_.jpg"
+        },
+        {
+          "asin": "B002V01IY4",
+          "region": "us",
+          "title": "The Last Coyote: Harry Bosch Series, Book 4",
+          "subtitle": "",
+          "authors": [
+            "Michael Connelly"
+          ],
+          "narrators": [
+            "Dick Hill"
+          ],
+          "year": "2008",
+          "language": "english",
+          "runtime_min": 806,
+          "cover_url": "https://m.media-amazon.com/images/I/51g4EhOB++L._SL500_.jpg"
+        },
+        {
+          "asin": "B07N6LL76C",
+          "region": "us",
+          "title": "Colony Mars: The Complete Trilogy",
+          "subtitle": "",
+          "authors": [
+            "Gerald M. Kilby"
+          ],
+          "narrators": [
+            "Nicol Zanzarella"
+          ],
+          "year": "2019",
+          "language": "english",
+          "runtime_min": 1064,
+          "cover_url": "https://m.media-amazon.com/images/I/51DJvrmsE4L._SL500_.jpg"
+        },
+        {
+          "asin": "B01L2PE1XI",
+          "region": "us",
+          "title": "The Collapsing Empire",
+          "subtitle": "The Interdependency, Book 1",
+          "authors": [
+            "John Scalzi"
+          ],
+          "narrators": [
+            "Wil Wheaton"
+          ],
+          "year": "2017",
+          "language": "english",
+          "runtime_min": 564,
+          "cover_url": "https://m.media-amazon.com/images/I/51iaZv0S0EL._SL500_.jpg"
+        },
+        {
+          "asin": "1984890565",
+          "region": "us",
+          "title": "The Last Collection",
+          "subtitle": "A Novel of Elsa Schiaparelli and Coco Chanel",
+          "authors": [
+            "Jeanne Mackin"
+          ],
+          "narrators": [
+            "Sarah Mollo-Christensen"
+          ],
+          "year": "2019",
+          "language": "english",
+          "runtime_min": 718,
+          "cover_url": "https://m.media-amazon.com/images/I/51uQ3fgLkoL._SL500_.jpg"
+        },
+        {
+          "asin": "B09LZ73KN7",
+          "region": "us",
+          "title": "The Last Continent",
+          "subtitle": "(Discworld Novel 22)",
+          "authors": [
+            "Terry Pratchett"
+          ],
+          "narrators": [
+            "Colin Morgan",
+            "Peter Serafinowicz",
+            "Bill Nighy"
+          ],
+          "year": "2022",
+          "language": "english",
+          "runtime_min": 656,
+          "cover_url": "https://m.media-amazon.com/images/I/51Y5tzI8PpL._SL500_.jpg"
+        },
+        {
+          "asin": "B002VACJKG",
+          "region": "us",
+          "title": "The Lost Colony",
+          "subtitle": "Artemis Fowl, Book 5",
+          "authors": [
+            "Eoin Colfer"
+          ],
+          "narrators": [
+            "Nathaniel Parker"
+          ],
+          "year": "2006",
+          "language": "english",
+          "runtime_min": 503,
+          "cover_url": "https://m.media-amazon.com/images/I/51KrArqGM+L._SL500_.jpg"
+        },
+        {
+          "asin": "B09XBV4FF5",
+          "region": "us",
+          "title": "The Last Colony",
+          "subtitle": "A Tale of Exile, Justice and Britain’s Colonial Legacy",
+          "authors": [
+            "Philippe Sands",
+            "Martin Rowson"
+          ],
+          "narrators": [
+            "Adjoa Andoh",
+            "Philippe Sands"
+          ],
+          "year": "2022",
+          "language": "english",
+          "runtime_min": 345,
+          "cover_url": "https://m.media-amazon.com/images/I/518zJhgyehL._SL500_.jpg"
+        }
+      ],
+      "ranked": [
+        {
+          "asin": "B002VA9CAQ",
+          "score": 76,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "B0DLQ2VFHR",
+          "score": 76,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "B06XRHXZ5L",
+          "score": 75,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "B0GW9RV1TN",
+          "score": 70,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "1984890565",
+          "score": 66,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "B09XBV4FF5",
+          "score": 65,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "B002VACJKG",
+          "score": 64,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "B09LZ73KN7",
+          "score": 63,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "B01L2PE1XI",
+          "score": 55,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "B002V01IY4",
+          "score": 43,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "B07N6LL76C",
+          "score": 40,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "B00893WAG2",
+          "score": 17,
+          "runtime_match": "",
+          "runtime_delta_min": 0
+        }
+      ],
+      "auto_select": false
+    },
+    {
+      "name": "live: Last Colony from tags with runtime",
+      "signals": {
+        "title": "The Last Colony",
+        "author": "John Scalzi",
+        "runtime_min": 591,
+        "language": "english"
+      },
+      "results": [
+        {
+          "asin": "B002VA9CAQ",
+          "region": "us",
+          "title": "The Last Colony",
+          "subtitle": "",
+          "authors": [
+            "John Scalzi"
+          ],
+          "narrators": [
+            "William Dufris"
+          ],
+          "year": "2008",
+          "language": "english",
+          "runtime_min": 591,
+          "cover_url": "https://m.media-amazon.com/images/I/51tPK4B2wYL._SL500_.jpg"
+        },
+        {
+          "asin": "B06XRHXZ5L",
+          "region": "us",
+          "title": "The Last Colony",
+          "subtitle": "Military Science Fiction Adventure",
+          "authors": [
+            "John Scalzi"
+          ],
+          "narrators": [
+            "William Dufris"
+          ],
+          "year": "2017",
+          "language": "english",
+          "runtime_min": 591,
+          "cover_url": "https://m.media-amazon.com/images/I/615pSnQno0L._SL500_.jpg"
+        },
+        {
+          "asin": "B0GW9RV1TN",
+          "region": "us",
+          "title": "The Last Complete Series",
+          "subtitle": "Books 1-9",
+          "authors": [
+            "Michael John Grist",
+            "Mike Grist"
+          ],
+          "narrators": [
+            "Virtual Voice"
+          ],
+          "year": "2026",
+          "language": "english",
+          "runtime_min": 3345,
+          "cover_url": "https://m.media-amazon.com/images/I/51E7+xf+dVL._SL500_.jpg"
+        },
+        {
+          "asin": "B00893WAG2",
+          "region": "us",
+          "title": "Star Wars: The Thrawn Trilogy, Book 3: The Last Command",
+          "subtitle": "",
+          "authors": [
+            "Timothy Zahn"
+          ],
+          "narrators": [
+            "Marc Thompson"
+          ],
+          "year": "2012",
+          "language": "english",
+          "runtime_min": 947,
+          "cover_url": "https://m.media-amazon.com/images/I/51ELKfEF3fL._SL500_.jpg"
+        },
+        {
+          "asin": "B0DLQ2VFHR",
+          "region": "us",
+          "title": "The Last Colony Ship",
+          "subtitle": "",
+          "authors": [
+            "A K Mitchell"
+          ],
+          "narrators": [
+            "Larry Mitchell"
+          ],
+          "year": "2024",
+          "language": "english",
+          "runtime_min": 254,
+          "cover_url": "https://m.media-amazon.com/images/I/518tgP2+KsL._SL500_.jpg"
+        },
+        {
+          "asin": "B002V01IY4",
+          "region": "us",
+          "title": "The Last Coyote: Harry Bosch Series, Book 4",
+          "subtitle": "",
+          "authors": [
+            "Michael Connelly"
+          ],
+          "narrators": [
+            "Dick Hill"
+          ],
+          "year": "2008",
+          "language": "english",
+          "runtime_min": 806,
+          "cover_url": "https://m.media-amazon.com/images/I/51g4EhOB++L._SL500_.jpg"
+        },
+        {
+          "asin": "B07N6LL76C",
+          "region": "us",
+          "title": "Colony Mars: The Complete Trilogy",
+          "subtitle": "",
+          "authors": [
+            "Gerald M. Kilby"
+          ],
+          "narrators": [
+            "Nicol Zanzarella"
+          ],
+          "year": "2019",
+          "language": "english",
+          "runtime_min": 1064,
+          "cover_url": "https://m.media-amazon.com/images/I/51DJvrmsE4L._SL500_.jpg"
+        },
+        {
+          "asin": "B01L2PE1XI",
+          "region": "us",
+          "title": "The Collapsing Empire",
+          "subtitle": "The Interdependency, Book 1",
+          "authors": [
+            "John Scalzi"
+          ],
+          "narrators": [
+            "Wil Wheaton"
+          ],
+          "year": "2017",
+          "language": "english",
+          "runtime_min": 564,
+          "cover_url": "https://m.media-amazon.com/images/I/51iaZv0S0EL._SL500_.jpg"
+        },
+        {
+          "asin": "1984890565",
+          "region": "us",
+          "title": "The Last Collection",
+          "subtitle": "A Novel of Elsa Schiaparelli and Coco Chanel",
+          "authors": [
+            "Jeanne Mackin"
+          ],
+          "narrators": [
+            "Sarah Mollo-Christensen"
+          ],
+          "year": "2019",
+          "language": "english",
+          "runtime_min": 718,
+          "cover_url": "https://m.media-amazon.com/images/I/51uQ3fgLkoL._SL500_.jpg"
+        },
+        {
+          "asin": "B09LZ73KN7",
+          "region": "us",
+          "title": "The Last Continent",
+          "subtitle": "(Discworld Novel 22)",
+          "authors": [
+            "Terry Pratchett"
+          ],
+          "narrators": [
+            "Colin Morgan",
+            "Peter Serafinowicz",
+            "Bill Nighy"
+          ],
+          "year": "2022",
+          "language": "english",
+          "runtime_min": 656,
+          "cover_url": "https://m.media-amazon.com/images/I/51Y5tzI8PpL._SL500_.jpg"
+        },
+        {
+          "asin": "B002VACJKG",
+          "region": "us",
+          "title": "The Lost Colony",
+          "subtitle": "Artemis Fowl, Book 5",
+          "authors": [
+            "Eoin Colfer"
+          ],
+          "narrators": [
+            "Nathaniel Parker"
+          ],
+          "year": "2006",
+          "language": "english",
+          "runtime_min": 503,
+          "cover_url": "https://m.media-amazon.com/images/I/51KrArqGM+L._SL500_.jpg"
+        },
+        {
+          "asin": "B09XBV4FF5",
+          "region": "us",
+          "title": "The Last Colony",
+          "subtitle": "A Tale of Exile, Justice and Britain’s Colonial Legacy",
+          "authors": [
+            "Philippe Sands",
+            "Martin Rowson"
+          ],
+          "narrators": [
+            "Adjoa Andoh",
+            "Philippe Sands"
+          ],
+          "year": "2022",
+          "language": "english",
+          "runtime_min": 345,
+          "cover_url": "https://m.media-amazon.com/images/I/518zJhgyehL._SL500_.jpg"
+        }
+      ],
+      "ranked": [
+        {
+          "asin": "B002VA9CAQ",
+          "score": 125,
+          "runtime_match": "exact",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "B06XRHXZ5L",
+          "score": 124,
+          "runtime_match": "exact",
+          "runtime_delta_min": 0
+        },
+        {
+          "asin": "B01L2PE1XI",
+          "score": 70,
+          "runtime_match": "near",
+          "runtime_delta_min": -27
+        },
+        {
+          "asin": "B002VACJKG",
+          "score": 6,
+          "runtime_match": "off",
+          "runtime_delta_min": -88
+        },
+        {
+          "asin": "1984890565",
+          "score": -40,
+          "runtime_match": "off",
+          "runtime_delta_min": 127
+        },
+        {
+          "asin": "B0DLQ2VFHR",
+          "score": -46,
+          "runtime_match": "off",
+          "runtime_delta_min": -337
+        },
+        {
+          "asin": "B09XBV4FF5",
+          "score": -51,
+          "runtime_match": "off",
+          "runtime_delta_min": -246
+        },
+        {
+          "asin": "B0GW9RV1TN",
+          "score": -56,
+          "runtime_match": "off",
+          "runtime_delta_min": 2754
+        },
+        {
+          "asin": "B09LZ73KN7",
+          "score": -63,
+          "runtime_match": "off",
+          "runtime_delta_min": 65
+        },
+        {
+          "asin": "B07N6LL76C",
+          "score": -112,
+          "runtime_match": "off",
+          "runtime_delta_min": 473
+        },
+        {
+          "asin": "B00893WAG2",
+          "score": -119,
+          "runtime_match": "off",
+          "runtime_delta_min": 356
+        },
+        {
+          "asin": "B002V01IY4",
+          "score": -125,
+          "runtime_match": "off",
+          "runtime_delta_min": 215
+        }
+      ],
+      "auto_select": false
+    }
+  ],
+  "embedded": [
+    {
+      "name": "audioborker output via ffprobe",
+      "tags": {
+        "AUDIBLE_ASIN": "B09LYZPFLZ",
+        "PART": "1",
+        "SERIES": "Discworld",
+        "SUBTITLE": "Discworld, Book 1",
+        "album": "The Colour of Magic",
+        "album_artist": "Terry Pratchett",
+        "artist": "Terry Pratchett",
+        "comment": "Over 1 million Discworld audiobooks sold – discover…",
+        "composer": "Colin Morgan, Peter Serafinowicz, Bill Nighy",
+        "date": "2022-07-07",
+        "description": "Over 1 million Discworld audiobooks sold – discover…",
+        "genre": "Science Fiction & Fantasy",
+        "major_brand": "M4A ",
+        "media_type": "2",
+        "sort_album": "Discworld 1 - The Colour of Magic",
+        "synopsis": "Over 1 million Discworld audiobooks sold – discover the extraordinary universe",
+        "title": "The Colour of Magic"
+      },
+      "book": {
+        "asin": "B09LYZPFLZ",
+        "region": "",
+        "title": "The Colour of Magic",
+        "subtitle": "Discworld, Book 1",
+        "authors": [
+          "Terry Pratchett"
+        ],
+        "narrators": [
+          "Colin Morgan",
+          "Peter Serafinowicz",
+          "Bill Nighy"
+        ],
+        "series_name": "Discworld",
+        "series_position": "1",
+        "year": "2022",
+        "release_date": "2022-07-07",
+        "publisher": "",
+        "language": "",
+        "genres": [
+          "Science Fiction & Fantasy"
+        ],
+        "description": "",
+        "summary": "Over 1 million Discworld audiobooks sold – discover the extraordinary universe",
+        "runtime_min": 0,
+        "cover_url": ""
+      }
+    },
+    {
+      "name": "audioborker output via the bundle's atom reader",
+      "tags": {
+        "AUDIBLE_ASIN": "B09LYZPFLZ",
+        "PART": "1",
+        "SERIES": "Discworld",
+        "album_artist": "Terry Pratchett",
+        "artist": "Terry Pratchett",
+        "composer": "Colin Morgan, Peter Serafinowicz, Bill Nighy",
+        "date": "2022-07-07",
+        "movement": "1",
+        "movement_name": "Discworld",
+        "narrator": "Colin Morgan, Peter Serafinowicz, Bill Nighy",
+        "publisher": "Transworld Digital",
+        "title": "The Colour of Magic"
+      },
+      "book": {
+        "asin": "B09LYZPFLZ",
+        "region": "",
+        "title": "The Colour of Magic",
+        "subtitle": "",
+        "authors": [
+          "Terry Pratchett"
+        ],
+        "narrators": [
+          "Colin Morgan",
+          "Peter Serafinowicz",
+          "Bill Nighy"
+        ],
+        "series_name": "Discworld",
+        "series_position": "1",
+        "year": "2022",
+        "release_date": "2022-07-07",
+        "publisher": "Transworld Digital",
+        "language": "",
+        "genres": null,
+        "description": "",
+        "summary": "",
+        "runtime_min": 0,
+        "cover_url": ""
+      }
+    },
+    {
+      "name": "m4b-tool style",
+      "tags": {
+        "ASIN": "b0abcdefgh",
+        "album": "The Book",
+        "artist": "Ann Author; Bob Writer",
+        "composer": "Nat Narrator",
+        "date": "2019",
+        "series": "The Series",
+        "series-part": "2",
+        "title": "Chapter 1"
+      },
+      "book": {
+        "asin": "B0ABCDEFGH",
+        "region": "",
+        "title": "Chapter 1",
+        "subtitle": "",
+        "authors": [
+          "Ann Author",
+          "Bob Writer"
+        ],
+        "narrators": [
+          "Nat Narrator"
+        ],
+        "series_name": "The Series",
+        "series_position": "2",
+        "year": "2019",
+        "release_date": "",
+        "publisher": "",
+        "language": "",
+        "genres": null,
+        "description": "",
+        "summary": "",
+        "runtime_min": 0,
+        "cover_url": ""
+      }
+    },
+    {
+      "name": "namespaced freeform keys",
+      "tags": {
+        "----:com.apple.iTunes:SERIES": "Cosmere",
+        "----:com.apple.iTunes:Series-Part": "1.5",
+        "album": "Album Only",
+        "©nam": "ignored spelling"
+      },
+      "book": {
+        "asin": "",
+        "region": "",
+        "title": "Album Only",
+        "subtitle": "",
+        "authors": null,
+        "narrators": null,
+        "series_name": "Cosmere",
+        "series_position": "1.5",
+        "year": "",
+        "release_date": "",
+        "publisher": "",
+        "language": "",
+        "genres": null,
+        "description": "",
+        "summary": "",
+        "runtime_min": 0,
+        "cover_url": ""
+      }
+    },
+    {
+      "name": "asin fallback key",
+      "tags": {
+        "audible_asin": "bad",
+        "custom_asin": "B012345678",
+        "title": "T"
+      },
+      "book": {
+        "asin": "B012345678",
+        "region": "",
+        "title": "T",
+        "subtitle": "",
+        "authors": null,
+        "narrators": null,
+        "series_name": "",
+        "series_position": "",
+        "year": "",
+        "release_date": "",
+        "publisher": "",
+        "language": "",
+        "genres": null,
+        "description": "",
+        "summary": "",
+        "runtime_min": 0,
+        "cover_url": ""
+      }
+    },
+    {
+      "name": "asin wrong length",
+      "tags": {
+        "asin": "B0123",
+        "title": "T"
+      },
+      "book": {
+        "asin": "",
+        "region": "",
+        "title": "T",
+        "subtitle": "",
+        "authors": null,
+        "narrators": null,
+        "series_name": "",
+        "series_position": "",
+        "year": "",
+        "release_date": "",
+        "publisher": "",
+        "language": "",
+        "genres": null,
+        "description": "",
+        "summary": "",
+        "runtime_min": 0,
+        "cover_url": ""
+      }
+    },
+    {
+      "name": "timestamp date",
+      "tags": {
+        "artist": "A & B",
+        "date": "2021-03-04T00:00:00Z"
+      },
+      "book": {
+        "asin": "",
+        "region": "",
+        "title": "",
+        "subtitle": "",
+        "authors": [
+          "A",
+          "B"
+        ],
+        "narrators": null,
+        "series_name": "",
+        "series_position": "",
+        "year": "2021",
+        "release_date": "2021-03-04",
+        "publisher": "",
+        "language": "",
+        "genres": null,
+        "description": "",
+        "summary": "",
+        "runtime_min": 0,
+        "cover_url": ""
+      }
+    },
+    {
+      "name": "padded year",
+      "tags": {
+        "artist": "Doe, John & Jane",
+        "date": "  1999 "
+      },
+      "book": {
+        "asin": "",
+        "region": "",
+        "title": "",
+        "subtitle": "",
+        "authors": [
+          "Doe, John",
+          "Jane"
+        ],
+        "narrators": null,
+        "series_name": "",
+        "series_position": "",
+        "year": "1999",
+        "release_date": "",
+        "publisher": "",
+        "language": "",
+        "genres": null,
+        "description": "",
+        "summary": "",
+        "runtime_min": 0,
+        "cover_url": ""
+      }
+    },
+    {
+      "name": "text date",
+      "tags": {
+        "composer": " ; ",
+        "date": "March 2001"
+      },
+      "book": {
+        "asin": "",
+        "region": "",
+        "title": "",
+        "subtitle": "",
+        "authors": null,
+        "narrators": null,
+        "series_name": "",
+        "series_position": "",
+        "year": "",
+        "release_date": "",
+        "publisher": "",
+        "language": "",
+        "genres": null,
+        "description": "",
+        "summary": "",
+        "runtime_min": 0,
+        "cover_url": ""
+      }
+    },
+    {
+      "name": "short date",
+      "tags": {
+        "album_artist": "Solo Author",
+        "year": "20-01-01"
+      },
+      "book": {
+        "asin": "",
+        "region": "",
+        "title": "",
+        "subtitle": "",
+        "authors": [
+          "Solo Author"
+        ],
+        "narrators": null,
+        "series_name": "",
+        "series_position": "",
+        "year": "",
+        "release_date": "",
+        "publisher": "",
+        "language": "",
+        "genres": null,
+        "description": "",
+        "summary": "",
+        "runtime_min": 0,
+        "cover_url": ""
+      }
+    },
+    {
+      "name": "longest blurb by bytes",
+      "tags": {
+        "comment": "abcd",
+        "description": "abcde",
+        "synopsis": "ééé"
+      },
+      "book": {
+        "asin": "",
+        "region": "",
+        "title": "",
+        "subtitle": "",
+        "authors": null,
+        "narrators": null,
+        "series_name": "",
+        "series_position": "",
+        "year": "",
+        "release_date": "",
+        "publisher": "",
+        "language": "",
+        "genres": null,
+        "description": "",
+        "summary": "ééé",
+        "runtime_min": 0,
+        "cover_url": ""
+      }
+    },
+    {
+      "name": "show and episode as series",
+      "tags": {
+        "episode_id": "3",
+        "label": "Label Pub",
+        "show": "Show Name"
+      },
+      "book": {
+        "asin": "",
+        "region": "",
+        "title": "",
+        "subtitle": "",
+        "authors": null,
+        "narrators": null,
+        "series_name": "Show Name",
+        "series_position": "3",
+        "year": "",
+        "release_date": "",
+        "publisher": "Label Pub",
+        "language": "",
+        "genres": null,
+        "description": "",
+        "summary": "",
+        "runtime_min": 0,
+        "cover_url": ""
+      }
+    },
+    {
+      "name": "empty",
+      "tags": {},
+      "book": {
+        "asin": "",
+        "region": "",
+        "title": "",
+        "subtitle": "",
+        "authors": null,
+        "narrators": null,
+        "series_name": "",
+        "series_position": "",
+        "year": "",
+        "release_date": "",
+        "publisher": "",
+        "language": "",
+        "genres": null,
+        "description": "",
+        "summary": "",
+        "runtime_min": 0,
+        "cover_url": ""
+      }
+    }
+  ],
+  "html_to_text": [
+    {
+      "in": "",
+      "out": ""
+    },
+    {
+      "in": "plain",
+      "out": "plain"
+    },
+    {
+      "in": "<p>one</p><p>two</p>",
+      "out": "one\n\ntwo"
+    },
+    {
+      "in": "a<br>b",
+      "out": "a\n\nb"
+    },
+    {
+      "in": "<i>x</i> &amp; <b>y</b>",
+      "out": "x & y"
+    },
+    {
+      "in": "&quot;q&quot; &#39;s&#39;",
+      "out": "\"q\" 's'"
+    },
+    {
+      "in": "<p>trailing space </p>",
+      "out": "trailing space"
+    },
+    {
+      "in": "<ul><li>a</li><li>b</li></ul>",
+      "out": "a\n\nb"
+    },
+    {
+      "in": "a b",
+      "out": "a b"
+    },
+    {
+      "in": "<p>A</p>\r\n<p>B</p>",
+      "out": "A\n\nB"
+    },
+    {
+      "in": "x&nbsp;y",
+      "out": "x y"
+    },
+    {
+      "in": "&lt;b&gt;",
+      "out": "<b>"
+    },
+    {
+      "in": "line<br/>break<BR />two",
+      "out": "line\n\nbreak\n\ntwo"
+    },
+    {
+      "in": "<div>a</div><div>b</div>",
+      "out": "a\n\nb"
+    },
+    {
+      "in": "a\n\n\n\nb",
+      "out": "a\n\nb"
+    },
+    {
+      "in": "&hellip;&mdash;&#8217;&#x2019;",
+      "out": "…—’’"
+    },
+    {
+      "in": "  spaced \t\t out  ",
+      "out": "spaced out"
+    },
+    {
+      "in": "<p>Para one.</p> <p>Para two.</p>",
+      "out": "Para one.\n\nPara two."
+    }
+  ],
+  "merge": [
+    {
+      "name": "audnexus primary, audible fills gaps",
+      "books": {
+        "audible": {
+          "asin": "B1",
+          "region": "us",
+          "title": "Audible Title",
+          "subtitle": "Sub",
+          "authors": [
+            "A",
+            "B"
+          ],
+          "narrators": [
+            "N"
+          ],
+          "series_name": "S",
+          "series_position": "2",
+          "year": "2020",
+          "release_date": "2020-05-01",
+          "publisher": "Pub",
+          "language": "english",
+          "genres": [
+            "Sci-Fi",
+            "Fantasy"
+          ],
+          "description": "",
+          "summary": "Full blurb.",
+          "runtime_min": 0,
+          "cover_url": "https://img/1000.jpg"
+        },
+        "audnexus": {
+          "asin": "B1",
+          "region": "us",
+          "title": "Nexus Title",
+          "subtitle": "",
+          "authors": [
+            "A"
+          ],
+          "narrators": null,
+          "series_name": "",
+          "series_position": "",
+          "year": "",
+          "release_date": "",
+          "publisher": "",
+          "language": "",
+          "genres": [
+            "Fantasy"
+          ],
+          "description": "Teaser...",
+          "summary": "",
+          "runtime_min": 600,
+          "cover_url": ""
+        }
+      },
+      "overrides": null,
+      "out": {
+        "asin": "B1",
+        "region": "us",
+        "title": "Nexus Title",
+        "subtitle": "Sub",
+        "authors": [
+          "A"
+        ],
+        "narrators": [
+          "N"
+        ],
+        "series_name": "S",
+        "series_position": "2",
+        "year": "2020",
+        "release_date": "2020-05-01",
+        "publisher": "Pub",
+        "language": "english",
+        "genres": [
+          "Sci-Fi",
+          "Fantasy"
+        ],
+        "description": "",
+        "summary": "Full blurb.",
+        "runtime_min": 600,
+        "cover_url": "https://img/1000.jpg",
+        "sources": {
+          "authors": "audnexus",
+          "cover_url": "audible",
+          "description": "audible",
+          "genres": "audible",
+          "language": "audible",
+          "narrators": "audible",
+          "publisher": "audible",
+          "release": "audible",
+          "runtime_min": "audnexus",
+          "series": "audible",
+          "subtitle": "audible",
+          "title": "audnexus"
+        }
+      }
+    },
+    {
+      "name": "overrides",
+      "books": {
+        "audible": {
+          "asin": "B1",
+          "region": "us",
+          "title": "Audible Title",
+          "subtitle": "Sub",
+          "authors": [
+            "A",
+            "B"
+          ],
+          "narrators": [
+            "N"
+          ],
+          "series_name": "S",
+          "series_position": "2",
+          "year": "2020",
+          "release_date": "2020-05-01",
+          "publisher": "Pub",
+          "language": "english",
+          "genres": [
+            "Sci-Fi",
+            "Fantasy"
+          ],
+          "description": "",
+          "summary": "Full blurb.",
+          "runtime_min": 0,
+          "cover_url": "https://img/1000.jpg"
+        },
+        "audnexus": {
+          "asin": "B1",
+          "region": "us",
+          "title": "Nexus Title",
+          "subtitle": "",
+          "authors": [
+            "A"
+          ],
+          "narrators": null,
+          "series_name": "",
+          "series_position": "",
+          "year": "",
+          "release_date": "",
+          "publisher": "",
+          "language": "",
+          "genres": [
+            "Fantasy"
+          ],
+          "description": "Teaser...",
+          "summary": "",
+          "runtime_min": 600,
+          "cover_url": ""
+        }
+      },
+      "overrides": {
+        "authors": "nobody",
+        "genres": "audible",
+        "runtime_min": "audible",
+        "title": "audible"
+      },
+      "out": {
+        "asin": "B1",
+        "region": "us",
+        "title": "Audible Title",
+        "subtitle": "Sub",
+        "authors": [
+          "A"
+        ],
+        "narrators": [
+          "N"
+        ],
+        "series_name": "S",
+        "series_position": "2",
+        "year": "2020",
+        "release_date": "2020-05-01",
+        "publisher": "Pub",
+        "language": "english",
+        "genres": [
+          "Sci-Fi",
+          "Fantasy"
+        ],
+        "description": "",
+        "summary": "Full blurb.",
+        "runtime_min": 600,
+        "cover_url": "https://img/1000.jpg",
+        "sources": {
+          "authors": "audnexus",
+          "cover_url": "audible",
+          "description": "audible",
+          "genres": "audible",
+          "language": "audible",
+          "narrators": "audible",
+          "publisher": "audible",
+          "release": "audible",
+          "runtime_min": "audnexus",
+          "series": "audible",
+          "subtitle": "audible",
+          "title": "audible"
+        }
+      }
+    },
+    {
+      "name": "audible only",
+      "books": {
+        "audible": {
+          "asin": "B1",
+          "region": "us",
+          "title": "Audible Title",
+          "subtitle": "Sub",
+          "authors": [
+            "A",
+            "B"
+          ],
+          "narrators": [
+            "N"
+          ],
+          "series_name": "S",
+          "series_position": "2",
+          "year": "2020",
+          "release_date": "2020-05-01",
+          "publisher": "Pub",
+          "language": "english",
+          "genres": [
+            "Sci-Fi",
+            "Fantasy"
+          ],
+          "description": "",
+          "summary": "Full blurb.",
+          "runtime_min": 0,
+          "cover_url": "https://img/1000.jpg"
+        }
+      },
+      "overrides": null,
+      "out": {
+        "asin": "B1",
+        "region": "us",
+        "title": "Audible Title",
+        "subtitle": "Sub",
+        "authors": [
+          "A",
+          "B"
+        ],
+        "narrators": [
+          "N"
+        ],
+        "series_name": "S",
+        "series_position": "2",
+        "year": "2020",
+        "release_date": "2020-05-01",
+        "publisher": "Pub",
+        "language": "english",
+        "genres": [
+          "Sci-Fi",
+          "Fantasy"
+        ],
+        "description": "",
+        "summary": "Full blurb.",
+        "runtime_min": 0,
+        "cover_url": "https://img/1000.jpg",
+        "sources": {
+          "authors": "audible",
+          "cover_url": "audible",
+          "description": "audible",
+          "genres": "audible",
+          "language": "audible",
+          "narrators": "audible",
+          "publisher": "audible",
+          "release": "audible",
+          "series": "audible",
+          "subtitle": "audible",
+          "title": "audible"
+        }
+      }
+    },
+    {
+      "name": "audnexus only",
+      "books": {
+        "audnexus": {
+          "asin": "B1",
+          "region": "us",
+          "title": "Nexus Title",
+          "subtitle": "",
+          "authors": [
+            "A"
+          ],
+          "narrators": null,
+          "series_name": "",
+          "series_position": "",
+          "year": "",
+          "release_date": "",
+          "publisher": "",
+          "language": "",
+          "genres": [
+            "Fantasy"
+          ],
+          "description": "Teaser...",
+          "summary": "",
+          "runtime_min": 600,
+          "cover_url": ""
+        }
+      },
+      "overrides": null,
+      "out": {
+        "asin": "B1",
+        "region": "us",
+        "title": "Nexus Title",
+        "subtitle": "",
+        "authors": [
+          "A"
+        ],
+        "narrators": null,
+        "series_name": "",
+        "series_position": "",
+        "year": "",
+        "release_date": "",
+        "publisher": "",
+        "language": "",
+        "genres": [
+          "Fantasy"
+        ],
+        "description": "Teaser...",
+        "summary": "",
+        "runtime_min": 600,
+        "cover_url": "",
+        "sources": {
+          "authors": "audnexus",
+          "description": "audnexus",
+          "genres": "audnexus",
+          "runtime_min": "audnexus",
+          "title": "audnexus"
+        }
+      }
+    },
+    {
+      "name": "live B004K50434",
+      "books": {
+        "audible": {
+          "asin": "B004K50434",
+          "region": "us",
+          "title": "The Lies of Locke Lamora",
+          "subtitle": "The deviously twisty fantasy adventure you will not want to put down",
+          "authors": [
+            "Scott Lynch"
+          ],
+          "narrators": [
+            "Michael Page"
+          ],
+          "series_name": "Gentleman Bastard Sequence",
+          "series_position": "1",
+          "year": "2011",
+          "release_date": "2011-01-21",
+          "publisher": "Gollancz",
+          "language": "english",
+          "genres": [
+            "Relationships, Parenting & Personal Development",
+            "Science Fiction & Fantasy"
+          ],
+          "sub_genres": [
+            "Parenting & Families",
+            "Relationships",
+            "Fantasy",
+            "Epic",
+            "Humorous",
+            "Paranormal & Urban",
+            "Urban"
+          ],
+          "genre_paths": [
+            [
+              "Relationships, Parenting & Personal Development",
+              "Parenting & Families"
+            ],
+            [
+              "Relationships, Parenting & Personal Development",
+              "Relationships"
+            ],
+            [
+              "Science Fiction & Fantasy",
+              "Fantasy",
+              "Epic"
+            ],
+            [
+              "Science Fiction & Fantasy",
+              "Fantasy",
+              "Humorous"
+            ],
+            [
+              "Science Fiction & Fantasy",
+              "Fantasy",
+              "Paranormal & Urban",
+              "Urban"
+            ]
+          ],
+          "description": "'One of my top ten books ever. Maybe top five. If you haven't read it, you should' Patrick Rothfuss, New York Times bestselling author of The Name of the Wind 'Fresh, original and engrossing' George R.R. Martin, the phenomenon behind A Game of Thrones They say that the Thorn of Camorr can beat...",
+          "summary": "'One of my top ten books ever. Maybe top five. If you haven't read it, you should' Patrick Rothfuss, New York Times bestselling author of The Name of the Wind\n\n'Fresh, original and engrossing' George R.R. Martin, the phenomenon behind A Game of Thrones\n\nThey say that the Thorn of Camorr can beat anyone in a fight. They say he steals from the rich and gives to the poor. They say he's part man, part myth, and mostly street-corner rumor. And they are wrong on every count.\n\nOnly averagely tall, slender, and god-awful with a sword, Locke Lamora is the fabled Thorn, and the greatest weapons at his disposal are his wit and cunning. He steals from the rich - they're the only ones worth stealing from - but the poor can go steal for themselves. What Locke cons, wheedles and tricks into his possession is strictly for him and his band of fellow con-artists and thieves: the Gentleman Bastards.\n\nTogether their domain is the city of Camorr. Built of Elderglass by a race no-one remembers, it's a city of shifting revels, filthy canals, baroque palaces and crowded cemeteries. Home to Dons, merchants, soldiers, beggars, cripples, and feral children. And to Capa Barsavi, the criminal mastermind who runs the city.\n\nBut there are whispers of a challenge to the Capa's power. A challenge from a man no one has ever seen, a man no blade can touch. The Grey King is coming.\n\nA man would be well advised not to be caught between Capa Barsavi and The Grey King. Even such a master of the sword as the Thorn of Camorr. As for Locke Lamora ...\n\nReaders can't get enough of Locke Lamora:\n\n'Original, engrossing, emotional, and devastatingly impactful; this extremely well-written tale of avarice and brotherhood is a treasure of gold, and you will want your share of it' Novel Notions\n\n'A rewarding read, well written, and entertaining. I'd recommend any fantasy fan to give it a try' Mark Lawrence, Sunday Times bestselling author\n\n'It is witty, profane, violent, over the top, and frequently hilarious. I can't believe this is Scott Lynch's first novel, and I can't wait to read more. This is an incredibly fun adventure novel. Find yourself a copy and read it' Goodreads reviewer, ⭐ ⭐ ⭐ ⭐ ⭐\n\n'You guys, this story is unreal. It's so morally wrong that you don't even want it to be right. It's that luring, that gritty, that bold . . . its masterfully chaotic - so many subplots, so many characters, so much world-building. theres never a dull moment . . . its intricately woven - no movement, no scene, no word is insignificant. Everything is so interconnected on so many levels. I straight up got chills in some parts' Goodreads reviewer, ⭐ ⭐ ⭐ ⭐ ⭐\n\n'A love child of Ocean's Eleven and The Godfather. With blood, deaths, betrayals, money, and drowning in horse urine . . . and it's SO. GOOD' Goodreads reviewer, ⭐ ⭐ ⭐ ⭐ ⭐\n\n'It stole hours of sleep. It wrapped me in cozy myth. It gave me the blessing of feeling like a kid again, snuggled up with a book, wondering how the hell 10pm became 4am. Find. Buy. Consume' Pierce Brown, bestselling author of the Red Rising series\n\n'I mean seriously, I loved all those characters and their cunning and deceiving ways. XD Throughout the entire book I never knew what to expect and there were about a ton of \"Oh, sh*t!\" moments that were shortly followed by \"Jeez! NO!\" and \"What happened now?\" exclamations' Goodreads reviewer, ⭐ ⭐ ⭐ ⭐ ⭐",
+          "runtime_min": 1319,
+          "cover_url": "https://m.media-amazon.com/images/I/81fKyLj6Y2L._SL1000_.jpg"
+        },
+        "audnexus": {
+          "asin": "B004K50434",
+          "region": "us",
+          "title": "The Lies of Locke Lamora",
+          "subtitle": "The deviously twisty fantasy adventure you will not want to put down",
+          "authors": [
+            "Scott Lynch"
+          ],
+          "narrators": [
+            "Michael Page"
+          ],
+          "series_name": "Gentleman Bastard Sequence",
+          "series_position": "1",
+          "year": "2011",
+          "release_date": "2011-01-21",
+          "publisher": "Gollancz",
+          "language": "english",
+          "genres": [
+            "Relationships, Parenting & Personal Development",
+            "Science Fiction & Fantasy"
+          ],
+          "sub_genres": [
+            "Parenting & Families",
+            "Relationships",
+            "Fantasy",
+            "Epic",
+            "Humorous",
+            "Paranormal & Urban",
+            "Urban"
+          ],
+          "literature_type": "fiction",
+          "description": "'One of my top ten books ever. Maybe top five. If you haven't read it, you should' Patrick Rothfuss, New York Times bestselling author of The Name of the Wind 'Fresh, original and engrossing' George  Martin, the phenomenon behind A Game of Thrones They say that the Thorn of Camorr can beat...",
+          "summary": "'One of my top ten books ever. Maybe top five. If you haven't read it, you should' Patrick Rothfuss, New York Times bestselling author of The Name of the Wind\n\n'Fresh, original and engrossing' George R.R. Martin, the phenomenon behind A Game of Thrones\n\nThey say that the Thorn of Camorr can beat anyone in a fight. They say he steals from the rich and gives to the poor. They say he's part man, part myth, and mostly street-corner rumor. And they are wrong on every count.\n\nOnly averagely tall, slender, and god-awful with a sword, Locke Lamora is the fabled Thorn, and the greatest weapons at his disposal are his wit and cunning. He steals from the rich - they're the only ones worth stealing from - but the poor can go steal for themselves. What Locke cons, wheedles and tricks into his possession is strictly for him and his band of fellow con-artists and thieves: the Gentleman Bastards.\n\nTogether their domain is the city of Camorr. Built of Elderglass by a race no-one remembers, it's a city of shifting revels, filthy canals, baroque palaces and crowded cemeteries. Home to Dons, merchants, soldiers, beggars, cripples, and feral children. And to Capa Barsavi, the criminal mastermind who runs the city.\n\nBut there are whispers of a challenge to the Capa's power. A challenge from a man no one has ever seen, a man no blade can touch. The Grey King is coming.\n\nA man would be well advised not to be caught between Capa Barsavi and The Grey King. Even such a master of the sword as the Thorn of Camorr. As for Locke Lamora ...\n\nReaders can't get enough of Locke Lamora:\n\n'Original, engrossing, emotional, and devastatingly impactful; this extremely well-written tale of avarice and brotherhood is a treasure of gold, and you will want your share of it' Novel Notions\n\n'A rewarding read, well written, and entertaining. I'd recommend any fantasy fan to give it a try' Mark Lawrence, Sunday Times bestselling author\n\n'It is witty, profane, violent, over the top, and frequently hilarious. I can't believe this is Scott Lynch's first novel, and I can't wait to read more. This is an incredibly fun adventure novel. Find yourself a copy and read it' Goodreads reviewer, ⭐ ⭐ ⭐ ⭐ ⭐\n\n'You guys, this story is unreal. It's so morally wrong that you don't even want it to be right. It's that luring, that gritty, that bold . . . its masterfully chaotic - so many subplots, so many characters, so much world-building. theres never a dull moment . . . its intricately woven - no movement, no scene, no word is insignificant. Everything is so interconnected on so many levels. I straight up got chills in some parts' Goodreads reviewer, ⭐ ⭐ ⭐ ⭐ ⭐\n\n'A love child of Ocean's Eleven and The Godfather. With blood, deaths, betrayals, money, and drowning in horse urine . . . and it's SO. GOOD' Goodreads reviewer, ⭐ ⭐ ⭐ ⭐ ⭐\n\n'It stole hours of sleep. It wrapped me in cozy myth. It gave me the blessing of feeling like a kid again, snuggled up with a book, wondering how the hell 10pm became 4am. Find. Buy. Consume' Pierce Brown, bestselling author of the Red Rising series\n\n'I mean seriously, I loved all those characters and their cunning and deceiving ways. XD Throughout the entire book I never knew what to expect and there were about a ton of \"Oh, sh*t!\" moments that were shortly followed by \"Jeez! NO!\" and \"What happened now?\" exclamations' Goodreads reviewer, ⭐ ⭐ ⭐ ⭐ ⭐",
+          "runtime_min": 1319,
+          "cover_url": "https://m.media-amazon.com/images/I/81fKyLj6Y2L.jpg"
+        }
+      },
+      "overrides": null,
+      "out": {
+        "asin": "B004K50434",
+        "region": "us",
+        "title": "The Lies of Locke Lamora",
+        "subtitle": "The deviously twisty fantasy adventure you will not want to put down",
+        "authors": [
+          "Scott Lynch"
+        ],
+        "narrators": [
+          "Michael Page"
+        ],
+        "series_name": "Gentleman Bastard Sequence",
+        "series_position": "1",
+        "year": "2011",
+        "release_date": "2011-01-21",
+        "publisher": "Gollancz",
+        "language": "english",
+        "genres": [
+          "Science Fiction & Fantasy"
+        ],
+        "sub_genres": [
+          "Fantasy",
+          "Epic",
+          "Humorous",
+          "Paranormal & Urban",
+          "Urban"
+        ],
+        "genre_paths": [
+          [
+            "Relationships, Parenting & Personal Development",
+            "Parenting & Families"
+          ],
+          [
+            "Relationships, Parenting & Personal Development",
+            "Relationships"
+          ],
+          [
+            "Science Fiction & Fantasy",
+            "Fantasy",
+            "Epic"
+          ],
+          [
+            "Science Fiction & Fantasy",
+            "Fantasy",
+            "Humorous"
+          ],
+          [
+            "Science Fiction & Fantasy",
+            "Fantasy",
+            "Paranormal & Urban",
+            "Urban"
+          ]
+        ],
+        "literature_type": "fiction",
+        "description": "'One of my top ten books ever. Maybe top five. If you haven't read it, you should' Patrick Rothfuss, New York Times bestselling author of The Name of the Wind 'Fresh, original and engrossing' George  Martin, the phenomenon behind A Game of Thrones They say that the Thorn of Camorr can beat...",
+        "summary": "'One of my top ten books ever. Maybe top five. If you haven't read it, you should' Patrick Rothfuss, New York Times bestselling author of The Name of the Wind\n\n'Fresh, original and engrossing' George R.R. Martin, the phenomenon behind A Game of Thrones\n\nThey say that the Thorn of Camorr can beat anyone in a fight. They say he steals from the rich and gives to the poor. They say he's part man, part myth, and mostly street-corner rumor. And they are wrong on every count.\n\nOnly averagely tall, slender, and god-awful with a sword, Locke Lamora is the fabled Thorn, and the greatest weapons at his disposal are his wit and cunning. He steals from the rich - they're the only ones worth stealing from - but the poor can go steal for themselves. What Locke cons, wheedles and tricks into his possession is strictly for him and his band of fellow con-artists and thieves: the Gentleman Bastards.\n\nTogether their domain is the city of Camorr. Built of Elderglass by a race no-one remembers, it's a city of shifting revels, filthy canals, baroque palaces and crowded cemeteries. Home to Dons, merchants, soldiers, beggars, cripples, and feral children. And to Capa Barsavi, the criminal mastermind who runs the city.\n\nBut there are whispers of a challenge to the Capa's power. A challenge from a man no one has ever seen, a man no blade can touch. The Grey King is coming.\n\nA man would be well advised not to be caught between Capa Barsavi and The Grey King. Even such a master of the sword as the Thorn of Camorr. As for Locke Lamora ...\n\nReaders can't get enough of Locke Lamora:\n\n'Original, engrossing, emotional, and devastatingly impactful; this extremely well-written tale of avarice and brotherhood is a treasure of gold, and you will want your share of it' Novel Notions\n\n'A rewarding read, well written, and entertaining. I'd recommend any fantasy fan to give it a try' Mark Lawrence, Sunday Times bestselling author\n\n'It is witty, profane, violent, over the top, and frequently hilarious. I can't believe this is Scott Lynch's first novel, and I can't wait to read more. This is an incredibly fun adventure novel. Find yourself a copy and read it' Goodreads reviewer, ⭐ ⭐ ⭐ ⭐ ⭐\n\n'You guys, this story is unreal. It's so morally wrong that you don't even want it to be right. It's that luring, that gritty, that bold . . . its masterfully chaotic - so many subplots, so many characters, so much world-building. theres never a dull moment . . . its intricately woven - no movement, no scene, no word is insignificant. Everything is so interconnected on so many levels. I straight up got chills in some parts' Goodreads reviewer, ⭐ ⭐ ⭐ ⭐ ⭐\n\n'A love child of Ocean's Eleven and The Godfather. With blood, deaths, betrayals, money, and drowning in horse urine . . . and it's SO. GOOD' Goodreads reviewer, ⭐ ⭐ ⭐ ⭐ ⭐\n\n'It stole hours of sleep. It wrapped me in cozy myth. It gave me the blessing of feeling like a kid again, snuggled up with a book, wondering how the hell 10pm became 4am. Find. Buy. Consume' Pierce Brown, bestselling author of the Red Rising series\n\n'I mean seriously, I loved all those characters and their cunning and deceiving ways. XD Throughout the entire book I never knew what to expect and there were about a ton of \"Oh, sh*t!\" moments that were shortly followed by \"Jeez! NO!\" and \"What happened now?\" exclamations' Goodreads reviewer, ⭐ ⭐ ⭐ ⭐ ⭐",
+        "runtime_min": 1319,
+        "cover_url": "https://m.media-amazon.com/images/I/81fKyLj6Y2L.jpg",
+        "sources": {
+          "authors": "audnexus",
+          "cover_url": "audnexus",
+          "description": "audnexus",
+          "genres": "audible",
+          "language": "audnexus",
+          "narrators": "audnexus",
+          "publisher": "audnexus",
+          "release": "audnexus",
+          "runtime_min": "audnexus",
+          "series": "audnexus",
+          "subtitle": "audnexus",
+          "title": "audnexus"
+        }
+      }
+    },
+    {
+      "name": "live B09LYZPFLZ",
+      "books": {
+        "audible": {
+          "asin": "B09LYZPFLZ",
+          "region": "us",
+          "title": "The Colour of Magic",
+          "subtitle": "Discworld, Book 1",
+          "authors": [
+            "Terry Pratchett"
+          ],
+          "narrators": [
+            "Colin Morgan",
+            "Peter Serafinowicz",
+            "Bill Nighy"
+          ],
+          "series_name": "Discworld: Rincewind",
+          "series_position": "1",
+          "year": "2022",
+          "release_date": "2022-07-07",
+          "publisher": "Transworld Digital",
+          "language": "english",
+          "genres": [
+            "Science Fiction & Fantasy",
+            "Comedy & Humor"
+          ],
+          "sub_genres": [
+            "Fantasy",
+            "Action & Adventure",
+            "Epic",
+            "Humorous",
+            "Literature & Fiction",
+            "Satire"
+          ],
+          "genre_paths": [
+            [
+              "Science Fiction & Fantasy",
+              "Fantasy",
+              "Action & Adventure"
+            ],
+            [
+              "Science Fiction & Fantasy",
+              "Fantasy",
+              "Epic"
+            ],
+            [
+              "Science Fiction & Fantasy",
+              "Fantasy",
+              "Humorous"
+            ],
+            [
+              "Comedy & Humor",
+              "Literature & Fiction",
+              "Satire"
+            ]
+          ],
+          "description": "Over 1 million Discworld audiobooks sold – discover the extraordinary universe of Terry Pratchett’s Discworld like never before The audiobook of The Colour of Magic is read by Colin Morgan (Merlin; Testament of Youth; Belfast). BAFTA and Golden Globe award-winning actor Bill Nighy (Love...",
+          "summary": "Over 1 million Discworld audiobooks sold – discover the extraordinary universe of Terry Pratchett’s Discworld like never before\n\nThe audiobook of The Colour of Magic is read by Colin Morgan (Merlin; Testament of Youth; Belfast). BAFTA and Golden Globe award-winning actor Bill Nighy (Love Actually; Pirates of the Caribbean; Harry Potter and the Deathly Hallows) reads the footnotes, and Peter Serafinowicz (Star Wars: Episode I - The Phantom Menace; Shaun of the Dead) stars as the voice of Death. Featuring a new theme tune composed by James Hannigan.\n\n'It was octarine, the colour of magic. It was alive and glowing and vibrant and it was the undisputed pigment of the imagination . . .'\n\nSomewhere between thought and reality exists the Discworld, a magical world not totally unlike our own. Except for the fact that it travels through space on the shoulders of four giant elephants who in turn stand on the shell of an astronomically huge star turtle, of course.\n\nRincewind is the world's worst wizard who has just been handed a very important job: to look after the world's first tourist, upon whose survival rests the peace and prosperity of the land. Unfortunately, their journey across the Disc includes facing robbers, monsters, mercenaries, and Death himself.\n\nAnd the whole thing's just a game of the gods that might send them over the edge . . .\n\nYou can listen to the Discworld novels in any order, but The Colour of Magic is the first book in the Wizards series.\n\nThe Colour of Magic is the first book in the Discworld series and was published in 1983. Some elements of the Discworld universe may reflect this.\n\n'If you've never read a Discworld novel, what's the matter with you?' Guardian\n\n'Pratchett uses his other world to hold up a distorting mirror to our own' The Times\n\n© Terry Pratchett 1983 (P) Penguin Audio 2022",
+          "runtime_min": 478,
+          "cover_url": "https://m.media-amazon.com/images/I/91F-2mp2T1L._SL1000_.jpg"
+        },
+        "audnexus": {
+          "asin": "B09LYZPFLZ",
+          "region": "us",
+          "title": "The Colour of Magic",
+          "subtitle": "Discworld, Book 1",
+          "authors": [
+            "Terry Pratchett"
+          ],
+          "narrators": [
+            "Colin Morgan",
+            "Peter Serafinowicz",
+            "Bill Nighy"
+          ],
+          "series_name": "Discworld",
+          "series_position": "1",
+          "year": "2022",
+          "release_date": "2022-07-07",
+          "publisher": "Transworld Digital",
+          "language": "english",
+          "genres": [
+            "Science Fiction & Fantasy",
+            "Comedy & Humor"
+          ],
+          "sub_genres": [
+            "Fantasy",
+            "Action & Adventure",
+            "Epic",
+            "Humorous",
+            "Literature & Fiction",
+            "Satire"
+          ],
+          "literature_type": "fiction",
+          "description": "Over 1 million Discworld audiobooks sold – discover the extraordinary universe of Terry Pratchett’s Discworld like never before The audiobook of The Colour of Magic is read by Colin Morgan (Merlin; Testament of Youth; Belfast). BAFTA and Golden Globe award-winning actor Bill Nighy (Love...",
+          "summary": "Over 1 million Discworld audiobooks sold – discover the extraordinary universe of Terry Pratchett’s Discworld like never before\n\nThe audiobook of The Colour of Magic is read by Colin Morgan (Merlin; Testament of Youth; Belfast). BAFTA and Golden Globe award-winning actor Bill Nighy (Love Actually; Pirates of the Caribbean; Harry Potter and the Deathly Hallows) reads the footnotes, and Peter Serafinowicz (Star Wars: Episode I - The Phantom Menace; Shaun of the Dead) stars as the voice of Death. Featuring a new theme tune composed by James Hannigan.\n\n'It was octarine, the colour of magic. It was alive and glowing and vibrant and it was the undisputed pigment of the imagination . . .'\n\nSomewhere between thought and reality exists the Discworld, a magical world not totally unlike our own. Except for the fact that it travels through space on the shoulders of four giant elephants who in turn stand on the shell of an astronomically huge star turtle, of course.\n\nRincewind is the world's worst wizard who has just been handed a very important job: to look after the world's first tourist, upon whose survival rests the peace and prosperity of the land. Unfortunately, their journey across the Disc includes facing robbers, monsters, mercenaries, and Death himself.\n\nAnd the whole thing's just a game of the gods that might send them over the edge . . .\n\nYou can listen to the Discworld novels in any order, but The Colour of Magic is the first book in the Wizards series.\n\nThe Colour of Magic is the first book in the Discworld series and was published in 1983. Some elements of the Discworld universe may reflect this.\n\n'If you've never read a Discworld novel, what's the matter with you?' Guardian\n\n'Pratchett uses his other world to hold up a distorting mirror to our own' The Times\n\n© Terry Pratchett 1983 (P) Penguin Audio 2022",
+          "runtime_min": 478,
+          "cover_url": "https://m.media-amazon.com/images/I/91F-2mp2T1L.jpg"
+        }
+      },
+      "overrides": null,
+      "out": {
+        "asin": "B09LYZPFLZ",
+        "region": "us",
+        "title": "The Colour of Magic",
+        "subtitle": "Discworld, Book 1",
+        "authors": [
+          "Terry Pratchett"
+        ],
+        "narrators": [
+          "Colin Morgan",
+          "Peter Serafinowicz",
+          "Bill Nighy"
+        ],
+        "series_name": "Discworld",
+        "series_position": "1",
+        "year": "2022",
+        "release_date": "2022-07-07",
+        "publisher": "Transworld Digital",
+        "language": "english",
+        "genres": [
+          "Science Fiction & Fantasy",
+          "Comedy & Humor"
+        ],
+        "sub_genres": [
+          "Fantasy",
+          "Action & Adventure",
+          "Epic",
+          "Humorous",
+          "Literature & Fiction",
+          "Satire"
+        ],
+        "genre_paths": [
+          [
+            "Science Fiction & Fantasy",
+            "Fantasy",
+            "Action & Adventure"
+          ],
+          [
+            "Science Fiction & Fantasy",
+            "Fantasy",
+            "Epic"
+          ],
+          [
+            "Science Fiction & Fantasy",
+            "Fantasy",
+            "Humorous"
+          ],
+          [
+            "Comedy & Humor",
+            "Literature & Fiction",
+            "Satire"
+          ]
+        ],
+        "literature_type": "fiction",
+        "description": "Over 1 million Discworld audiobooks sold – discover the extraordinary universe of Terry Pratchett’s Discworld like never before The audiobook of The Colour of Magic is read by Colin Morgan (Merlin; Testament of Youth; Belfast). BAFTA and Golden Globe award-winning actor Bill Nighy (Love...",
+        "summary": "Over 1 million Discworld audiobooks sold – discover the extraordinary universe of Terry Pratchett’s Discworld like never before\n\nThe audiobook of The Colour of Magic is read by Colin Morgan (Merlin; Testament of Youth; Belfast). BAFTA and Golden Globe award-winning actor Bill Nighy (Love Actually; Pirates of the Caribbean; Harry Potter and the Deathly Hallows) reads the footnotes, and Peter Serafinowicz (Star Wars: Episode I - The Phantom Menace; Shaun of the Dead) stars as the voice of Death. Featuring a new theme tune composed by James Hannigan.\n\n'It was octarine, the colour of magic. It was alive and glowing and vibrant and it was the undisputed pigment of the imagination . . .'\n\nSomewhere between thought and reality exists the Discworld, a magical world not totally unlike our own. Except for the fact that it travels through space on the shoulders of four giant elephants who in turn stand on the shell of an astronomically huge star turtle, of course.\n\nRincewind is the world's worst wizard who has just been handed a very important job: to look after the world's first tourist, upon whose survival rests the peace and prosperity of the land. Unfortunately, their journey across the Disc includes facing robbers, monsters, mercenaries, and Death himself.\n\nAnd the whole thing's just a game of the gods that might send them over the edge . . .\n\nYou can listen to the Discworld novels in any order, but The Colour of Magic is the first book in the Wizards series.\n\nThe Colour of Magic is the first book in the Discworld series and was published in 1983. Some elements of the Discworld universe may reflect this.\n\n'If you've never read a Discworld novel, what's the matter with you?' Guardian\n\n'Pratchett uses his other world to hold up a distorting mirror to our own' The Times\n\n© Terry Pratchett 1983 (P) Penguin Audio 2022",
+        "runtime_min": 478,
+        "cover_url": "https://m.media-amazon.com/images/I/91F-2mp2T1L.jpg",
+        "sources": {
+          "authors": "audnexus",
+          "cover_url": "audnexus",
+          "description": "audnexus",
+          "genres": "audible",
+          "language": "audnexus",
+          "narrators": "audnexus",
+          "publisher": "audnexus",
+          "release": "audnexus",
+          "runtime_min": "audnexus",
+          "series": "audnexus",
+          "subtitle": "audnexus",
+          "title": "audnexus"
+        }
+      }
+    }
+  ],
+  "clean_genres": [
+    {
+      "name": "labelled fiction",
+      "book": {
+        "asin": "",
+        "region": "",
+        "title": "",
+        "subtitle": "",
+        "authors": null,
+        "narrators": null,
+        "series_name": "",
+        "series_position": "",
+        "year": "",
+        "release_date": "",
+        "publisher": "",
+        "language": "",
+        "genres": null,
+        "genre_paths": [
+          [
+            "Relationships, Parenting & Personal Development",
+            "Parenting & Families"
+          ],
+          [
+            "Relationships, Parenting & Personal Development",
+            "Relationships"
+          ],
+          [
+            "Science Fiction & Fantasy",
+            "Fantasy",
+            "Epic"
+          ],
+          [
+            "Science Fiction & Fantasy",
+            "Fantasy",
+            "Humorous"
+          ],
+          [
+            "Science Fiction & Fantasy",
+            "Fantasy",
+            "Paranormal & Urban",
+            "Urban"
+          ]
+        ],
+        "literature_type": "fiction",
+        "description": "",
+        "summary": "",
+        "runtime_min": 0,
+        "cover_url": ""
+      },
+      "kind": "fiction",
+      "genres": [
+        "Science Fiction & Fantasy"
+      ],
+      "sub_genres": [
+        "Fantasy",
+        "Epic",
+        "Humorous",
+        "Paranormal & Urban",
+        "Urban"
+      ]
+    },
+    {
+      "name": "label spelled oddly",
+      "book": {
+        "asin": "",
+        "region": "",
+        "title": "",
+        "subtitle": "",
+        "authors": null,
+        "narrators": null,
+        "series_name": "",
+        "series_position": "",
+        "year": "",
+        "release_date": "",
+        "publisher": "",
+        "language": "",
+        "genres": null,
+        "genre_paths": [
+          [
+            "Relationships, Parenting & Personal Development",
+            "Parenting & Families"
+          ],
+          [
+            "Relationships, Parenting & Personal Development",
+            "Relationships"
+          ],
+          [
+            "Science Fiction & Fantasy",
+            "Fantasy",
+            "Epic"
+          ],
+          [
+            "Science Fiction & Fantasy",
+            "Fantasy",
+            "Humorous"
+          ],
+          [
+            "Science Fiction & Fantasy",
+            "Fantasy",
+            "Paranormal & Urban",
+            "Urban"
+          ]
+        ],
+        "literature_type": " Fiction ",
+        "description": "",
+        "summary": "",
+        "runtime_min": 0,
+        "cover_url": ""
+      },
+      "kind": "fiction",
+      "genres": [
+        "Science Fiction & Fantasy"
+      ],
+      "sub_genres": [
+        "Fantasy",
+        "Epic",
+        "Humorous",
+        "Paranormal & Urban",
+        "Urban"
+      ]
+    },
+    {
+      "name": "unknown label falls back to the majority",
+      "book": {
+        "asin": "",
+        "region": "",
+        "title": "",
+        "subtitle": "",
+        "authors": null,
+        "narrators": null,
+        "series_name": "",
+        "series_position": "",
+        "year": "",
+        "release_date": "",
+        "publisher": "",
+        "language": "",
+        "genres": null,
+        "genre_paths": [
+          [
+            "Relationships, Parenting & Personal Development",
+            "Parenting & Families"
+          ],
+          [
+            "Relationships, Parenting & Personal Development",
+            "Relationships"
+          ],
+          [
+            "Science Fiction & Fantasy",
+            "Fantasy",
+            "Epic"
+          ],
+          [
+            "Science Fiction & Fantasy",
+            "Fantasy",
+            "Humorous"
+          ],
+          [
+            "Science Fiction & Fantasy",
+            "Fantasy",
+            "Paranormal & Urban",
+            "Urban"
+          ]
+        ],
+        "literature_type": "poetry",
+        "description": "",
+        "summary": "",
+        "runtime_min": 0,
+        "cover_url": ""
+      },
+      "kind": "fiction",
+      "genres": [
+        "Science Fiction & Fantasy"
+      ],
+      "sub_genres": [
+        "Fantasy",
+        "Epic",
+        "Humorous",
+        "Paranormal & Urban",
+        "Urban"
+      ]
+    },
+    {
+      "name": "majority",
+      "book": {
+        "asin": "",
+        "region": "",
+        "title": "",
+        "subtitle": "",
+        "authors": null,
+        "narrators": null,
+        "series_name": "",
+        "series_position": "",
+        "year": "",
+        "release_date": "",
+        "publisher": "",
+        "language": "",
+        "genres": null,
+        "genre_paths": [
+          [
+            "Relationships, Parenting & Personal Development",
+            "Parenting & Families"
+          ],
+          [
+            "Relationships, Parenting & Personal Development",
+            "Relationships"
+          ],
+          [
+            "Science Fiction & Fantasy",
+            "Fantasy",
+            "Epic"
+          ],
+          [
+            "Science Fiction & Fantasy",
+            "Fantasy",
+            "Humorous"
+          ],
+          [
+            "Science Fiction & Fantasy",
+            "Fantasy",
+            "Paranormal & Urban",
+            "Urban"
+          ]
+        ],
+        "description": "",
+        "summary": "",
+        "runtime_min": 0,
+        "cover_url": ""
+      },
+      "kind": "fiction",
+      "genres": [
+        "Science Fiction & Fantasy"
+      ],
+      "sub_genres": [
+        "Fantasy",
+        "Epic",
+        "Humorous",
+        "Paranormal & Urban",
+        "Urban"
+      ]
+    },
+    {
+      "name": "tie",
+      "book": {
+        "asin": "",
+        "region": "",
+        "title": "",
+        "subtitle": "",
+        "authors": null,
+        "narrators": null,
+        "series_name": "",
+        "series_position": "",
+        "year": "",
+        "release_date": "",
+        "publisher": "",
+        "language": "",
+        "genres": null,
+        "genre_paths": [
+          [
+            "History",
+            "Europe"
+          ],
+          [
+            "Literature & Fiction",
+            "Historical Fiction"
+          ]
+        ],
+        "description": "",
+        "summary": "",
+        "runtime_min": 0,
+        "cover_url": ""
+      },
+      "kind": "",
+      "genres": [
+        "History",
+        "Literature & Fiction"
+      ],
+      "sub_genres": [
+        "Europe",
+        "Historical Fiction"
+      ]
+    },
+    {
+      "name": "non-fiction",
+      "book": {
+        "asin": "",
+        "region": "",
+        "title": "",
+        "subtitle": "",
+        "authors": null,
+        "narrators": null,
+        "series_name": "",
+        "series_position": "",
+        "year": "",
+        "release_date": "",
+        "publisher": "",
+        "language": "",
+        "genres": null,
+        "genre_paths": [
+          [
+            "History",
+            "Europe"
+          ],
+          [
+            "Literature & Fiction",
+            "Classics"
+          ],
+          [
+            "History",
+            "Europe",
+            "Ancient"
+          ]
+        ],
+        "literature_type": "nonfiction",
+        "description": "",
+        "summary": "",
+        "runtime_min": 0,
+        "cover_url": ""
+      },
+      "kind": "nonfiction",
+      "genres": [
+        "History"
+      ],
+      "sub_genres": [
+        "Europe",
+        "Ancient"
+      ]
+    },
+    {
+      "name": "support order",
+      "book": {
+        "asin": "",
+        "region": "",
+        "title": "",
+        "subtitle": "",
+        "authors": null,
+        "narrators": null,
+        "series_name": "",
+        "series_position": "",
+        "year": "",
+        "release_date": "",
+        "publisher": "",
+        "language": "",
+        "genres": null,
+        "genre_paths": [
+          [
+            "Comedy & Humor",
+            "Literature & Fiction"
+          ],
+          [
+            "Science Fiction & Fantasy",
+            "Fantasy",
+            "Epic"
+          ],
+          [
+            "Science Fiction & Fantasy",
+            "Humorous"
+          ]
+        ],
+        "literature_type": "fiction",
+        "description": "",
+        "summary": "",
+        "runtime_min": 0,
+        "cover_url": ""
+      },
+      "kind": "fiction",
+      "genres": [
+        "Science Fiction & Fantasy",
+        "Comedy & Humor"
+      ],
+      "sub_genres": [
+        "Fantasy",
+        "Epic",
+        "Humorous",
+        "Literature & Fiction"
+      ]
+    },
+    {
+      "name": "label contradicts everything",
+      "book": {
+        "asin": "",
+        "region": "",
+        "title": "",
+        "subtitle": "",
+        "authors": null,
+        "narrators": null,
+        "series_name": "",
+        "series_position": "",
+        "year": "",
+        "release_date": "",
+        "publisher": "",
+        "language": "",
+        "genres": null,
+        "genre_paths": [
+          [
+            "Science Fiction & Fantasy",
+            "Fantasy"
+          ]
+        ],
+        "literature_type": "nonfiction",
+        "description": "",
+        "summary": "",
+        "runtime_min": 0,
+        "cover_url": ""
+      },
+      "kind": "nonfiction",
+      "genres": [
+        "Science Fiction & Fantasy"
+      ],
+      "sub_genres": [
+        "Fantasy"
+      ]
+    },
+    {
+      "name": "other storefront names",
+      "book": {
+        "asin": "",
+        "region": "",
+        "title": "",
+        "subtitle": "",
+        "authors": null,
+        "narrators": null,
+        "series_name": "",
+        "series_position": "",
+        "year": "",
+        "release_date": "",
+        "publisher": "",
+        "language": "",
+        "genres": null,
+        "genre_paths": [
+          [
+            "Science-Fiction & Fantasy",
+            "Fantasy"
+          ],
+          [
+            "Ratgeber",
+            "Familie"
+          ]
+        ],
+        "literature_type": "fiction",
+        "description": "",
+        "summary": "",
+        "runtime_min": 0,
+        "cover_url": ""
+      },
+      "kind": "fiction",
+      "genres": [
+        "Science-Fiction & Fantasy",
+        "Ratgeber"
+      ],
+      "sub_genres": [
+        "Fantasy",
+        "Familie"
+      ]
+    },
+    {
+      "name": "empty rungs and paths",
+      "book": {
+        "asin": "",
+        "region": "",
+        "title": "",
+        "subtitle": "",
+        "authors": null,
+        "narrators": null,
+        "series_name": "",
+        "series_position": "",
+        "year": "",
+        "release_date": "",
+        "publisher": "",
+        "language": "",
+        "genres": null,
+        "genre_paths": [
+          [],
+          [
+            "",
+            "x"
+          ],
+          [
+            "Romance",
+            "",
+            "Historical"
+          ]
+        ],
+        "literature_type": "fiction",
+        "description": "",
+        "summary": "",
+        "runtime_min": 0,
+        "cover_url": ""
+      },
+      "kind": "fiction",
+      "genres": [
+        "Romance"
+      ],
+      "sub_genres": [
+        "Historical"
+      ]
+    },
+    {
+      "name": "flat with a drop",
+      "book": {
+        "asin": "",
+        "region": "",
+        "title": "",
+        "subtitle": "",
+        "authors": null,
+        "narrators": null,
+        "series_name": "",
+        "series_position": "",
+        "year": "",
+        "release_date": "",
+        "publisher": "",
+        "language": "",
+        "genres": [
+          "Relationships, Parenting & Personal Development",
+          "Science Fiction & Fantasy"
+        ],
+        "sub_genres": [
+          "Parenting & Families",
+          "Fantasy"
+        ],
+        "literature_type": "fiction",
+        "description": "",
+        "summary": "",
+        "runtime_min": 0,
+        "cover_url": ""
+      },
+      "kind": "fiction",
+      "genres": [
+        "Science Fiction & Fantasy"
+      ],
+      "sub_genres": null
+    },
+    {
+      "name": "flat, nothing to drop",
+      "book": {
+        "asin": "",
+        "region": "",
+        "title": "",
+        "subtitle": "",
+        "authors": null,
+        "narrators": null,
+        "series_name": "",
+        "series_position": "",
+        "year": "",
+        "release_date": "",
+        "publisher": "",
+        "language": "",
+        "genres": [
+          "Science Fiction & Fantasy"
+        ],
+        "sub_genres": [
+          "Fantasy",
+          "Epic"
+        ],
+        "literature_type": "fiction",
+        "description": "",
+        "summary": "",
+        "runtime_min": 0,
+        "cover_url": ""
+      },
+      "kind": "fiction",
+      "genres": [
+        "Science Fiction & Fantasy"
+      ],
+      "sub_genres": [
+        "Fantasy",
+        "Epic"
+      ]
+    },
+    {
+      "name": "flat, unlabelled",
+      "book": {
+        "asin": "",
+        "region": "",
+        "title": "",
+        "subtitle": "",
+        "authors": null,
+        "narrators": null,
+        "series_name": "",
+        "series_position": "",
+        "year": "",
+        "release_date": "",
+        "publisher": "",
+        "language": "",
+        "genres": [
+          "Relationships, Parenting & Personal Development",
+          "Science Fiction & Fantasy"
+        ],
+        "sub_genres": [
+          "Fantasy"
+        ],
+        "description": "",
+        "summary": "",
+        "runtime_min": 0,
+        "cover_url": ""
+      },
+      "kind": "",
+      "genres": [
+        "Relationships, Parenting & Personal Development",
+        "Science Fiction & Fantasy"
+      ],
+      "sub_genres": [
+        "Fantasy"
+      ]
+    },
+    {
+      "name": "flat, everything contradicts",
+      "book": {
+        "asin": "",
+        "region": "",
+        "title": "",
+        "subtitle": "",
+        "authors": null,
+        "narrators": null,
+        "series_name": "",
+        "series_position": "",
+        "year": "",
+        "release_date": "",
+        "publisher": "",
+        "language": "",
+        "genres": [
+          "History"
+        ],
+        "sub_genres": [
+          "Europe"
+        ],
+        "literature_type": "fiction",
+        "description": "",
+        "summary": "",
+        "runtime_min": 0,
+        "cover_url": ""
+      },
+      "kind": "fiction",
+      "genres": [
+        "History"
+      ],
+      "sub_genres": [
+        "Europe"
+      ]
+    },
+    {
+      "name": "nothing",
+      "book": {
+        "asin": "",
+        "region": "",
+        "title": "",
+        "subtitle": "",
+        "authors": null,
+        "narrators": null,
+        "series_name": "",
+        "series_position": "",
+        "year": "",
+        "release_date": "",
+        "publisher": "",
+        "language": "",
+        "genres": null,
+        "literature_type": "fiction",
+        "description": "",
+        "summary": "",
+        "runtime_min": 0,
+        "cover_url": ""
+      },
+      "kind": "fiction",
+      "genres": null,
+      "sub_genres": null
+    },
+    {
+      "name": "live audnexus_book B004K50434",
+      "book": {
+        "asin": "B004K50434",
+        "region": "us",
+        "title": "The Lies of Locke Lamora",
+        "subtitle": "The deviously twisty fantasy adventure you will not want to put down",
+        "authors": [
+          "Scott Lynch"
+        ],
+        "narrators": [
+          "Michael Page"
+        ],
+        "series_name": "Gentleman Bastard Sequence",
+        "series_position": "1",
+        "year": "2011",
+        "release_date": "2011-01-21",
+        "publisher": "Gollancz",
+        "language": "english",
+        "genres": [
+          "Relationships, Parenting & Personal Development",
+          "Science Fiction & Fantasy"
+        ],
+        "sub_genres": [
+          "Parenting & Families",
+          "Relationships",
+          "Fantasy",
+          "Epic",
+          "Humorous",
+          "Paranormal & Urban",
+          "Urban"
+        ],
+        "literature_type": "fiction",
+        "description": "'One of my top ten books ever. Maybe top five. If you haven't read it, you should' Patrick Rothfuss, New York Times bestselling author of The Name of the Wind 'Fresh, original and engrossing' George  Martin, the phenomenon behind A Game of Thrones They say that the Thorn of Camorr can beat...",
+        "summary": "'One of my top ten books ever. Maybe top five. If you haven't read it, you should' Patrick Rothfuss, New York Times bestselling author of The Name of the Wind\n\n'Fresh, original and engrossing' George R.R. Martin, the phenomenon behind A Game of Thrones\n\nThey say that the Thorn of Camorr can beat anyone in a fight. They say he steals from the rich and gives to the poor. They say he's part man, part myth, and mostly street-corner rumor. And they are wrong on every count.\n\nOnly averagely tall, slender, and god-awful with a sword, Locke Lamora is the fabled Thorn, and the greatest weapons at his disposal are his wit and cunning. He steals from the rich - they're the only ones worth stealing from - but the poor can go steal for themselves. What Locke cons, wheedles and tricks into his possession is strictly for him and his band of fellow con-artists and thieves: the Gentleman Bastards.\n\nTogether their domain is the city of Camorr. Built of Elderglass by a race no-one remembers, it's a city of shifting revels, filthy canals, baroque palaces and crowded cemeteries. Home to Dons, merchants, soldiers, beggars, cripples, and feral children. And to Capa Barsavi, the criminal mastermind who runs the city.\n\nBut there are whispers of a challenge to the Capa's power. A challenge from a man no one has ever seen, a man no blade can touch. The Grey King is coming.\n\nA man would be well advised not to be caught between Capa Barsavi and The Grey King. Even such a master of the sword as the Thorn of Camorr. As for Locke Lamora ...\n\nReaders can't get enough of Locke Lamora:\n\n'Original, engrossing, emotional, and devastatingly impactful; this extremely well-written tale of avarice and brotherhood is a treasure of gold, and you will want your share of it' Novel Notions\n\n'A rewarding read, well written, and entertaining. I'd recommend any fantasy fan to give it a try' Mark Lawrence, Sunday Times bestselling author\n\n'It is witty, profane, violent, over the top, and frequently hilarious. I can't believe this is Scott Lynch's first novel, and I can't wait to read more. This is an incredibly fun adventure novel. Find yourself a copy and read it' Goodreads reviewer, ⭐ ⭐ ⭐ ⭐ ⭐\n\n'You guys, this story is unreal. It's so morally wrong that you don't even want it to be right. It's that luring, that gritty, that bold . . . its masterfully chaotic - so many subplots, so many characters, so much world-building. theres never a dull moment . . . its intricately woven - no movement, no scene, no word is insignificant. Everything is so interconnected on so many levels. I straight up got chills in some parts' Goodreads reviewer, ⭐ ⭐ ⭐ ⭐ ⭐\n\n'A love child of Ocean's Eleven and The Godfather. With blood, deaths, betrayals, money, and drowning in horse urine . . . and it's SO. GOOD' Goodreads reviewer, ⭐ ⭐ ⭐ ⭐ ⭐\n\n'It stole hours of sleep. It wrapped me in cozy myth. It gave me the blessing of feeling like a kid again, snuggled up with a book, wondering how the hell 10pm became 4am. Find. Buy. Consume' Pierce Brown, bestselling author of the Red Rising series\n\n'I mean seriously, I loved all those characters and their cunning and deceiving ways. XD Throughout the entire book I never knew what to expect and there were about a ton of \"Oh, sh*t!\" moments that were shortly followed by \"Jeez! NO!\" and \"What happened now?\" exclamations' Goodreads reviewer, ⭐ ⭐ ⭐ ⭐ ⭐",
+        "runtime_min": 1319,
+        "cover_url": "https://m.media-amazon.com/images/I/81fKyLj6Y2L.jpg"
+      },
+      "kind": "fiction",
+      "genres": [
+        "Science Fiction & Fantasy"
+      ],
+      "sub_genres": null
+    },
+    {
+      "name": "live audnexus_book B09LYZPFLZ",
+      "book": {
+        "asin": "B09LYZPFLZ",
+        "region": "us",
+        "title": "The Colour of Magic",
+        "subtitle": "Discworld, Book 1",
+        "authors": [
+          "Terry Pratchett"
+        ],
+        "narrators": [
+          "Colin Morgan",
+          "Peter Serafinowicz",
+          "Bill Nighy"
+        ],
+        "series_name": "Discworld",
+        "series_position": "1",
+        "year": "2022",
+        "release_date": "2022-07-07",
+        "publisher": "Transworld Digital",
+        "language": "english",
+        "genres": [
+          "Science Fiction & Fantasy",
+          "Comedy & Humor"
+        ],
+        "sub_genres": [
+          "Fantasy",
+          "Action & Adventure",
+          "Epic",
+          "Humorous",
+          "Literature & Fiction",
+          "Satire"
+        ],
+        "literature_type": "fiction",
+        "description": "Over 1 million Discworld audiobooks sold – discover the extraordinary universe of Terry Pratchett’s Discworld like never before The audiobook of The Colour of Magic is read by Colin Morgan (Merlin; Testament of Youth; Belfast). BAFTA and Golden Globe award-winning actor Bill Nighy (Love...",
+        "summary": "Over 1 million Discworld audiobooks sold – discover the extraordinary universe of Terry Pratchett’s Discworld like never before\n\nThe audiobook of The Colour of Magic is read by Colin Morgan (Merlin; Testament of Youth; Belfast). BAFTA and Golden Globe award-winning actor Bill Nighy (Love Actually; Pirates of the Caribbean; Harry Potter and the Deathly Hallows) reads the footnotes, and Peter Serafinowicz (Star Wars: Episode I - The Phantom Menace; Shaun of the Dead) stars as the voice of Death. Featuring a new theme tune composed by James Hannigan.\n\n'It was octarine, the colour of magic. It was alive and glowing and vibrant and it was the undisputed pigment of the imagination . . .'\n\nSomewhere between thought and reality exists the Discworld, a magical world not totally unlike our own. Except for the fact that it travels through space on the shoulders of four giant elephants who in turn stand on the shell of an astronomically huge star turtle, of course.\n\nRincewind is the world's worst wizard who has just been handed a very important job: to look after the world's first tourist, upon whose survival rests the peace and prosperity of the land. Unfortunately, their journey across the Disc includes facing robbers, monsters, mercenaries, and Death himself.\n\nAnd the whole thing's just a game of the gods that might send them over the edge . . .\n\nYou can listen to the Discworld novels in any order, but The Colour of Magic is the first book in the Wizards series.\n\nThe Colour of Magic is the first book in the Discworld series and was published in 1983. Some elements of the Discworld universe may reflect this.\n\n'If you've never read a Discworld novel, what's the matter with you?' Guardian\n\n'Pratchett uses his other world to hold up a distorting mirror to our own' The Times\n\n© Terry Pratchett 1983 (P) Penguin Audio 2022",
+        "runtime_min": 478,
+        "cover_url": "https://m.media-amazon.com/images/I/91F-2mp2T1L.jpg"
+      },
+      "kind": "fiction",
+      "genres": [
+        "Science Fiction & Fantasy",
+        "Comedy & Humor"
+      ],
+      "sub_genres": [
+        "Fantasy",
+        "Action & Adventure",
+        "Epic",
+        "Humorous",
+        "Literature & Fiction",
+        "Satire"
+      ]
+    },
+    {
+      "name": "live audible_product B004K50434",
+      "book": {
+        "asin": "B004K50434",
+        "region": "us",
+        "title": "The Lies of Locke Lamora",
+        "subtitle": "The deviously twisty fantasy adventure you will not want to put down",
+        "authors": [
+          "Scott Lynch"
+        ],
+        "narrators": [
+          "Michael Page"
+        ],
+        "series_name": "Gentleman Bastard Sequence",
+        "series_position": "1",
+        "year": "2011",
+        "release_date": "2011-01-21",
+        "publisher": "Gollancz",
+        "language": "english",
+        "genres": [
+          "Relationships, Parenting & Personal Development",
+          "Science Fiction & Fantasy"
+        ],
+        "sub_genres": [
+          "Parenting & Families",
+          "Relationships",
+          "Fantasy",
+          "Epic",
+          "Humorous",
+          "Paranormal & Urban",
+          "Urban"
+        ],
+        "genre_paths": [
+          [
+            "Relationships, Parenting & Personal Development",
+            "Parenting & Families"
+          ],
+          [
+            "Relationships, Parenting & Personal Development",
+            "Relationships"
+          ],
+          [
+            "Science Fiction & Fantasy",
+            "Fantasy",
+            "Epic"
+          ],
+          [
+            "Science Fiction & Fantasy",
+            "Fantasy",
+            "Humorous"
+          ],
+          [
+            "Science Fiction & Fantasy",
+            "Fantasy",
+            "Paranormal & Urban",
+            "Urban"
+          ]
+        ],
+        "description": "'One of my top ten books ever. Maybe top five. If you haven't read it, you should' Patrick Rothfuss, New York Times bestselling author of The Name of the Wind 'Fresh, original and engrossing' George R.R. Martin, the phenomenon behind A Game of Thrones They say that the Thorn of Camorr can beat...",
+        "summary": "'One of my top ten books ever. Maybe top five. If you haven't read it, you should' Patrick Rothfuss, New York Times bestselling author of The Name of the Wind\n\n'Fresh, original and engrossing' George R.R. Martin, the phenomenon behind A Game of Thrones\n\nThey say that the Thorn of Camorr can beat anyone in a fight. They say he steals from the rich and gives to the poor. They say he's part man, part myth, and mostly street-corner rumor. And they are wrong on every count.\n\nOnly averagely tall, slender, and god-awful with a sword, Locke Lamora is the fabled Thorn, and the greatest weapons at his disposal are his wit and cunning. He steals from the rich - they're the only ones worth stealing from - but the poor can go steal for themselves. What Locke cons, wheedles and tricks into his possession is strictly for him and his band of fellow con-artists and thieves: the Gentleman Bastards.\n\nTogether their domain is the city of Camorr. Built of Elderglass by a race no-one remembers, it's a city of shifting revels, filthy canals, baroque palaces and crowded cemeteries. Home to Dons, merchants, soldiers, beggars, cripples, and feral children. And to Capa Barsavi, the criminal mastermind who runs the city.\n\nBut there are whispers of a challenge to the Capa's power. A challenge from a man no one has ever seen, a man no blade can touch. The Grey King is coming.\n\nA man would be well advised not to be caught between Capa Barsavi and The Grey King. Even such a master of the sword as the Thorn of Camorr. As for Locke Lamora ...\n\nReaders can't get enough of Locke Lamora:\n\n'Original, engrossing, emotional, and devastatingly impactful; this extremely well-written tale of avarice and brotherhood is a treasure of gold, and you will want your share of it' Novel Notions\n\n'A rewarding read, well written, and entertaining. I'd recommend any fantasy fan to give it a try' Mark Lawrence, Sunday Times bestselling author\n\n'It is witty, profane, violent, over the top, and frequently hilarious. I can't believe this is Scott Lynch's first novel, and I can't wait to read more. This is an incredibly fun adventure novel. Find yourself a copy and read it' Goodreads reviewer, ⭐ ⭐ ⭐ ⭐ ⭐\n\n'You guys, this story is unreal. It's so morally wrong that you don't even want it to be right. It's that luring, that gritty, that bold . . . its masterfully chaotic - so many subplots, so many characters, so much world-building. theres never a dull moment . . . its intricately woven - no movement, no scene, no word is insignificant. Everything is so interconnected on so many levels. I straight up got chills in some parts' Goodreads reviewer, ⭐ ⭐ ⭐ ⭐ ⭐\n\n'A love child of Ocean's Eleven and The Godfather. With blood, deaths, betrayals, money, and drowning in horse urine . . . and it's SO. GOOD' Goodreads reviewer, ⭐ ⭐ ⭐ ⭐ ⭐\n\n'It stole hours of sleep. It wrapped me in cozy myth. It gave me the blessing of feeling like a kid again, snuggled up with a book, wondering how the hell 10pm became 4am. Find. Buy. Consume' Pierce Brown, bestselling author of the Red Rising series\n\n'I mean seriously, I loved all those characters and their cunning and deceiving ways. XD Throughout the entire book I never knew what to expect and there were about a ton of \"Oh, sh*t!\" moments that were shortly followed by \"Jeez! NO!\" and \"What happened now?\" exclamations' Goodreads reviewer, ⭐ ⭐ ⭐ ⭐ ⭐",
+        "runtime_min": 1319,
+        "cover_url": "https://m.media-amazon.com/images/I/81fKyLj6Y2L._SL1000_.jpg"
+      },
+      "kind": "fiction",
+      "genres": [
+        "Science Fiction & Fantasy"
+      ],
+      "sub_genres": [
+        "Fantasy",
+        "Epic",
+        "Humorous",
+        "Paranormal & Urban",
+        "Urban"
+      ]
+    },
+    {
+      "name": "live audible_product B09LYZPFLZ",
+      "book": {
+        "asin": "B09LYZPFLZ",
+        "region": "us",
+        "title": "The Colour of Magic",
+        "subtitle": "Discworld, Book 1",
+        "authors": [
+          "Terry Pratchett"
+        ],
+        "narrators": [
+          "Colin Morgan",
+          "Peter Serafinowicz",
+          "Bill Nighy"
+        ],
+        "series_name": "Discworld: Rincewind",
+        "series_position": "1",
+        "year": "2022",
+        "release_date": "2022-07-07",
+        "publisher": "Transworld Digital",
+        "language": "english",
+        "genres": [
+          "Science Fiction & Fantasy",
+          "Comedy & Humor"
+        ],
+        "sub_genres": [
+          "Fantasy",
+          "Action & Adventure",
+          "Epic",
+          "Humorous",
+          "Literature & Fiction",
+          "Satire"
+        ],
+        "genre_paths": [
+          [
+            "Science Fiction & Fantasy",
+            "Fantasy",
+            "Action & Adventure"
+          ],
+          [
+            "Science Fiction & Fantasy",
+            "Fantasy",
+            "Epic"
+          ],
+          [
+            "Science Fiction & Fantasy",
+            "Fantasy",
+            "Humorous"
+          ],
+          [
+            "Comedy & Humor",
+            "Literature & Fiction",
+            "Satire"
+          ]
+        ],
+        "description": "Over 1 million Discworld audiobooks sold – discover the extraordinary universe of Terry Pratchett’s Discworld like never before The audiobook of The Colour of Magic is read by Colin Morgan (Merlin; Testament of Youth; Belfast). BAFTA and Golden Globe award-winning actor Bill Nighy (Love...",
+        "summary": "Over 1 million Discworld audiobooks sold – discover the extraordinary universe of Terry Pratchett’s Discworld like never before\n\nThe audiobook of The Colour of Magic is read by Colin Morgan (Merlin; Testament of Youth; Belfast). BAFTA and Golden Globe award-winning actor Bill Nighy (Love Actually; Pirates of the Caribbean; Harry Potter and the Deathly Hallows) reads the footnotes, and Peter Serafinowicz (Star Wars: Episode I - The Phantom Menace; Shaun of the Dead) stars as the voice of Death. Featuring a new theme tune composed by James Hannigan.\n\n'It was octarine, the colour of magic. It was alive and glowing and vibrant and it was the undisputed pigment of the imagination . . .'\n\nSomewhere between thought and reality exists the Discworld, a magical world not totally unlike our own. Except for the fact that it travels through space on the shoulders of four giant elephants who in turn stand on the shell of an astronomically huge star turtle, of course.\n\nRincewind is the world's worst wizard who has just been handed a very important job: to look after the world's first tourist, upon whose survival rests the peace and prosperity of the land. Unfortunately, their journey across the Disc includes facing robbers, monsters, mercenaries, and Death himself.\n\nAnd the whole thing's just a game of the gods that might send them over the edge . . .\n\nYou can listen to the Discworld novels in any order, but The Colour of Magic is the first book in the Wizards series.\n\nThe Colour of Magic is the first book in the Discworld series and was published in 1983. Some elements of the Discworld universe may reflect this.\n\n'If you've never read a Discworld novel, what's the matter with you?' Guardian\n\n'Pratchett uses his other world to hold up a distorting mirror to our own' The Times\n\n© Terry Pratchett 1983 (P) Penguin Audio 2022",
+        "runtime_min": 478,
+        "cover_url": "https://m.media-amazon.com/images/I/91F-2mp2T1L._SL1000_.jpg"
+      },
+      "kind": "fiction",
+      "genres": [
+        "Science Fiction & Fantasy",
+        "Comedy & Humor"
+      ],
+      "sub_genres": [
+        "Fantasy",
+        "Action & Adventure",
+        "Epic",
+        "Humorous",
+        "Literature & Fiction",
+        "Satire"
+      ]
+    }
+  ],
+  "catalog": [
+    {
+      "kind": "audnexus_book",
+      "fixture": "audnexus_book_B004K50434_us.json",
+      "asin": "B004K50434",
+      "region": "us",
+      "book": {
+        "asin": "B004K50434",
+        "region": "us",
+        "title": "The Lies of Locke Lamora",
+        "subtitle": "The deviously twisty fantasy adventure you will not want to put down",
+        "authors": [
+          "Scott Lynch"
+        ],
+        "narrators": [
+          "Michael Page"
+        ],
+        "series_name": "Gentleman Bastard Sequence",
+        "series_position": "1",
+        "year": "2011",
+        "release_date": "2011-01-21",
+        "publisher": "Gollancz",
+        "language": "english",
+        "genres": [
+          "Relationships, Parenting & Personal Development",
+          "Science Fiction & Fantasy"
+        ],
+        "sub_genres": [
+          "Parenting & Families",
+          "Relationships",
+          "Fantasy",
+          "Epic",
+          "Humorous",
+          "Paranormal & Urban",
+          "Urban"
+        ],
+        "literature_type": "fiction",
+        "description": "'One of my top ten books ever. Maybe top five. If you haven't read it, you should' Patrick Rothfuss, New York Times bestselling author of The Name of the Wind 'Fresh, original and engrossing' George  Martin, the phenomenon behind A Game of Thrones They say that the Thorn of Camorr can beat...",
+        "summary": "'One of my top ten books ever. Maybe top five. If you haven't read it, you should' Patrick Rothfuss, New York Times bestselling author of The Name of the Wind\n\n'Fresh, original and engrossing' George R.R. Martin, the phenomenon behind A Game of Thrones\n\nThey say that the Thorn of Camorr can beat anyone in a fight. They say he steals from the rich and gives to the poor. They say he's part man, part myth, and mostly street-corner rumor. And they are wrong on every count.\n\nOnly averagely tall, slender, and god-awful with a sword, Locke Lamora is the fabled Thorn, and the greatest weapons at his disposal are his wit and cunning. He steals from the rich - they're the only ones worth stealing from - but the poor can go steal for themselves. What Locke cons, wheedles and tricks into his possession is strictly for him and his band of fellow con-artists and thieves: the Gentleman Bastards.\n\nTogether their domain is the city of Camorr. Built of Elderglass by a race no-one remembers, it's a city of shifting revels, filthy canals, baroque palaces and crowded cemeteries. Home to Dons, merchants, soldiers, beggars, cripples, and feral children. And to Capa Barsavi, the criminal mastermind who runs the city.\n\nBut there are whispers of a challenge to the Capa's power. A challenge from a man no one has ever seen, a man no blade can touch. The Grey King is coming.\n\nA man would be well advised not to be caught between Capa Barsavi and The Grey King. Even such a master of the sword as the Thorn of Camorr. As for Locke Lamora ...\n\nReaders can't get enough of Locke Lamora:\n\n'Original, engrossing, emotional, and devastatingly impactful; this extremely well-written tale of avarice and brotherhood is a treasure of gold, and you will want your share of it' Novel Notions\n\n'A rewarding read, well written, and entertaining. I'd recommend any fantasy fan to give it a try' Mark Lawrence, Sunday Times bestselling author\n\n'It is witty, profane, violent, over the top, and frequently hilarious. I can't believe this is Scott Lynch's first novel, and I can't wait to read more. This is an incredibly fun adventure novel. Find yourself a copy and read it' Goodreads reviewer, ⭐ ⭐ ⭐ ⭐ ⭐\n\n'You guys, this story is unreal. It's so morally wrong that you don't even want it to be right. It's that luring, that gritty, that bold . . . its masterfully chaotic - so many subplots, so many characters, so much world-building. theres never a dull moment . . . its intricately woven - no movement, no scene, no word is insignificant. Everything is so interconnected on so many levels. I straight up got chills in some parts' Goodreads reviewer, ⭐ ⭐ ⭐ ⭐ ⭐\n\n'A love child of Ocean's Eleven and The Godfather. With blood, deaths, betrayals, money, and drowning in horse urine . . . and it's SO. GOOD' Goodreads reviewer, ⭐ ⭐ ⭐ ⭐ ⭐\n\n'It stole hours of sleep. It wrapped me in cozy myth. It gave me the blessing of feeling like a kid again, snuggled up with a book, wondering how the hell 10pm became 4am. Find. Buy. Consume' Pierce Brown, bestselling author of the Red Rising series\n\n'I mean seriously, I loved all those characters and their cunning and deceiving ways. XD Throughout the entire book I never knew what to expect and there were about a ton of \"Oh, sh*t!\" moments that were shortly followed by \"Jeez! NO!\" and \"What happened now?\" exclamations' Goodreads reviewer, ⭐ ⭐ ⭐ ⭐ ⭐",
+        "runtime_min": 1319,
+        "cover_url": "https://m.media-amazon.com/images/I/81fKyLj6Y2L.jpg"
+      }
+    },
+    {
+      "kind": "audnexus_book",
+      "fixture": "audnexus_book_B09LYZPFLZ_us.json",
+      "asin": "B09LYZPFLZ",
+      "region": "us",
+      "book": {
+        "asin": "B09LYZPFLZ",
+        "region": "us",
+        "title": "The Colour of Magic",
+        "subtitle": "Discworld, Book 1",
+        "authors": [
+          "Terry Pratchett"
+        ],
+        "narrators": [
+          "Colin Morgan",
+          "Peter Serafinowicz",
+          "Bill Nighy"
+        ],
+        "series_name": "Discworld",
+        "series_position": "1",
+        "year": "2022",
+        "release_date": "2022-07-07",
+        "publisher": "Transworld Digital",
+        "language": "english",
+        "genres": [
+          "Science Fiction & Fantasy",
+          "Comedy & Humor"
+        ],
+        "sub_genres": [
+          "Fantasy",
+          "Action & Adventure",
+          "Epic",
+          "Humorous",
+          "Literature & Fiction",
+          "Satire"
+        ],
+        "literature_type": "fiction",
+        "description": "Over 1 million Discworld audiobooks sold – discover the extraordinary universe of Terry Pratchett’s Discworld like never before The audiobook of The Colour of Magic is read by Colin Morgan (Merlin; Testament of Youth; Belfast). BAFTA and Golden Globe award-winning actor Bill Nighy (Love...",
+        "summary": "Over 1 million Discworld audiobooks sold – discover the extraordinary universe of Terry Pratchett’s Discworld like never before\n\nThe audiobook of The Colour of Magic is read by Colin Morgan (Merlin; Testament of Youth; Belfast). BAFTA and Golden Globe award-winning actor Bill Nighy (Love Actually; Pirates of the Caribbean; Harry Potter and the Deathly Hallows) reads the footnotes, and Peter Serafinowicz (Star Wars: Episode I - The Phantom Menace; Shaun of the Dead) stars as the voice of Death. Featuring a new theme tune composed by James Hannigan.\n\n'It was octarine, the colour of magic. It was alive and glowing and vibrant and it was the undisputed pigment of the imagination . . .'\n\nSomewhere between thought and reality exists the Discworld, a magical world not totally unlike our own. Except for the fact that it travels through space on the shoulders of four giant elephants who in turn stand on the shell of an astronomically huge star turtle, of course.\n\nRincewind is the world's worst wizard who has just been handed a very important job: to look after the world's first tourist, upon whose survival rests the peace and prosperity of the land. Unfortunately, their journey across the Disc includes facing robbers, monsters, mercenaries, and Death himself.\n\nAnd the whole thing's just a game of the gods that might send them over the edge . . .\n\nYou can listen to the Discworld novels in any order, but The Colour of Magic is the first book in the Wizards series.\n\nThe Colour of Magic is the first book in the Discworld series and was published in 1983. Some elements of the Discworld universe may reflect this.\n\n'If you've never read a Discworld novel, what's the matter with you?' Guardian\n\n'Pratchett uses his other world to hold up a distorting mirror to our own' The Times\n\n© Terry Pratchett 1983 (P) Penguin Audio 2022",
+        "runtime_min": 478,
+        "cover_url": "https://m.media-amazon.com/images/I/91F-2mp2T1L.jpg"
+      }
+    },
+    {
+      "kind": "audible_product",
+      "fixture": "audible_product_B004K50434_us.json",
+      "asin": "B004K50434",
+      "region": "us",
+      "book": {
+        "asin": "B004K50434",
+        "region": "us",
+        "title": "The Lies of Locke Lamora",
+        "subtitle": "The deviously twisty fantasy adventure you will not want to put down",
+        "authors": [
+          "Scott Lynch"
+        ],
+        "narrators": [
+          "Michael Page"
+        ],
+        "series_name": "Gentleman Bastard Sequence",
+        "series_position": "1",
+        "year": "2011",
+        "release_date": "2011-01-21",
+        "publisher": "Gollancz",
+        "language": "english",
+        "genres": [
+          "Relationships, Parenting & Personal Development",
+          "Science Fiction & Fantasy"
+        ],
+        "sub_genres": [
+          "Parenting & Families",
+          "Relationships",
+          "Fantasy",
+          "Epic",
+          "Humorous",
+          "Paranormal & Urban",
+          "Urban"
+        ],
+        "genre_paths": [
+          [
+            "Relationships, Parenting & Personal Development",
+            "Parenting & Families"
+          ],
+          [
+            "Relationships, Parenting & Personal Development",
+            "Relationships"
+          ],
+          [
+            "Science Fiction & Fantasy",
+            "Fantasy",
+            "Epic"
+          ],
+          [
+            "Science Fiction & Fantasy",
+            "Fantasy",
+            "Humorous"
+          ],
+          [
+            "Science Fiction & Fantasy",
+            "Fantasy",
+            "Paranormal & Urban",
+            "Urban"
+          ]
+        ],
+        "description": "'One of my top ten books ever. Maybe top five. If you haven't read it, you should' Patrick Rothfuss, New York Times bestselling author of The Name of the Wind 'Fresh, original and engrossing' George R.R. Martin, the phenomenon behind A Game of Thrones They say that the Thorn of Camorr can beat...",
+        "summary": "'One of my top ten books ever. Maybe top five. If you haven't read it, you should' Patrick Rothfuss, New York Times bestselling author of The Name of the Wind\n\n'Fresh, original and engrossing' George R.R. Martin, the phenomenon behind A Game of Thrones\n\nThey say that the Thorn of Camorr can beat anyone in a fight. They say he steals from the rich and gives to the poor. They say he's part man, part myth, and mostly street-corner rumor. And they are wrong on every count.\n\nOnly averagely tall, slender, and god-awful with a sword, Locke Lamora is the fabled Thorn, and the greatest weapons at his disposal are his wit and cunning. He steals from the rich - they're the only ones worth stealing from - but the poor can go steal for themselves. What Locke cons, wheedles and tricks into his possession is strictly for him and his band of fellow con-artists and thieves: the Gentleman Bastards.\n\nTogether their domain is the city of Camorr. Built of Elderglass by a race no-one remembers, it's a city of shifting revels, filthy canals, baroque palaces and crowded cemeteries. Home to Dons, merchants, soldiers, beggars, cripples, and feral children. And to Capa Barsavi, the criminal mastermind who runs the city.\n\nBut there are whispers of a challenge to the Capa's power. A challenge from a man no one has ever seen, a man no blade can touch. The Grey King is coming.\n\nA man would be well advised not to be caught between Capa Barsavi and The Grey King. Even such a master of the sword as the Thorn of Camorr. As for Locke Lamora ...\n\nReaders can't get enough of Locke Lamora:\n\n'Original, engrossing, emotional, and devastatingly impactful; this extremely well-written tale of avarice and brotherhood is a treasure of gold, and you will want your share of it' Novel Notions\n\n'A rewarding read, well written, and entertaining. I'd recommend any fantasy fan to give it a try' Mark Lawrence, Sunday Times bestselling author\n\n'It is witty, profane, violent, over the top, and frequently hilarious. I can't believe this is Scott Lynch's first novel, and I can't wait to read more. This is an incredibly fun adventure novel. Find yourself a copy and read it' Goodreads reviewer, ⭐ ⭐ ⭐ ⭐ ⭐\n\n'You guys, this story is unreal. It's so morally wrong that you don't even want it to be right. It's that luring, that gritty, that bold . . . its masterfully chaotic - so many subplots, so many characters, so much world-building. theres never a dull moment . . . its intricately woven - no movement, no scene, no word is insignificant. Everything is so interconnected on so many levels. I straight up got chills in some parts' Goodreads reviewer, ⭐ ⭐ ⭐ ⭐ ⭐\n\n'A love child of Ocean's Eleven and The Godfather. With blood, deaths, betrayals, money, and drowning in horse urine . . . and it's SO. GOOD' Goodreads reviewer, ⭐ ⭐ ⭐ ⭐ ⭐\n\n'It stole hours of sleep. It wrapped me in cozy myth. It gave me the blessing of feeling like a kid again, snuggled up with a book, wondering how the hell 10pm became 4am. Find. Buy. Consume' Pierce Brown, bestselling author of the Red Rising series\n\n'I mean seriously, I loved all those characters and their cunning and deceiving ways. XD Throughout the entire book I never knew what to expect and there were about a ton of \"Oh, sh*t!\" moments that were shortly followed by \"Jeez! NO!\" and \"What happened now?\" exclamations' Goodreads reviewer, ⭐ ⭐ ⭐ ⭐ ⭐",
+        "runtime_min": 1319,
+        "cover_url": "https://m.media-amazon.com/images/I/81fKyLj6Y2L._SL1000_.jpg"
+      }
+    },
+    {
+      "kind": "audible_product",
+      "fixture": "audible_product_B09LYZPFLZ_us.json",
+      "asin": "B09LYZPFLZ",
+      "region": "us",
+      "book": {
+        "asin": "B09LYZPFLZ",
+        "region": "us",
+        "title": "The Colour of Magic",
+        "subtitle": "Discworld, Book 1",
+        "authors": [
+          "Terry Pratchett"
+        ],
+        "narrators": [
+          "Colin Morgan",
+          "Peter Serafinowicz",
+          "Bill Nighy"
+        ],
+        "series_name": "Discworld: Rincewind",
+        "series_position": "1",
+        "year": "2022",
+        "release_date": "2022-07-07",
+        "publisher": "Transworld Digital",
+        "language": "english",
+        "genres": [
+          "Science Fiction & Fantasy",
+          "Comedy & Humor"
+        ],
+        "sub_genres": [
+          "Fantasy",
+          "Action & Adventure",
+          "Epic",
+          "Humorous",
+          "Literature & Fiction",
+          "Satire"
+        ],
+        "genre_paths": [
+          [
+            "Science Fiction & Fantasy",
+            "Fantasy",
+            "Action & Adventure"
+          ],
+          [
+            "Science Fiction & Fantasy",
+            "Fantasy",
+            "Epic"
+          ],
+          [
+            "Science Fiction & Fantasy",
+            "Fantasy",
+            "Humorous"
+          ],
+          [
+            "Comedy & Humor",
+            "Literature & Fiction",
+            "Satire"
+          ]
+        ],
+        "description": "Over 1 million Discworld audiobooks sold – discover the extraordinary universe of Terry Pratchett’s Discworld like never before The audiobook of The Colour of Magic is read by Colin Morgan (Merlin; Testament of Youth; Belfast). BAFTA and Golden Globe award-winning actor Bill Nighy (Love...",
+        "summary": "Over 1 million Discworld audiobooks sold – discover the extraordinary universe of Terry Pratchett’s Discworld like never before\n\nThe audiobook of The Colour of Magic is read by Colin Morgan (Merlin; Testament of Youth; Belfast). BAFTA and Golden Globe award-winning actor Bill Nighy (Love Actually; Pirates of the Caribbean; Harry Potter and the Deathly Hallows) reads the footnotes, and Peter Serafinowicz (Star Wars: Episode I - The Phantom Menace; Shaun of the Dead) stars as the voice of Death. Featuring a new theme tune composed by James Hannigan.\n\n'It was octarine, the colour of magic. It was alive and glowing and vibrant and it was the undisputed pigment of the imagination . . .'\n\nSomewhere between thought and reality exists the Discworld, a magical world not totally unlike our own. Except for the fact that it travels through space on the shoulders of four giant elephants who in turn stand on the shell of an astronomically huge star turtle, of course.\n\nRincewind is the world's worst wizard who has just been handed a very important job: to look after the world's first tourist, upon whose survival rests the peace and prosperity of the land. Unfortunately, their journey across the Disc includes facing robbers, monsters, mercenaries, and Death himself.\n\nAnd the whole thing's just a game of the gods that might send them over the edge . . .\n\nYou can listen to the Discworld novels in any order, but The Colour of Magic is the first book in the Wizards series.\n\nThe Colour of Magic is the first book in the Discworld series and was published in 1983. Some elements of the Discworld universe may reflect this.\n\n'If you've never read a Discworld novel, what's the matter with you?' Guardian\n\n'Pratchett uses his other world to hold up a distorting mirror to our own' The Times\n\n© Terry Pratchett 1983 (P) Penguin Audio 2022",
+        "runtime_min": 478,
+        "cover_url": "https://m.media-amazon.com/images/I/91F-2mp2T1L._SL1000_.jpg"
+      }
+    },
+    {
+      "kind": "audible_product",
+      "fixture": "audible_product_B09LYZPFLZ_uk.json",
+      "asin": "B09LYZPFLZ",
+      "region": "uk",
+      "not_found": true
+    },
+    {
+      "kind": "audible_search",
+      "fixture": "audible_search_locke_us.json",
+      "region": "us",
+      "results": [
+        {
+          "asin": "0593163389",
+          "region": "us",
+          "title": "The Lies of Locke Lamora",
+          "subtitle": "Gentleman Bastard, Book 1",
+          "authors": [
+            "Scott Lynch"
+          ],
+          "narrators": [
+            "Michael Page"
+          ],
+          "year": "2019",
+          "language": "english",
+          "runtime_min": 1356,
+          "cover_url": "https://m.media-amazon.com/images/I/51SUOw0KeOL._SL500_.jpg"
+        },
+        {
+          "asin": "B004K50434",
+          "region": "us",
+          "title": "The Lies of Locke Lamora",
+          "subtitle": "The deviously twisty fantasy adventure you will not want to put down",
+          "authors": [
+            "Scott Lynch"
+          ],
+          "narrators": [
+            "Michael Page"
+          ],
+          "year": "2011",
+          "language": "english",
+          "runtime_min": 1319,
+          "cover_url": "https://m.media-amazon.com/images/I/51xxdlfMIrL._SL500_.jpg"
+        }
+      ]
+    },
+    {
+      "kind": "audible_search",
+      "fixture": "audible_search_colour_us.json",
+      "region": "us",
+      "results": [
+        {
+          "asin": "B09LYZPFLZ",
+          "region": "us",
+          "title": "The Colour of Magic",
+          "subtitle": "Discworld, Book 1",
+          "authors": [
+            "Terry Pratchett"
+          ],
+          "narrators": [
+            "Colin Morgan",
+            "Peter Serafinowicz",
+            "Bill Nighy"
+          ],
+          "year": "2022",
+          "language": "english",
+          "runtime_min": 478,
+          "cover_url": "https://m.media-amazon.com/images/I/51wiNNsH2JL._SL500_.jpg"
+        },
+        {
+          "asin": "B0DBRXBKSD",
+          "region": "us",
+          "title": "The Colour Out of Space",
+          "subtitle": "",
+          "authors": [
+            "H.P. Lovecraft",
+            "Leslie S. Klinger - editor"
+          ],
+          "narrators": [
+            "Gregory Connors"
+          ],
+          "year": "2024",
+          "language": "english",
+          "runtime_min": 82,
+          "cover_url": "https://m.media-amazon.com/images/I/51KX1wVcJCL._SL500_.jpg"
+        },
+        {
+          "asin": "B0032N8UOU",
+          "region": "us",
+          "title": "The Colour of Magic",
+          "subtitle": "Discworld 1",
+          "authors": [
+            "Terry Pratchett"
+          ],
+          "narrators": [
+            "Tony Robinson"
+          ],
+          "year": "2007",
+          "language": "english",
+          "runtime_min": 184,
+          "cover_url": "https://m.media-amazon.com/images/I/61EtkgdVQfL._SL500_.jpg"
+        },
+        {
+          "asin": "B07LCV3R2F",
+          "region": "us",
+          "title": "The Color Purple",
+          "subtitle": "",
+          "authors": [
+            "Alice Walker"
+          ],
+          "narrators": [
+            "Alice Walker"
+          ],
+          "year": "2018",
+          "language": "english",
+          "runtime_min": 478,
+          "cover_url": "https://m.media-amazon.com/images/I/51eI2s8oSxL._SL500_.jpg"
+        },
+        {
+          "asin": "B0F7M5D2XG",
+          "region": "us",
+          "title": "Exodus Blue",
+          "subtitle": "The Colour of Blood, Book 1",
+          "authors": [
+            "Elliot Kincaid"
+          ],
+          "narrators": [
+            "Adam R Watson"
+          ],
+          "year": "2025",
+          "language": "english",
+          "runtime_min": 644,
+          "cover_url": "https://m.media-amazon.com/images/I/41Orj9w8bXL._SL500_.jpg"
+        },
+        {
+          "asin": "B0HHKXNJG1",
+          "region": "us",
+          "title": "The Color of Magic",
+          "subtitle": "",
+          "authors": [
+            "Ellen Kennon"
+          ],
+          "narrators": [
+            "Olivia Benton"
+          ],
+          "year": "2026",
+          "language": "english",
+          "runtime_min": 253,
+          "cover_url": "https://m.media-amazon.com/images/I/51u8Eo8EzHL._SL500_.jpg"
+        },
+        {
+          "asin": "B0F1C59BLW",
+          "region": "us",
+          "title": "The Colour of Courage",
+          "subtitle": "Codename Odile - Based On A True Story",
+          "authors": [
+            "Hannah Byron"
+          ],
+          "narrators": [
+            "Virtual Voice"
+          ],
+          "year": "2025",
+          "language": "english",
+          "runtime_min": 692,
+          "cover_url": "https://m.media-amazon.com/images/I/41nwojRPjzL._SL500_.jpg"
+        },
+        {
+          "asin": "B0747SYKJF",
+          "region": "us",
+          "title": "The Color of Law",
+          "subtitle": "A Forgotten History of How Our Government Segregated America",
+          "authors": [
+            "Richard Rothstein"
+          ],
+          "narrators": [
+            "Adam Grupper"
+          ],
+          "year": "2017",
+          "language": "english",
+          "runtime_min": 572,
+          "cover_url": "https://m.media-amazon.com/images/I/51wmP58ticL._SL500_.jpg"
+        },
+        {
+          "asin": "B002V5BN3U",
+          "region": "us",
+          "title": "The Color of Lightning",
+          "subtitle": "A Novel",
+          "authors": [
+            "Paulette Jiles"
+          ],
+          "narrators": [
+            "Jack Garrett"
+          ],
+          "year": "2009",
+          "language": "english",
+          "runtime_min": 814,
+          "cover_url": "https://m.media-amazon.com/images/I/51CFJ8i0pYL._SL500_.jpg"
+        },
+        {
+          "asin": "B07BZ5SZ8J",
+          "region": "us",
+          "title": "The Colour out of Space",
+          "subtitle": "",
+          "authors": [
+            "H. P. Lovecraft"
+          ],
+          "narrators": [
+            "H.P. Lovecraft Historical Society"
+          ],
+          "year": "2018",
+          "language": "english",
+          "runtime_min": 77,
+          "cover_url": "https://m.media-amazon.com/images/I/61A+-FEly6L._SL500_.jpg"
+        },
+        {
+          "asin": "B0CY62DJ7L",
+          "region": "us",
+          "title": "The Museum of Forgotten Colors and Other Stories",
+          "subtitle": "",
+          "authors": [
+            "E. T. Pax"
+          ],
+          "narrators": [
+            "Virtual Voice"
+          ],
+          "year": "2026",
+          "language": "english",
+          "runtime_min": 181,
+          "cover_url": "https://m.media-amazon.com/images/I/41LDkFPXotL._SL500_.jpg"
+        },
+        {
+          "asin": "B0CZQ65XZX",
+          "region": "us",
+          "title": "Inkworld: The Color of Revenge",
+          "subtitle": "",
+          "authors": [
+            "Cornelia Funke"
+          ],
+          "narrators": [
+            "Allan Corduner",
+            "Cornelia Funke"
+          ],
+          "year": "2024",
+          "language": "english",
+          "runtime_min": 579,
+          "cover_url": "https://m.media-amazon.com/images/I/51ZTrxPZvgL._SL500_.jpg"
+        },
+        {
+          "asin": "0063137399",
+          "region": "us",
+          "title": "The Color of Dragons",
+          "subtitle": "",
+          "authors": [
+            "R. A. Salvatore",
+            "Erika Lewis"
+          ],
+          "narrators": [
+            "Aline Stokes",
+            "John York"
+          ],
+          "year": "2021",
+          "language": "english",
+          "runtime_min": 628,
+          "cover_url": "https://m.media-amazon.com/images/I/51QlSdNLKQL._SL500_.jpg"
+        },
+        {
+          "asin": "B099P3XZWF",
+          "region": "us",
+          "title": "Cold as Hell",
+          "subtitle": "Black Badge Series, Book 1",
+          "authors": [
+            "Rhett C. Bruno",
+            "Jaime Castle"
+          ],
+          "narrators": [
+            "Roger Clark"
+          ],
+          "year": "2022",
+          "language": "english",
+          "runtime_min": 771,
+          "cover_url": "https://m.media-amazon.com/images/I/51zAXYBHq0L._SL500_.jpg"
+        },
+        {
+          "asin": "B00A4FS7YM",
+          "region": "us",
+          "title": "Discount Armageddon",
+          "subtitle": "InCryptid, Book 1",
+          "authors": [
+            "Seanan McGuire"
+          ],
+          "narrators": [
+            "Emily Bauer"
+          ],
+          "year": "2012",
+          "language": "english",
+          "runtime_min": 680,
+          "cover_url": "https://m.media-amazon.com/images/I/51X2R50cVmL._SL500_.jpg"
+        },
+        {
+          "asin": "B005GFQ5WQ",
+          "region": "us",
+          "title": "The Count of Monte Cristo",
+          "subtitle": "",
+          "authors": [
+            "Alexandre Dumas"
+          ],
+          "narrators": [
+            "Bill Homewood"
+          ],
+          "year": "2011",
+          "language": "english",
+          "runtime_min": 3161,
+          "cover_url": "https://m.media-amazon.com/images/I/611Eot7+zJL._SL500_.jpg"
+        },
+        {
+          "asin": "B0DJHC1TFK",
+          "region": "us",
+          "title": "The Compound: A GMA Book Club Pick",
+          "subtitle": "A Novel",
+          "authors": [
+            "Aisling Rawle"
+          ],
+          "narrators": [
+            "Lucy Boynton"
+          ],
+          "year": "2025",
+          "language": "english",
+          "runtime_min": 604,
+          "cover_url": "https://m.media-amazon.com/images/I/51Zu5sBZXHL._SL500_.jpg"
+        },
+        {
+          "asin": "B00NMP9REK",
+          "region": "us",
+          "title": "The Color of Water",
+          "subtitle": "A Black Man's Tribute to His White Mother",
+          "authors": [
+            "James McBride"
+          ],
+          "narrators": [
+            "JD Jackson",
+            "Susan Denaker"
+          ],
+          "year": "2014",
+          "language": "english",
+          "runtime_min": 526,
+          "cover_url": "https://m.media-amazon.com/images/I/41Ko1tmNuLL._SL500_.jpg"
+        },
+        {
+          "asin": "8401023629",
+          "region": "us",
+          "title": "El Color de la Magia [The Color of Magic]",
+          "subtitle": "",
+          "authors": [
+            "Terry Pratchett",
+            "Cristina Macía Orio"
+          ],
+          "narrators": [
+            "Raúl Lloréns"
+          ],
+          "year": "2019",
+          "language": "spanish",
+          "runtime_min": 494,
+          "cover_url": "https://m.media-amazon.com/images/I/61GNEhpOAGL._SL500_.jpg"
+        },
+        {
+          "asin": "B0CZY59J9Y",
+          "region": "us",
+          "title": "The Colour of Mystery",
+          "subtitle": "Ellie McEwan Mysteries, Book 2",
+          "authors": [
+            "Joy Ellis"
+          ],
+          "narrators": [
+            "Sophie Rundle"
+          ],
+          "year": "2024",
+          "language": "english",
+          "runtime_min": 667,
+          "cover_url": "https://m.media-amazon.com/images/I/51CQbD3BVKL._SL500_.jpg"
+        },
+        {
+          "asin": "B0HL79QPVS",
+          "region": "us",
+          "title": "Christmas Magic in Acrylic",
+          "subtitle": "A Beginner’s Guide to Painting Festive Scenes, Ornaments, Snowmen, and Holiday Favorites",
+          "authors": [
+            "Amanda Cohn"
+          ],
+          "narrators": [
+            "Virtual Voice"
+          ],
+          "year": "2026",
+          "language": "english",
+          "runtime_min": 162,
+          "cover_url": "https://m.media-amazon.com/images/I/51nQZq3bk-L._SL500_.jpg"
+        },
+        {
+          "asin": "B0DXXF44VQ",
+          "region": "us",
+          "title": "The Color of Death",
+          "subtitle": "A Novel",
+          "authors": [
+            "Trey Gowdy",
+            "Christopher Greyson"
+          ],
+          "narrators": [
+            "Toby Ricketts"
+          ],
+          "year": "2025",
+          "language": "english",
+          "runtime_min": 518,
+          "cover_url": "https://m.media-amazon.com/images/I/51duJN3Y3GL._SL500_.jpg"
+        },
+        {
+          "asin": "B06XC7K4TL",
+          "region": "us",
+          "title": "The Color of Our Sky",
+          "subtitle": "A Novel",
+          "authors": [
+            "Amita Trasi"
+          ],
+          "narrators": [
+            "Zehra Jane Naqvi",
+            "Sneha Mathan"
+          ],
+          "year": "2017",
+          "language": "english",
+          "runtime_min": 710,
+          "cover_url": "https://m.media-amazon.com/images/I/51WDpsSlAQL._SL500_.jpg"
+        },
+        {
+          "asin": "0061999881",
+          "region": "us",
+          "title": "The Chronicles of Narnia Complete Audio Collection",
+          "subtitle": "",
+          "authors": [
+            "C. S. Lewis"
+          ],
+          "narrators": [
+            "Kenneth Branagh",
+            "Alex Jennings",
+            "Michael York",
+            "Lynn Redgrave",
+            "Derek Jacobi",
+            "Jeremy Northam",
+            "Patrick Stewart"
+          ],
+          "year": "2019",
+          "language": "english",
+          "runtime_min": 2025,
+          "cover_url": "https://m.media-amazon.com/images/I/51K+xUkrkaL._SL500_.jpg"
+        },
+        {
+          "asin": "B01JQSAN94",
+          "region": "us",
+          "title": "The Collected Stories of Arthur C. Clarke",
+          "subtitle": "",
+          "authors": [
+            "Arthur C. Clarke"
+          ],
+          "narrators": [
+            "Ralph Lister",
+            "Ray Porter",
+            "Jonathan Davis"
+          ],
+          "year": "2016",
+          "language": "english",
+          "runtime_min": 3064,
+          "cover_url": "https://m.media-amazon.com/images/I/517YqC90OcL._SL500_.jpg"
+        }
+      ]
+    },
+    {
+      "kind": "audible_search",
+      "fixture": "audible_search_lastcolony_us.json",
+      "region": "us",
+      "results": [
+        {
+          "asin": "B002VA9CAQ",
+          "region": "us",
+          "title": "The Last Colony",
+          "subtitle": "",
+          "authors": [
+            "John Scalzi"
+          ],
+          "narrators": [
+            "William Dufris"
+          ],
+          "year": "2008",
+          "language": "english",
+          "runtime_min": 591,
+          "cover_url": "https://m.media-amazon.com/images/I/51tPK4B2wYL._SL500_.jpg"
+        },
+        {
+          "asin": "B06XRHXZ5L",
+          "region": "us",
+          "title": "The Last Colony",
+          "subtitle": "Military Science Fiction Adventure",
+          "authors": [
+            "John Scalzi"
+          ],
+          "narrators": [
+            "William Dufris"
+          ],
+          "year": "2017",
+          "language": "english",
+          "runtime_min": 591,
+          "cover_url": "https://m.media-amazon.com/images/I/615pSnQno0L._SL500_.jpg"
+        },
+        {
+          "asin": "B0GW9RV1TN",
+          "region": "us",
+          "title": "The Last Complete Series",
+          "subtitle": "Books 1-9",
+          "authors": [
+            "Michael John Grist",
+            "Mike Grist"
+          ],
+          "narrators": [
+            "Virtual Voice"
+          ],
+          "year": "2026",
+          "language": "english",
+          "runtime_min": 3345,
+          "cover_url": "https://m.media-amazon.com/images/I/51E7+xf+dVL._SL500_.jpg"
+        },
+        {
+          "asin": "B00893WAG2",
+          "region": "us",
+          "title": "Star Wars: The Thrawn Trilogy, Book 3: The Last Command",
+          "subtitle": "",
+          "authors": [
+            "Timothy Zahn"
+          ],
+          "narrators": [
+            "Marc Thompson"
+          ],
+          "year": "2012",
+          "language": "english",
+          "runtime_min": 947,
+          "cover_url": "https://m.media-amazon.com/images/I/51ELKfEF3fL._SL500_.jpg"
+        },
+        {
+          "asin": "B0DLQ2VFHR",
+          "region": "us",
+          "title": "The Last Colony Ship",
+          "subtitle": "",
+          "authors": [
+            "A K Mitchell"
+          ],
+          "narrators": [
+            "Larry Mitchell"
+          ],
+          "year": "2024",
+          "language": "english",
+          "runtime_min": 254,
+          "cover_url": "https://m.media-amazon.com/images/I/518tgP2+KsL._SL500_.jpg"
+        },
+        {
+          "asin": "B002V01IY4",
+          "region": "us",
+          "title": "The Last Coyote: Harry Bosch Series, Book 4",
+          "subtitle": "",
+          "authors": [
+            "Michael Connelly"
+          ],
+          "narrators": [
+            "Dick Hill"
+          ],
+          "year": "2008",
+          "language": "english",
+          "runtime_min": 806,
+          "cover_url": "https://m.media-amazon.com/images/I/51g4EhOB++L._SL500_.jpg"
+        },
+        {
+          "asin": "B07N6LL76C",
+          "region": "us",
+          "title": "Colony Mars: The Complete Trilogy",
+          "subtitle": "",
+          "authors": [
+            "Gerald M. Kilby"
+          ],
+          "narrators": [
+            "Nicol Zanzarella"
+          ],
+          "year": "2019",
+          "language": "english",
+          "runtime_min": 1064,
+          "cover_url": "https://m.media-amazon.com/images/I/51DJvrmsE4L._SL500_.jpg"
+        },
+        {
+          "asin": "B01L2PE1XI",
+          "region": "us",
+          "title": "The Collapsing Empire",
+          "subtitle": "The Interdependency, Book 1",
+          "authors": [
+            "John Scalzi"
+          ],
+          "narrators": [
+            "Wil Wheaton"
+          ],
+          "year": "2017",
+          "language": "english",
+          "runtime_min": 564,
+          "cover_url": "https://m.media-amazon.com/images/I/51iaZv0S0EL._SL500_.jpg"
+        },
+        {
+          "asin": "1984890565",
+          "region": "us",
+          "title": "The Last Collection",
+          "subtitle": "A Novel of Elsa Schiaparelli and Coco Chanel",
+          "authors": [
+            "Jeanne Mackin"
+          ],
+          "narrators": [
+            "Sarah Mollo-Christensen"
+          ],
+          "year": "2019",
+          "language": "english",
+          "runtime_min": 718,
+          "cover_url": "https://m.media-amazon.com/images/I/51uQ3fgLkoL._SL500_.jpg"
+        },
+        {
+          "asin": "B09LZ73KN7",
+          "region": "us",
+          "title": "The Last Continent",
+          "subtitle": "(Discworld Novel 22)",
+          "authors": [
+            "Terry Pratchett"
+          ],
+          "narrators": [
+            "Colin Morgan",
+            "Peter Serafinowicz",
+            "Bill Nighy"
+          ],
+          "year": "2022",
+          "language": "english",
+          "runtime_min": 656,
+          "cover_url": "https://m.media-amazon.com/images/I/51Y5tzI8PpL._SL500_.jpg"
+        },
+        {
+          "asin": "B002VACJKG",
+          "region": "us",
+          "title": "The Lost Colony",
+          "subtitle": "Artemis Fowl, Book 5",
+          "authors": [
+            "Eoin Colfer"
+          ],
+          "narrators": [
+            "Nathaniel Parker"
+          ],
+          "year": "2006",
+          "language": "english",
+          "runtime_min": 503,
+          "cover_url": "https://m.media-amazon.com/images/I/51KrArqGM+L._SL500_.jpg"
+        },
+        {
+          "asin": "B09XBV4FF5",
+          "region": "us",
+          "title": "The Last Colony",
+          "subtitle": "A Tale of Exile, Justice and Britain’s Colonial Legacy",
+          "authors": [
+            "Philippe Sands",
+            "Martin Rowson"
+          ],
+          "narrators": [
+            "Adjoa Andoh",
+            "Philippe Sands"
+          ],
+          "year": "2022",
+          "language": "english",
+          "runtime_min": 345,
+          "cover_url": "https://m.media-amazon.com/images/I/518zJhgyehL._SL500_.jpg"
+        }
+      ]
+    }
+  ]
+}

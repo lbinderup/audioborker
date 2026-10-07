@@ -28,6 +28,13 @@ internal/
   pipeline/   Converter interface; real.go = ffmpeg+tone, fake.go = simulation
   queue/      worker pool, job state machine, cancellation registry, SSE broker
   web/        net/http mux, handlers, embedded html/template + htmx assets
+  parity/     test-only: golden fixtures pinning what plex/ ports from the above
+plex/
+  Audioborker.bundle/  Plex legacy (Python 2.7) metadata agent; Contents/Code is
+                       sandboxed glue, Contents/Libraries/Shared/audioborker_plex
+                       is the logic, ported from match/, metadata/embedded,
+                       metadata/aggregate and the catalog clients
+  tests/, tools/       Python 3 unittest suite; dry_run.py runs the agent without Plex
 ```
 
 Data flow: **Import** (pick files) → **Match** (choose ASIN) → **Queue**
@@ -127,6 +134,33 @@ copy → chapters → tag → verify → replace).
   shared media libraries where a human account must also manage the files.
 - **Selections are deduped** (`scan.DedupeSelection`): choosing a folder and a
   file inside it is one job, not two. Enforced server-side, not just in the UI.
+- **The Plex agent is a port, pinned by parity fixtures.** `plex/` re-implements
+  `match` (normalize, score, auto-select), `metadata/embedded`,
+  `metadata/aggregate`, `metadata.HTMLToText` and the catalog clients' parsing
+  in Python, so Plex matches books exactly as the match screen does.
+  `go test ./internal/parity` fails on any behaviour change there; re-record
+  with `-update` *only* together with porting the change until
+  `python -m unittest discover -s plex/tests -t plex/tests` passes. Go-specific
+  semantics are reproduced on purpose (byte lengths in `fuzzyDistance` and
+  `longest`, per-rune `ToLower`, ASCII-only regex classes) — don't "simplify"
+  them away on either side.
+- **The agent only auto-applies what audioborker would pre-select.** An ASIN the
+  book names (atom or `[B0…]` path token) matches directly; a search result is
+  applied only when `match.AutoSelect` (or the opt-in lenient rule) holds, and
+  is otherwise scored below Plex's auto-match threshold so it waits for Fix
+  Match. For a file tagged for the matched ASIN, the file's own values win —
+  they carry the user's per-field source choices.
+- **`plex/` runs on Python 2.7 inside Plex's sandbox.** `Contents/Code` is
+  RestrictedPython: no `_`-prefixed names, no `sum`/`any`/`all`, no augmented
+  assignment on attributes — keep it glue. Logic lives in
+  `Contents/Libraries/Shared` (unrestricted, `PlexPluginCodePolicy` Elevated)
+  and stays in the 2.7/3 common subset: unicode internally via `compat.text`,
+  bytes `struct` formats, no `strptime`. Plex's sandbox `__import__` returns a
+  package that is already in `sys.modules` without loading the submodules
+  named in `from pkg import x` — so `audioborker_plex/__init__.py` imports
+  every submodule eagerly. Keep it that way: dropping it made a second
+  `from audioborker_plex import …` fail inside Plex, and the agent never
+  registered. `tests/test_glue.py` emulates that importer from a cold start.
 
 ## Conventions
 
@@ -152,6 +186,8 @@ go run ./cmd/audioborker    # http://localhost:8684
 go test ./...
 gofmt -l .                 # must be empty
 go vet ./...
+python -m unittest discover -s plex/tests -t plex/tests   # Plex agent (Python 3)
+uvx vermin --no-tips -t=2.7- -t=3.6- --violations plex/Audioborker.bundle/Contents
 ```
 
 On non-Linux dev machines the app enables template hot-reloading and
@@ -176,6 +212,10 @@ it is picked up automatically).
 - Changes visible in the browser should be verified by actually driving the
   running app, not assumed. Real conversions can be verified with
   `tone dump <file> --format json --query '$.meta.chapters'`.
+- The Plex agent can't be run here; `python plex/tools/dry_run.py <book>` runs
+  its search and metadata logic against the live APIs instead.
+  `internal/parity/testdata/api/` holds live captures shared by the Go parity
+  test and the Python tests — re-capture, don't hand-edit.
 
 ## External tools (runtime dependencies, invoked as subprocesses)
 

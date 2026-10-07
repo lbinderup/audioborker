@@ -4,3 +4,4 @@ testdata/
 .git/
 *.md
 docker-compose*.yml
+plex/

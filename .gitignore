@@ -15,3 +15,7 @@ Thumbs.db
 .idea/
 .vscode/
 *.swp
+
+# Python (plex/ agent tests)
+__pycache__/
+*.pyc
