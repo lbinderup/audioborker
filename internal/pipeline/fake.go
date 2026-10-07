@@ -47,8 +47,8 @@ func (f *FakeConverter) Run(ctx context.Context, job *store.Job, report Progress
 	}
 	steps := []step{
 		{"probe", 0.05, 1}, {"plan", 0.10, 1}, {"merge", 0.90, 10},
-		{"chapters", 0.93, 1}, {"tag", 0.96, 1}, {"move", 0.98, 1},
-		{"verify", 0.99, 1}, {"cleanup", 1.0, 1},
+		{"chapters", 0.93, 1}, {"tag", 0.96, 1}, {"verify", 0.98, 1},
+		{"move", 0.99, 1}, {"cleanup", 1.0, 1},
 	}
 	last := 0.0
 	for _, st := range steps {

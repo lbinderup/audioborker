@@ -62,6 +62,10 @@
             <h2>Match · {{.RelPath}}</h2>
             <button type="button" class="btn-ghost btn-small" onclick="this.closest('dialog').close()">✕ Close</button>
           </div>
+          {{/* Assigned by the Tag by hand pane's "Use"; in the same group as
+               the candidates, so picking one of those unassigns it. */}}
+          <input type="radio" name="match:{{.RelPath}}" value="manual" class="manual-choice" hidden>
+          <div class="catalog-pane">
           <div class="match-controls">
             <input type="text" class="match-query" id="q-{{.Index}}" value="{{.Keywords}}" spellcheck="false"
                    placeholder="Search keywords…">
@@ -100,10 +104,14 @@
             <span class="muted">Searching…</span>
           </div>
           {{end}}
-          {{/* The last resort, kept out of the normal flow on purpose: it
-               opens its own page (in a new tab, so this batch survives). */}}
+          {{/* The last resort, kept below the results on purpose. */}}
           <p class="hint manual-link">Not listed?
-            <a href="/manual?root={{$.Root}}&path={{.RelPath}}" target="_blank" rel="noopener">Tag by hand…</a></p>
+            <button type="button" class="link-button" onclick="showManual(this, true)">Tag by hand…</button></p>
+          </div>
+          <div class="manual-pane" hidden>
+            <button type="button" class="btn-ghost btn-small" onclick="showManual(this, false)">← Matches</button>
+            <div class="manual-target"><span class="muted">Loading…</span></div>
+          </div>
         </dialog>
 
         <dialog class="chapter-dialog">
@@ -193,9 +201,17 @@
     // switching candidates never shows another book's fields.
     function openMetadataEditor(el, idx) {
       const item = el.closest('.match-item');
+      const choice = item.querySelector('input[type=radio][name^="match:"]:checked')?.value || '';
+      if (choice === 'manual') {
+        // A book tagged by hand has no catalog sources; its review form is
+        // where its metadata is edited.
+        const dlg = item.querySelector('.match-dialog');
+        dlg.showModal();
+        showManual(dlg, true);
+        return;
+      }
       item.querySelector('.metadata-dialog')?.showModal();
       const target = document.getElementById('msources-' + idx);
-      const choice = item.querySelector('input[type=radio][name^="match:"]:checked')?.value || '';
       if (target && target.dataset.loaded !== choice) {
         target.dataset.loaded = choice;
         target.innerHTML = '<span class="muted">Loading…</span>';
@@ -225,23 +241,24 @@
       const box = item.querySelector('.row-summary');
       const choice = item.querySelector('input[type=radio][name^="match:"]:checked')?.value || '';
       if (!box || !choice || box.dataset.choice === choice) return;
+      if (choice === 'manual') { useManual(item, true); return; } // rendered from its fields
       box.dataset.choice = choice;
       const path = item.querySelector('input[name="paths"]').value;
       fetch('/match/row-summary?path=' + encodeURIComponent(path) + '&choice=' + encodeURIComponent(choice)
             + '&root=' + encodeURIComponent(matchRoot()))
         .then(r => r.text()).then(html => {
           box.innerHTML = html;
-          const cover = box.querySelector('[data-cover]')?.dataset.cover;
-          if (!cover) return;
-          const c = item.querySelector('.row-cover');
-          if (c.tagName === 'IMG') { c.src = cover; }
-          else {
-            const im = document.createElement('img');
-            im.className = 'row-cover';
-            im.src = cover;
-            c.replaceWith(im);
-          }
+          setRowCover(item, box.querySelector('[data-cover]')?.dataset.cover);
         }).catch(() => {});
+    }
+    function setRowCover(item, url) {
+      if (!url) return;
+      const c = item.querySelector('.row-cover');
+      if (c.tagName === 'IMG') { c.src = url; return; }
+      const im = document.createElement('img');
+      im.className = 'row-cover';
+      im.src = url;
+      c.replaceWith(im);
     }
 
     // ---- exclusive playback ----------------------------------------------
@@ -276,8 +293,11 @@
       return { mode: 'fixed', fixedMs: val('input[name^="shift:"]') };
     }
     // Query params for endpoints that must apply the same shift server-side.
+    const itemFor = path =>
+      document.querySelector(`input[name="paths"][value="${CSS.escape(path)}"]`)?.closest('.match-item');
+    const itemPath = item => item.querySelector('input[name="paths"]').value;
     function shiftVals(path) {
-      const item = document.querySelector(`input[name="paths"][value="${CSS.escape(path)}"]`)?.closest('.match-item');
+      const item = itemFor(path);
       if (!item) return {};
       const s = shiftSpecFor(item);
       if (s.mode === 'interp') {
@@ -393,7 +413,7 @@
       const choice = item.querySelector('input[type=radio][name^="match:"]:checked')?.value || '';
       const mode = item.querySelector('select[name^="chapters:"]')?.value || '';
       const params = new URLSearchParams({ path, choice, mode, root: matchRoot() });
-      const sv = shiftVals(path);
+      const sv = { ...shiftVals(path), ...manualVals(path) };
       for (const k in sv) params.set(k, sv[k]);
       target.innerHTML = '<span class="muted">Deciding chapters…</span>';
       fetch('/match/chapter-plan?' + params.toString())
@@ -421,6 +441,7 @@
       item.querySelectorAll('input[type=radio][name^="msrc:"]:checked').forEach(r => {
         params.set('msrc:' + r.name.split(':')[1], r.value);
       });
+      if (choice === 'manual') manualParams(item, params, false);
       fetch('/library/rename-preview?' + params.toString())
         .then(r => r.text()).then(html => { target.innerHTML = html; })
         .catch(() => { target.innerHTML = ''; });
@@ -428,6 +449,232 @@
     function renameToggled() {
       document.querySelectorAll('.match-item').forEach(updateRenamePreview);
     }
+
+    // ---- tag by hand ---------------------------------------------------------
+    // The match dialog's other pane, for editions no catalog has. Its fields
+    // live in this form as manual:{field}:{path}, and "Use" assigns them as
+    // the item's match through the hidden manual radio — so the row, the
+    // chapter verdict, the rename preview and the queue all treat a book tagged
+    // by hand like a catalog pick.
+    function showManual(el, on) {
+      const dlg = el.closest('dialog');
+      dlg.querySelector('.catalog-pane').hidden = on;
+      dlg.querySelector('.manual-pane').hidden = !on;
+      const target = dlg.querySelector('.manual-target');
+      if (!on || target.dataset.loaded) return;
+      target.dataset.loaded = '1';
+      const item = dlg.closest('.match-item');
+      htmx.ajax('GET', '/match/manual', {
+        target,
+        values: { path: itemPath(item), root: matchRoot(), index: item.id.replace('item-', '') },
+      });
+    }
+    const manualChosen = item => !!item?.querySelector('.manual-choice')?.checked;
+    // The item's manual fields as request params. The description is left
+    // out of GETs: nothing but the queue reads it.
+    function manualParams(item, params, withDescription) {
+      item.querySelectorAll('.manual-panel [name^="manual:"]').forEach(el => {
+        if (el.type === 'radio' && !el.checked) return;
+        if (!withDescription && el.dataset.field === 'description') return;
+        params.set(el.name, el.value);
+      });
+      return params;
+    }
+    // For hx-vals: the ASIN whose Audible chapters a hand-tagged book gets.
+    function manualVals(path) {
+      const item = itemFor(path);
+      const asin = item?.querySelector('.manual-panel [data-field="asin"]');
+      return manualChosen(item) && asin ? { [asin.name]: asin.value } : {};
+    }
+    // Validates the fields server-side and assigns them. quiet = a refresh of
+    // an already assigned book after an edit: no errors shown, dialog stays.
+    function useManual(el, quiet) {
+      const item = el.closest('.match-item');
+      const panel = item.querySelector('.manual-panel');
+      if (!panel) return;
+      const errs = panel.querySelector('.manual-errors');
+      const body = manualParams(item, new URLSearchParams({ path: itemPath(item), root: matchRoot() }), true);
+      fetch('/match/manual/check', { method: 'POST', body })
+        .then(r => r.ok ? r.text().then(html => ({ html })) : r.json())
+        .then(res => {
+          if (errs) errs.innerHTML = '';
+          if (res.errors) {
+            if (!quiet) res.errors.forEach(e => {
+              const li = document.createElement('li');
+              li.textContent = e;
+              errs.appendChild(li);
+            });
+            return;
+          }
+          const box = item.querySelector('.row-summary');
+          box.dataset.choice = 'manual';
+          box.innerHTML = res.html;
+          const chosenCover = panel.querySelector('.cover-choice input:checked')?.closest('.cover-choice')
+            .querySelector('img:not([hidden])');
+          setRowCover(item, chosenCover?.src);
+          const radio = item.querySelector('.manual-choice');
+          if (!radio.checked) {
+            radio.checked = true;
+            radio.dispatchEvent(new Event('change', { bubbles: true }));
+          } else {
+            updateChapterPlan(item); // the ASIN may have changed
+            updateRenamePreview(item);
+          }
+          if (!quiet) panel.closest('dialog').close();
+        })
+        .catch(() => { if (!quiet && errs) errs.innerHTML = '<li>Request failed</li>'; });
+    }
+    // Edits to an assigned book refresh its row; until then they're a draft.
+    let manualTimer;
+    function manualEdited(el) {
+      const item = el.closest('.match-item');
+      if (!manualChosen(item)) return;
+      clearTimeout(manualTimer);
+      manualTimer = setTimeout(() => useManual(item, true), 500);
+    }
+    document.getElementById('match-form').addEventListener('input', e => {
+      e.target.classList.remove('manual-filled');
+      if (e.target.matches('.manual-panel [name^="manual:"]')) manualEdited(e.target);
+    });
+
+    // The async clipboard API exists only on HTTPS and localhost, and
+    // audioborker is usually http://nas:8684: fall back to execCommand, then
+    // to selecting the text for a manual copy.
+    function copyPrompt(btn) {
+      const panel = btn.closest('.manual-panel');
+      const ta = panel.querySelector('.manual-prompt');
+      const status = panel.querySelector('.copy-status');
+      const details = panel.querySelector('.prompt-details');
+      const done = ok => {
+        status.textContent = ok ? 'Copied' : 'Copy blocked: select and copy below';
+        if (!ok) { details.open = true; ta.focus(); ta.select(); }
+      };
+      const fallback = () => {
+        const wasOpen = details.open;
+        details.open = true;
+        ta.focus(); ta.select();
+        let ok = false;
+        try { ok = document.execCommand('copy'); } catch (e) {}
+        if (ok) { details.open = wasOpen; window.getSelection().removeAllRanges(); }
+        done(ok);
+      };
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(ta.value).then(() => done(true), fallback);
+      } else {
+        fallback();
+      }
+    }
+
+    // Reading the clipboard from script needs HTTPS too; a paste event works
+    // anywhere, so the reply is read the moment it lands.
+    function parseReply(el) {
+      const panel = el.closest('.manual-panel');
+      const reply = panel.querySelector('.manual-reply');
+      const status = panel.querySelector('.parse-status');
+      const list = panel.querySelector('.manual-warnings');
+      list.innerHTML = '';
+      if (!reply.value.trim()) { status.textContent = ''; return; }
+      status.textContent = 'Reading…';
+      fetch('/match/manual/parse', { method: 'POST', body: new URLSearchParams({ reply: reply.value }) })
+        .then(r => r.json())
+        .then(res => {
+          status.classList.toggle('manual-error', !!res.error);
+          if (res.error) { status.textContent = res.error; return; }
+          let filled = 0;
+          // Only values the reply has: a null keeps what the file's tags gave.
+          for (const [name, value] of Object.entries(res.fields)) {
+            const f = panel.querySelector(`[data-field="${name}"]`);
+            if (!f || !value) continue;
+            f.value = value;
+            f.classList.add('manual-filled');
+            filled++;
+          }
+          status.textContent = filled + ' filled';
+          for (const w of res.warnings || []) {
+            const li = document.createElement('li');
+            li.textContent = w;
+            list.appendChild(li);
+          }
+          if (filled) manualEdited(panel);
+        })
+        .catch(() => { status.textContent = 'Request failed'; });
+    }
+
+    // Covers: an image dragged from another browser window arrives as the
+    // file itself or only its URL, depending on the browser; take both (the
+    // server downloads URLs).
+    function coverStatus(panel, text, isError) {
+      const el = panel.querySelector('.cover-status');
+      el.textContent = text;
+      el.classList.toggle('manual-error', !!isError);
+    }
+    function uploadCover(panel, body) {
+      coverStatus(panel, 'Uploading…');
+      fetch('/match/manual/cover', { method: 'POST', body })
+        .then(r => r.json())
+        .then(res => {
+          if (res.error) { coverStatus(panel, res.error, true); return; }
+          panel.querySelector('.cover-name').value = res.name;
+          const img = panel.querySelector('.upload-preview');
+          img.src = res.url; img.hidden = false;
+          panel.querySelector('.drop-hint')?.remove();
+          panel.querySelector('.cover-drop input[type=radio]').checked = true;
+          coverStatus(panel, '');
+          manualEdited(panel);
+        })
+        .catch(() => coverStatus(panel, 'Upload failed', true));
+    }
+    function uploadFile(panel, file) {
+      const fd = new FormData();
+      fd.append('image', file);
+      uploadCover(panel, fd);
+    }
+    function droppedURL(dt) {
+      const list = (dt.getData('text/uri-list') || '').split(/\r?\n/).find(l => l && !l.startsWith('#'));
+      if (list) return list.trim();
+      const html = dt.getData('text/html');
+      if (html) {
+        const img = new DOMParser().parseFromString(html, 'text/html').querySelector('img');
+        if (img && img.src) return img.src;
+      }
+      const text = (dt.getData('text/plain') || '').trim();
+      return /^https?:\/\//.test(text) ? text : '';
+    }
+    // Panels load on demand, so these listen on the document.
+    ['dragenter', 'dragover'].forEach(t => document.addEventListener(t, e => {
+      const drop = e.target.closest?.('.cover-drop');
+      if (drop) { e.preventDefault(); drop.classList.add('drop-over'); }
+    }));
+    document.addEventListener('dragleave', e => e.target.closest?.('.cover-drop')?.classList.remove('drop-over'));
+    document.addEventListener('drop', e => {
+      const drop = e.target.closest?.('.cover-drop');
+      if (!drop) return;
+      e.preventDefault();
+      drop.classList.remove('drop-over');
+      const panel = drop.closest('.manual-panel');
+      const file = [...e.dataTransfer.files].find(f => f.type.startsWith('image/'));
+      if (file) { uploadFile(panel, file); return; }
+      const url = droppedURL(e.dataTransfer);
+      if (url) { uploadCover(panel, new URLSearchParams({ url })); return; }
+      coverStatus(panel, 'No image in that drop', true);
+    });
+    document.addEventListener('change', e => {
+      if (e.target.matches('.cover-file') && e.target.files[0]) {
+        uploadFile(e.target.closest('.manual-panel'), e.target.files[0]);
+      }
+    });
+    document.addEventListener('paste', e => {
+      if (e.target.matches?.('.manual-reply')) {
+        setTimeout(() => parseReply(e.target), 0);
+        return;
+      }
+      // A pasted image becomes the cover of the panel on screen, unless it
+      // was pasted into a text field.
+      if (e.target.closest?.('textarea, input')) return;
+      const panel = document.querySelector('dialog[open] .manual-pane:not([hidden]) .manual-panel');
+      const item = [...(e.clipboardData?.items || [])].find(i => i.type.startsWith('image/'));
+      if (panel && item) { e.preventDefault(); uploadFile(panel, item.getAsFile()); }
+    });
 
     // ---- batch editing -------------------------------------------------------
     // Removing an item only drops it from this batch — its inputs (paths +

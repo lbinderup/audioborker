@@ -2,7 +2,9 @@
 {{if .Book}}
 <div class="row-summary-inner" data-cover="{{.Book.CoverURL}}">
   <div class="row-title"><strong>{{.Book.Title}}</strong></div>
-  <div class="muted row-line">{{.AuthorLine}} · <span class="candidate-asin">{{.Book.ASIN}}</span></div>
+  <div class="muted row-line">{{.AuthorLine}} ·
+    {{if .Manual}}<span class="source-manual">✎ tagged by hand</span>{{with .Book.ASIN}} · <span class="candidate-asin">{{.}}</span>{{end}}
+    {{else}}<span class="candidate-asin">{{.Book.ASIN}}</span>{{end}}</div>
   <div class="muted row-line">{{if .SeriesLine}}{{.SeriesLine}} · {{end}}{{.Files}} audio file{{if ne .Files 1}}s{{end}}</div>
   {{if .OfficialClock}}
   <div class="row-line rt-line">Official runtime {{.OfficialClock}} vs your audio {{.LocalClock}}</div>

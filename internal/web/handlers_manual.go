@@ -10,7 +10,6 @@ import (
 	"fmt"
 	"html/template"
 	"io"
-	"log/slog"
 	"net/http"
 	"os"
 	"path"
@@ -26,11 +25,17 @@ import (
 	"audioborker/internal/metadata/embedded"
 	"audioborker/internal/pipeline"
 	"audioborker/internal/scan"
-	"audioborker/internal/store"
 )
 
-type manualData struct {
-	baseData
+// manualChoice is the match:{path} value of an item tagged by hand. Its
+// metadata travels in the match form as manual:{field}:{path} inputs, so the
+// queue builds the job's snapshot from what was reviewed, like every other
+// per-item control on the match screen.
+const manualChoice = "manual"
+
+// manualPanelData is the Tag by hand panel inside an item's match dialog.
+type manualPanelData struct {
+	Index      int
 	Root       string
 	Path       string
 	Files      []string // base names
@@ -47,37 +52,19 @@ type manualData struct {
 	FileCover template.URL
 	Editions  []metadata.SearchResult
 	Cover     string // "file", "upload" or "edition:<cover URL>"
-	CoverName string // an uploaded image, see coverNameRe
-
-	CleanupDefault string
-	Cleanup        string
-	Rename         bool
-	PathTemplate   string
 }
 
-func (d manualData) IsLibrary() bool { return d.Root == RootLibrary }
-
-// handleManual renders the last-resort page for one book.
-func (s *Server) handleManual(w http.ResponseWriter, r *http.Request) {
+// handleMatchManual renders the panel, the first time an item's match dialog
+// switches to Tag by hand. The fields start from the file's own tags.
+func (s *Server) handleMatchManual(w http.ResponseWriter, r *http.Request) {
 	q := r.URL.Query()
-	d := s.manualPage(r.Context(), q.Get("root"), q.Get("path"), nil)
-	s.render.render(w, "manual", d)
+	d := s.manualPanel(r.Context(), q.Get("root"), q.Get("path"))
+	d.Index = atoiOr(q.Get("index"), 0)
+	s.render.partial(w, "match", "manual_panel", d)
 }
 
-// manualPage gathers what the page shows. form is nil on first load, when
-// the fields start from the file's own tags.
-func (s *Server) manualPage(ctx context.Context, rootToken, rel string, form *manualForm) manualData {
-	set := s.settings()
-	d := manualData{
-		baseData:       s.base("Tag by hand", "import"),
-		Root:           rootToken,
-		Path:           rel,
-		CleanupDefault: set.CleanupMode,
-		PathTemplate:   set.PathTemplate,
-	}
-	if d.IsLibrary() {
-		d.Active = "library"
-	}
+func (s *Server) manualPanel(ctx context.Context, rootToken, rel string) manualPanelData {
+	d := manualPanelData{Root: rootToken, Path: rel}
 	root := s.rootDir(func(string) string { return rootToken })
 	files, err := scan.CollectAudioFiles(root, rel)
 	if err != nil || len(files) == 0 {
@@ -124,12 +111,8 @@ func (s *Server) manualPage(ctx context.Context, rootToken, rel string, form *ma
 	in.Editions = d.Editions
 
 	d.Prompt = manualPrompt(in)
-	if form != nil {
-		d.Form = *form
-	} else {
-		d.Form = formFromBook(current)
-		d.Form.Genres = strings.Join(realGenres(splitField(d.Form.Genres)), listSep)
-	}
+	d.Form = formFromBook(current)
+	d.Form.Genres = strings.Join(realGenres(splitField(d.Form.Genres)), listSep)
 	switch {
 	case d.FileCover != "":
 		d.Cover = "file"
@@ -161,6 +144,11 @@ func (s *Server) nearestEditions(ctx context.Context, rel string, current *metad
 	}
 	region := s.settings().RegionDefault
 	results, err := s.provider().Search(ctx, metadata.SearchQuery{Keywords: title, Author: author, Region: region})
+	if err == nil && len(results) == 0 && author != "" {
+		// Taggers often put the narrator in the artist tag (Absolution Gap
+		// came as "John Lee"), and an author-scoped search then finds nothing.
+		results, err = s.provider().Search(ctx, metadata.SearchQuery{Keywords: title, Region: region})
+	}
 	if err != nil {
 		return nil, []string{"Catalog search failed: " + err.Error()}
 	}
@@ -328,50 +316,26 @@ func (s *Server) pruneCovers(minAge time.Duration) {
 	}
 }
 
-// --- queueing -----------------------------------------------------------------
+// --- assigning ---------------------------------------------------------------
 
-// handleManualQueue queues the reviewed book: a conversion from the import
-// volume, or a retag of a library file — the same jobs a catalog match
-// makes, with the metadata snapshot built from the form instead.
-func (s *Server) handleManualQueue(w http.ResponseWriter, r *http.Request) {
-	if err := r.ParseForm(); err != nil {
-		http.Error(w, "bad form", http.StatusBadRequest)
-		return
-	}
-	get := r.PostForm.Get
-	rootToken, rel := get("root"), get("path")
-	form := formFromRequest(get)
+// manualFields reads one item's Tag by hand inputs, manual:{field}:{path}:
+// the match form posts them that way, and the per-item requests the page
+// makes send them under the same names.
+func manualFields(get func(string) string, rel string) func(string) string {
+	return func(field string) string { return get("manual:" + field + ":" + rel) }
+}
+
+// manualBook builds a hand-tagged item's metadata snapshot and the cover it
+// keeps (a file under the covers dir, or "" for the book's URL or the art the
+// source already carries). The row summary, the rename preview and the queue
+// all read the fields through here, so what was reviewed is what gets queued.
+func (s *Server) manualBook(get func(string) string) (*metadata.Book, string, []string) {
 	localID := get("local_id")
 	if _, err := uuid.Parse(localID); err != nil {
 		localID = uuid.NewString()
 	}
-	book, errs := form.book(localID)
-
-	set := s.settings()
-	retag := rootToken == RootLibrary
-	root := s.rootDir(func(string) string { return rootToken })
-	kind := store.KindConvert
-	if retag {
-		kind = store.KindRetag
-	}
-	opts := store.JobOptions{
-		Kind: kind, InputDir: root, OutputDir: set.OutputDir,
-		CompletedDir: set.CompletedPath(s.cfg.CompletedDir), CleanupMode: "leave",
-		PathTemplate: set.PathTemplate, BitrateKbps: set.BitrateKbps, Encoder: set.Encoder,
-		WriteChaptersTxt: set.WriteChaptersTxt, AudnexusURL: set.AudnexusURL,
-		Rename: retag && get("rename") != "",
-	}
-	if !retag {
-		// As on the match screen: a retag never cleans up its source, which
-		// is the library file it just rewrote.
-		opts.CleanupMode = set.CleanupMode
-		if o := get("cleanup"); o != "" {
-			opts.CleanupMode = o
-		}
-		if info, err := os.Stat(s.cfg.CompletedDir); opts.CleanupMode == "move" && (err != nil || !info.IsDir()) {
-			errs = append(errs, "Cleanup \"move\" needs a volume mapped to "+s.cfg.CompletedDir+".")
-		}
-	}
+	book, errs := formFromRequest(get).book(localID)
+	coverFile := ""
 	switch choice := get("cover"); {
 	case strings.HasPrefix(choice, "edition:"):
 		if u := strings.TrimPrefix(choice, "edition:"); strings.HasPrefix(u, "https://") || strings.HasPrefix(u, "http://") {
@@ -384,45 +348,34 @@ func (s *Server) handleManualQueue(w http.ResponseWriter, r *http.Request) {
 		if !coverNameRe.MatchString(name) {
 			errs = append(errs, "No cover image uploaded.")
 		} else {
-			opts.CoverFile = filepath.Join(s.cfg.CoversDir(), name)
+			coverFile = filepath.Join(s.cfg.CoversDir(), name)
 		}
 	default:
 		// "file": no URL, so the pipeline keeps the art the source carries.
 	}
+	return book, coverFile, errs
+}
 
-	files, err := scan.CollectAudioFiles(root, rel)
-	switch {
-	case err != nil:
-		errs = append(errs, "Can't read the book's files: "+err.Error())
-	case retag && len(files) != 1:
-		errs = append(errs, "A library retag covers one file at a time.")
+// handleMatchManualCheck validates an item's reviewed fields when the user
+// assigns them, and renders the row summary for the match screen.
+func (s *Server) handleMatchManualCheck(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]any{"errors": []string{"Bad form."}})
+		return
 	}
-	if active, err := s.store.HasActiveJobForPath(kind, rel); err == nil && active {
-		errs = append(errs, "Already queued.")
-	}
-
+	get := r.PostForm.Get
+	rel := get("path")
+	book, _, errs := s.manualBook(manualFields(get, rel))
 	if len(errs) > 0 {
-		d := s.manualPage(r.Context(), rootToken, rel, &form)
-		d.Errors = append(d.Errors, errs...)
-		d.LocalID = localID
-		d.Cover, d.CoverName = get("cover"), get("cover_name")
-		d.Cleanup, d.Rename = get("cleanup"), get("rename") != ""
-		s.render.render(w, "manual", d)
+		writeJSON(w, http.StatusUnprocessableEntity, map[string]any{"errors": errs})
 		return
 	}
-
-	region := ""
-	if book.ASIN != "" {
-		region = set.RegionDefault
+	data := rowSummaryData{Path: rel, Book: book, Manual: true, AuthorLine: strings.Join(book.Authors, ", ")}
+	if files, err := scan.CollectAudioFiles(s.rootDir(get), rel); err == nil {
+		data.Files = len(files)
 	}
-	job := &store.Job{InputPath: rel, SourceFiles: files, ASIN: book.ASIN, Region: region, Metadata: *book, Options: opts}
-	if err := s.store.CreateJob(job); err != nil {
-		http.Error(w, "queue: "+err.Error(), http.StatusInternalServerError)
-		return
-	}
-	slog.Info("manual: queued", "path", rel, "title", book.Title, "local_id", localID)
-	s.queue.Wake()
-	http.Redirect(w, r, "/queue?queued=1", http.StatusSeeOther)
+	data.SeriesLine = seriesLine(book)
+	s.render.partial(w, "match", "row_summary", data)
 }
 
 func writeJSON(w http.ResponseWriter, status int, v any) {

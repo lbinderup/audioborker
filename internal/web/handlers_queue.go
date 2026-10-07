@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"audioborker/internal/metadata"
 	"audioborker/internal/metadata/aggregate"
 	"audioborker/internal/scan"
 	"audioborker/internal/store"
@@ -43,7 +44,8 @@ func metadataOverridesFor(get func(string) string) map[string]string {
 }
 
 // handleQueueCreate turns confirmed matches into queued jobs.
-// Form shape: paths=<rel> (repeated) + match:<rel>=<ASIN>|<region>.
+// Form shape: paths=<rel> (repeated) + match:<rel>=<ASIN>|<region>, or
+// match:<rel>=manual with the item's manual:{field}:<rel> inputs.
 func (s *Server) handleQueueCreate(w http.ResponseWriter, r *http.Request) {
 	if err := r.ParseForm(); err != nil {
 		http.Error(w, "bad form", http.StatusBadRequest)
@@ -75,8 +77,9 @@ func (s *Server) handleQueueCreate(w http.ResponseWriter, r *http.Request) {
 		if choice == "" {
 			continue // user left this one unmatched
 		}
+		manual := choice == manualChoice
 		asin, region, ok := strings.Cut(choice, "|")
-		if !ok || asin == "" {
+		if !manual && (!ok || asin == "") {
 			continue
 		}
 
@@ -93,12 +96,29 @@ func (s *Server) handleQueueCreate(w http.ResponseWriter, r *http.Request) {
 			skipped = append(skipped, p+" (a retag covers one file at a time)")
 			continue
 		}
-		res, err := s.aggregator().GetBook(ctx, asin, region, metadataOverrides(r.PostForm, p))
-		if err != nil {
-			skipped = append(skipped, p+" (metadata: "+err.Error()+")")
-			continue
+		var book *metadata.Book
+		coverFile := ""
+		if manual {
+			// Never through aggregate.Merge: the snapshot is the reviewed
+			// form, and a book no catalog has has no catalog record to merge.
+			var errs []string
+			book, coverFile, errs = s.manualBook(manualFields(r.PostForm.Get, p))
+			if len(errs) > 0 {
+				skipped = append(skipped, p+" ("+strings.Join(errs, " ")+")")
+				continue
+			}
+			asin, region = book.ASIN, ""
+			if asin != "" {
+				region = set.RegionDefault
+			}
+		} else {
+			res, err := s.aggregator().GetBook(ctx, asin, region, metadataOverrides(r.PostForm, p))
+			if err != nil {
+				skipped = append(skipped, p+" (metadata: "+err.Error()+")")
+				continue
+			}
+			book = res.Book
 		}
-		book := res.Book
 
 		// Cleanup acts on the job's *source*. For a retag that source is the
 		// library file itself, so "delete" or "move" would destroy the book
@@ -141,6 +161,7 @@ func (s *Server) handleQueueCreate(w http.ResponseWriter, r *http.Request) {
 				ChapterMode:      chapterMode,
 				ChapterShift:     chapterShift,
 				Rename:           retag && r.PostForm.Get("rename") != "",
+				CoverFile:        coverFile,
 			},
 		}
 		if err := s.store.CreateJob(job); err != nil {

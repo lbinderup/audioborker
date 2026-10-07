@@ -698,7 +698,7 @@ progress {
   white-space: pre-wrap;
 }
 
-/* Tag by hand (the manual, last-resort page) */
+/* Tag by hand (the match dialog's last-resort pane) */
 textarea {
   width: 100%;
   max-width: 48rem;
@@ -721,15 +721,18 @@ textarea[readonly] { font-family: ui-monospace, monospace; font-size: 0.8rem; co
   cursor: pointer;
   text-decoration: underline;
 }
-.manual-intro { max-width: 48rem; }
 .manual-actions { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin: 0.6rem 0; }
-.manual details summary { cursor: pointer; color: var(--text-muted); font-size: 0.85rem; margin: 0.4rem 0; }
+.manual-panel details summary { cursor: pointer; color: var(--text-muted); font-size: 0.85rem; margin: 0.4rem 0; }
 .manual-pair { display: flex; gap: 0.75rem; max-width: 34rem; }
 .manual-pair > div { flex: 1; }
 .manual-pair > .manual-narrow { flex: 0 0 9rem; }
 .manual-asin { max-width: 12rem; font-family: ui-monospace, monospace; }
 .manual-warnings { margin: 0.3rem 0 0; padding-left: 1.1rem; }
 .manual-error { color: var(--err); }
+.manual-errors { color: var(--err); margin: 0.5rem 0 0; }
+.manual-errors:empty { display: none; }
+.manual-pane > .btn-ghost { margin-bottom: 0.75rem; }
+.manual-panel .lib-path { margin-top: 0; }
 .manual-filled { border-color: var(--ok) !important; }
 .source-manual { color: var(--warn); }
 

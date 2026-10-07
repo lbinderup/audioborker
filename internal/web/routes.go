@@ -31,12 +31,13 @@ func (s *Server) routes() http.Handler {
 	mux.HandleFunc("GET /match/metadata-sources", s.handleMatchMetadataSources)
 	mux.HandleFunc("GET /preview/audio", s.handlePreviewAudio)
 
-	// Tagging by hand: the last resort for editions no catalog has.
-	mux.HandleFunc("GET /manual", s.handleManual)
-	mux.HandleFunc("POST /manual/parse", s.handleManualParse)
-	mux.HandleFunc("POST /manual/cover", s.handleManualCover)
+	// Tagging by hand: the match dialog's last resort for editions no catalog
+	// has. It assigns a match like a catalog pick; POST /queue queues it.
+	mux.HandleFunc("GET /match/manual", s.handleMatchManual)
+	mux.HandleFunc("POST /match/manual/parse", s.handleManualParse)
+	mux.HandleFunc("POST /match/manual/check", s.handleMatchManualCheck)
+	mux.HandleFunc("POST /match/manual/cover", s.handleManualCover)
 	mux.HandleFunc("GET /manual/covers/{name}", s.handleManualCoverFile)
-	mux.HandleFunc("POST /manual/queue", s.handleManualQueue)
 
 	mux.HandleFunc("POST /queue", s.handleQueueCreate)
 	mux.HandleFunc("GET /queue", s.handleQueue)

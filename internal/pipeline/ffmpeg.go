@@ -58,6 +58,12 @@ func writeConcatList(path string, files []*FileInfo) error {
 	return os.WriteFile(path, []byte(b.String()), 0o666)
 }
 
+// movieArgs go on every ffmpeg call that writes an m4b tone tags afterwards.
+// Newer ffmpeg takes the audio's sample rate as the movie timescale, and tone
+// writes its chapter track's header in 32 bits of that timescale — at 44.1 kHz
+// it wrapped past 27 hours. In milliseconds it lasts 49 days.
+var movieArgs = []string{"-movie_timescale", "1000", "-movflags", "+faststart"}
+
 type ffmpegRunner struct {
 	ffmpeg string
 }
@@ -86,7 +92,8 @@ func (f ffmpegRunner) merge(ctx context.Context, plan mergePlan, listPath, outPa
 			args = append(args, "-ar", strconv.Itoa(plan.SampleRate))
 		}
 	}
-	args = append(args, "-movflags", "+faststart", "-f", "ipod", outPath)
+	args = append(args, movieArgs...)
+	args = append(args, "-f", "ipod", outPath)
 
 	return f.run(ctx, args, plan.TotalMs, progress, logf)
 }
@@ -150,12 +157,13 @@ func (f ffmpegRunner) run(ctx context.Context, args []string, totalMs int64, pro
 // deliberately the same ones merge uses, so a retagged file is
 // indistinguishable from a freshly converted one.
 func (f ffmpegRunner) remuxStripped(ctx context.Context, src, dst string, totalMs int64, progress func(float64), logf LogFunc) error {
-	return f.run(ctx, []string{
+	args := []string{
 		"-hide_banner", "-nostdin", "-y", "-i", src,
 		"-map", "0:a", "-vn", "-c:a", "copy",
 		"-map_chapters", "-1", "-map_metadata", "-1",
-		"-movflags", "+faststart", "-f", "ipod", dst,
-	}, totalMs, progress, logf)
+	}
+	args = append(args, movieArgs...)
+	return f.run(ctx, append(args, "-f", "ipod", dst), totalMs, progress, logf)
 }
 
 // extractCover pulls a file's own embedded artwork out to the work dir. The

@@ -66,6 +66,7 @@ func (p prober) probe(ctx context.Context, path string) (*FileInfo, error) {
 			FormatName string            `json:"format_name"`
 			Duration   string            `json:"duration"`
 			BitRate    string            `json:"bit_rate"`
+			Size       string            `json:"size"`
 			Tags       map[string]string `json:"tags"`
 		} `json:"format"`
 		Streams []struct {
@@ -74,6 +75,9 @@ func (p prober) probe(ctx context.Context, path string) (*FileInfo, error) {
 			SampleRate string `json:"sample_rate"`
 			Channels   int    `json:"channels"`
 			BitRate    string `json:"bit_rate"`
+			TimeBase   string `json:"time_base"`
+			DurationTS int64  `json:"duration_ts"`
+			NbFrames   string `json:"nb_frames"`
 		} `json:"streams"`
 		Chapters []struct {
 			StartTime string `json:"start_time"`
@@ -106,6 +110,15 @@ func (p prober) probe(ctx context.Context, path string) (*FileInfo, error) {
 		if kb := parseBitrateKbps(s.BitRate); kb > 0 {
 			info.BitrateKbps = kb // stream bitrate beats container bitrate
 		}
+		nbFrames, _ := strconv.ParseInt(s.NbFrames, 10, 64)
+		if ms, ok := unwrapDuration(s.CodecName, s.TimeBase, s.DurationTS, nbFrames); ok && ms > info.DurationMs {
+			info.DurationMs = ms
+			// ffprobe may have computed the bitrates from the wrapped length
+			// as well (this book claimed 13 Mbit/s), so average over the file.
+			if size, err := strconv.ParseInt(raw.Format.Size, 10, 64); err == nil && size > 0 {
+				info.BitrateKbps = int(size * 8 / ms)
+			}
+		}
 		break
 	}
 	if info.Codec == "" {
@@ -119,6 +132,42 @@ func (p prober) probe(ctx context.Context, path string) (*FileInfo, error) {
 		})
 	}
 	return info, nil
+}
+
+// unwrapDuration recovers a track length that overflowed its 32-bit header.
+// A version-0 mdhd counts the length in samples in 32 bits, so at 44.1 kHz
+// anything past 27h03m wraps around — a 27h11m book from an mp4v2-based
+// tagger read as 7m58s. ffprobe reports min(header, sample table), so the
+// wrapped value is what it prints; players that sum the sample table (VLC)
+// show the real length. The frame count survives intact: an AAC frame is
+// 1024 samples, which estimates the true length well enough to pick how many
+// 2^32 wraps happened. Wraps are 27 hours apart, so the estimate only has to
+// land near the right one; requiring 1% agreement keeps a wrong frame-size
+// assumption (HE-AAC at 2048 per tick) from "correcting" a healthy file.
+func unwrapDuration(codec, timeBase string, durationTS, nbFrames int64) (int64, bool) {
+	if codec != "aac" || durationTS <= 0 || nbFrames <= 0 {
+		return 0, false
+	}
+	num, den, ok := strings.Cut(timeBase, "/")
+	if !ok {
+		return 0, false
+	}
+	n, err1 := strconv.ParseInt(num, 10, 64)
+	d, err2 := strconv.ParseInt(den, 10, 64)
+	if err1 != nil || err2 != nil || n <= 0 || d <= 0 {
+		return 0, false
+	}
+	const wrap = int64(1) << 32
+	est := nbFrames * 1024
+	k := (est - durationTS + wrap/2) / wrap
+	if k < 1 {
+		return 0, false
+	}
+	fixed := durationTS + k*wrap
+	if abs64(fixed-est) > est/100 {
+		return 0, false
+	}
+	return fixed * 1000 * n / d, true
 }
 
 func secondsToMs(s string) int64 {

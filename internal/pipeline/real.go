@@ -37,7 +37,7 @@ type RealConverter struct {
 }
 
 // stage weights: probe/plan 0-10%, merge 10-88%, chapters/tag 88-96%,
-// move/verify/cleanup 96-100%.
+// verify/move/cleanup 96-100%.
 func scaled(base, span, frac float64) float64 { return base + span*clamp01(frac) }
 
 func (rc *RealConverter) http() *http.Client {
@@ -159,8 +159,22 @@ func (rc *RealConverter) Run(ctx context.Context, job *store.Job, report Progres
 		return nil, err
 	}
 
+	// ---- verify BEFORE moving ---------------------------------------------
+	// As in a retag, the staged file is checked while it is still outside the
+	// library. Verifying after the move left a failed job's book sitting at
+	// its final path, and a retry then refused with "output already exists".
+	report("verify", 0.96)
+	tagged, err := prober.probe(ctx, stagedM4B)
+	if err != nil {
+		return nil, fmt.Errorf("verify: %w", err)
+	}
+	if err := verifyConversion(plan, tagged); err != nil {
+		return nil, err // nothing has reached the library
+	}
+	logf("verified: %s, %d chapters", fmtDuration(tagged.DurationMs), len(tagged.Chapters))
+
 	// ---- move -----------------------------------------------------------
-	report("move", 0.96)
+	report("move", 0.98)
 	if err := os.MkdirAll(filepath.Dir(finalPath), 0o777); err != nil {
 		return nil, err
 	}
@@ -174,21 +188,6 @@ func (rc *RealConverter) Run(ctx context.Context, job *store.Job, report Progres
 		}
 	}
 
-	// ---- verify ---------------------------------------------------------
-	report("verify", 0.98)
-	final, err := prober.probe(ctx, finalPath)
-	if err != nil {
-		return nil, fmt.Errorf("verify: %w", err)
-	}
-	if delta := abs64(final.DurationMs - plan.TotalMs); delta > runtimeTolerance(plan.TotalMs) {
-		return nil, fmt.Errorf("verify: output duration %s differs from source total %s",
-			fmtDuration(final.DurationMs), fmtDuration(plan.TotalMs))
-	}
-	if len(files) > 1 && len(final.Chapters) == 0 {
-		return nil, errors.New("verify: merged file has no chapters")
-	}
-	logf("verified: %s, %d chapters", fmtDuration(final.DurationMs), len(final.Chapters))
-
 	// ---- cleanup --------------------------------------------------------
 	report("cleanup", 0.99)
 	if err := rc.cleanupSource(job, logf); err != nil {
@@ -201,6 +200,22 @@ func (rc *RealConverter) Run(ctx context.Context, job *store.Job, report Progres
 		ChaptersJSON: resolved.json(),
 		Warnings:     warnings,
 	}, nil
+}
+
+// verifyConversion asserts what a finished book must get right before it
+// goes into the library: the audio is as long as its sources together (a
+// truncated merge or a decode that stopped early shows up here), and a merge
+// of several files carries chapters — multi-file input must never produce
+// zero.
+func verifyConversion(plan mergePlan, out *FileInfo) error {
+	if delta := abs64(out.DurationMs - plan.TotalMs); delta > runtimeTolerance(plan.TotalMs) {
+		return fmt.Errorf("verify: output duration %s differs from source total %s",
+			msToTimestamp(out.DurationMs), msToTimestamp(plan.TotalMs))
+	}
+	if len(plan.Files) > 1 && len(out.Chapters) == 0 {
+		return errors.New("verify: merged file has no chapters")
+	}
+	return nil
 }
 
 func planDescription(p mergePlan) string {

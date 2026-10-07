@@ -189,14 +189,16 @@ type providerChaptersData struct {
 // handleMatchProviderChapters fetches the selected candidate's chapter
 // timings so the user can seek the local audio to them for comparison.
 func (s *Server) handleMatchProviderChapters(w http.ResponseWriter, r *http.Request) {
-	choice := r.URL.Query().Get("choice") // "ASIN|region" from the selected radio
 	data := providerChaptersData{
 		Path:  r.URL.Query().Get("path"),
 		Shift: shiftSpecFrom(r.URL.Query().Get),
 	}
-	asin, region, ok := strings.Cut(choice, "|")
-	if !ok || asin == "" {
+	asin, region, ok := s.choiceASIN(r.URL.Query().Get)
+	if !ok {
 		data.Err = "Select a match first."
+		if r.URL.Query().Get("choice") == manualChoice {
+			data.Err = "No ASIN, so no Audible chapters."
+		}
 		s.render.partial(w, "match", "provider_chapters", data)
 		return
 	}
@@ -244,6 +246,7 @@ type rowSummaryData struct {
 	BadgeText     string
 	Notes         []string // aggregation degradation notes (secondary source down)
 	Err           string
+	Manual        bool // tagged by hand: no catalog runtime to compare
 }
 
 // handleMatchRowSummary renders the compact row description of the assigned
@@ -278,12 +281,7 @@ func (s *Server) handleMatchRowSummary(w http.ResponseWriter, r *http.Request) {
 	data.Book = book
 	data.Notes = res.Notes
 	data.AuthorLine = strings.Join(book.Authors, ", ")
-	if book.SeriesName != "" {
-		data.SeriesLine = book.SeriesName
-		if book.SeriesPosition != "" {
-			data.SeriesLine += ", Book " + book.SeriesPosition
-		}
-	}
+	data.SeriesLine = seriesLine(book)
 
 	// Official runtime: the chapter data carries millisecond precision; the
 	// book record only minutes. Chapters may be cached already (the verdict
@@ -308,6 +306,33 @@ func (s *Server) handleMatchRowSummary(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	s.render.partial(w, "match", "row_summary", data)
+}
+
+func seriesLine(book *metadata.Book) string {
+	if book.SeriesName == "" {
+		return ""
+	}
+	if book.SeriesPosition != "" {
+		return book.SeriesName + ", Book " + book.SeriesPosition
+	}
+	return book.SeriesName
+}
+
+// choiceASIN resolves an item's match choice to the catalog record whose
+// chapters apply. A catalog pick names it as "ASIN|region"; a book tagged by
+// hand has one only when its form names an ASIN, which its job looks up in
+// the default region — so the verdict asks the same question the job will.
+func (s *Server) choiceASIN(get func(string) string) (asin, region string, ok bool) {
+	choice := get("choice")
+	if choice == manualChoice {
+		asin = strings.ToUpper(strings.TrimSpace(manualFields(get, get("path"))("asin")))
+		if !metadata.ValidASIN(asin) {
+			return "", "", false
+		}
+		return asin, s.settings().RegionDefault, true
+	}
+	asin, region, ok = strings.Cut(choice, "|")
+	return asin, region, ok && asin != ""
 }
 
 type chapterPlanData struct {
@@ -357,7 +382,7 @@ func (s *Server) handleMatchChapterPlan(w http.ResponseWriter, r *http.Request) 
 	}
 
 	var provider *metadata.ChapterInfo
-	if asin, region, ok := strings.Cut(q.Get("choice"), "|"); ok && asin != "" {
+	if asin, region, ok := s.choiceASIN(q.Get); ok {
 		if provider, _ = s.store.CachedChapters(aggregate.SourceAudnexus, asin, region); provider == nil {
 			if ch, err := s.provider().GetChapters(ctx, asin, region); err == nil {
 				provider = ch

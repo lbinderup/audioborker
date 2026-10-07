@@ -26,6 +26,56 @@ func TestParseFFmpegTime(t *testing.T) {
 	}
 }
 
+func TestUnwrapDuration(t *testing.T) {
+	cases := []struct {
+		name               string
+		codec, timeBase    string
+		durationTS, frames int64
+		wantMs             int64
+		wantOK             bool
+	}{
+		// Absolution Gap: 4,214,902 frames = 4,316,059,648 samples, stored
+		// as 21,092,352 after the 32-bit header wrapped.
+		{"wrapped once", "aac", "1/44100", 21_092_352, 4_214_902, 97_869_833, true},
+		{"wrapped three times", "aac", "1/44100", 21_092_352, 4_214_902 + 2*(1<<32)/1024, 292_652_930, true},
+		{"healthy long book", "aac", "1/44100", 4_316_059_648, 4_214_902, 0, false},
+		{"healthy short file", "aac", "1/44100", 21_092_352, 20_598, 0, false},
+		{"HE-AAC 2048 per tick never guesses", "aac", "1/44100", 21_092_352, 2_107_451, 0, false},
+		{"not aac", "mp3", "1/44100", 21_092_352, 4_214_902, 0, false},
+		{"no frame count", "aac", "1/44100", 21_092_352, 0, 0, false},
+		{"bad time base", "aac", "", 21_092_352, 4_214_902, 0, false},
+	}
+	for _, c := range cases {
+		ms, ok := unwrapDuration(c.codec, c.timeBase, c.durationTS, c.frames)
+		if ok != c.wantOK || ms != c.wantMs {
+			t.Errorf("%s: got %d, %v; want %d, %v", c.name, ms, ok, c.wantMs, c.wantOK)
+		}
+	}
+}
+
+func TestVerifyConversion(t *testing.T) {
+	one := mergePlan{Files: []*FileInfo{{}}, TotalMs: 3_600_000}
+	two := mergePlan{Files: []*FileInfo{{}, {}}, TotalMs: 3_600_000}
+	chapters := []ProbedChapter{{Title: "One"}, {Title: "Two"}}
+	cases := []struct {
+		name string
+		plan mergePlan
+		out  FileInfo
+		ok   bool
+	}{
+		{"good merge", two, FileInfo{DurationMs: 3_600_000, Chapters: chapters}, true},
+		{"encoder padding drift", two, FileInfo{DurationMs: 3_600_046, Chapters: chapters}, true},
+		{"truncated merge", two, FileInfo{DurationMs: 3_000_000, Chapters: chapters}, false},
+		{"multi-file without chapters", two, FileInfo{DurationMs: 3_600_000}, false},
+		{"single file may have none", one, FileInfo{DurationMs: 3_600_000}, true},
+	}
+	for _, c := range cases {
+		if err := verifyConversion(c.plan, &c.out); (err == nil) != c.ok {
+			t.Errorf("%s: err = %v, want ok=%v", c.name, err, c.ok)
+		}
+	}
+}
+
 func TestPlanMerge(t *testing.T) {
 	aac := []*FileInfo{
 		{Codec: "aac", Container: "mov,mp4,m4a,3gp,3g2,mj2", DurationMs: 1000, BitrateKbps: 125},

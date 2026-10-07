@@ -12,7 +12,7 @@ import (
 )
 
 // Stages in execution order; the UI shows these as the job's current step.
-var Stages = []string{"probe", "plan", "merge", "chapters", "tag", "move", "verify", "cleanup"}
+var Stages = []string{"probe", "plan", "merge", "chapters", "tag", "verify", "move", "cleanup"}
 
 // Result is what a successful conversion reports back.
 type Result struct {

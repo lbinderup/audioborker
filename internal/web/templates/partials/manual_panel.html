@@ -1,0 +1,133 @@
+{{define "manual_panel"}}
+{{/* Lives inside the match form: every input is named manual:{field}:{path},
+     so the item's reviewed tags submit with POST /queue like its other
+     controls. No `required` — a hidden invalid field would block the whole
+     batch from submitting; "Use" validates on the server instead. */}}
+<div class="manual-panel settings-form">
+  <p class="lib-path"><code>{{.Path}}</code>
+    {{with .Files}} · {{len .}} file{{if gt (len .) 1}}s{{end}}{{end}}
+    {{if .RuntimeMin}} · {{runtime .RuntimeMin}}{{end}}</p>
+
+  {{if .Errors}}
+  <div class="flash flash-err" role="alert">
+    <ul class="error-list">{{range .Errors}}<li>{{.}}</li>{{end}}</ul>
+  </div>
+  {{end}}
+  {{range .Notes}}<div class="flash flash-warn">{{.}}</div>{{end}}
+
+  {{if .Files}}
+  {{$p := .Path}}{{$i := .Index}}
+  <input type="hidden" name="manual:local_id:{{$p}}" value="{{.LocalID}}">
+
+  <fieldset>
+    <legend>1 · Prompt</legend>
+    <p class="manual-actions">
+      <button type="button" class="btn-primary" onclick="copyPrompt(this)">Copy prompt</button>
+      <span class="hint copy-status"></span>
+    </p>
+    <details class="prompt-details">
+      <summary>Show prompt</summary>
+      <textarea class="manual-prompt" readonly rows="18" spellcheck="false">{{.Prompt}}</textarea>
+    </details>
+  </fieldset>
+
+  <fieldset>
+    <legend>2 · Reply</legend>
+    <textarea class="manual-reply" rows="5" spellcheck="false" placeholder="Paste reply"></textarea>
+    <p class="manual-actions">
+      <button type="button" class="btn-ghost btn-small" onclick="parseReply(this)">Re-read</button>
+      <span class="hint parse-status"></span>
+    </p>
+    <ul class="hint manual-warnings"></ul>
+  </fieldset>
+
+  <fieldset>
+    <legend>3 · Review</legend>
+
+    <label for="m{{$i}}-title">Title</label>
+    <input type="text" id="m{{$i}}-title" name="manual:title:{{$p}}" data-field="title" value="{{.Form.Title}}">
+
+    <label for="m{{$i}}-subtitle">Subtitle</label>
+    <input type="text" id="m{{$i}}-subtitle" name="manual:subtitle:{{$p}}" data-field="subtitle" value="{{.Form.Subtitle}}">
+
+    <label for="m{{$i}}-authors">Authors</label>
+    <input type="text" id="m{{$i}}-authors" name="manual:authors:{{$p}}" data-field="authors" value="{{.Form.Authors}}" placeholder="Name; Name">
+
+    <label for="m{{$i}}-narrators">Narrators</label>
+    <input type="text" id="m{{$i}}-narrators" name="manual:narrators:{{$p}}" data-field="narrators" value="{{.Form.Narrators}}" placeholder="Name; Name">
+
+    <div class="manual-pair">
+      <div>
+        <label for="m{{$i}}-series">Series</label>
+        <input type="text" id="m{{$i}}-series" name="manual:series_name:{{$p}}" data-field="series_name" value="{{.Form.SeriesName}}">
+      </div>
+      <div class="manual-narrow">
+        <label for="m{{$i}}-position">Book</label>
+        <input type="text" id="m{{$i}}-position" name="manual:series_position:{{$p}}" data-field="series_position" value="{{.Form.SeriesPosition}}">
+      </div>
+    </div>
+
+    <div class="manual-pair">
+      <div>
+        <label for="m{{$i}}-publisher">Publisher</label>
+        <input type="text" id="m{{$i}}-publisher" name="manual:publisher:{{$p}}" data-field="publisher" value="{{.Form.Publisher}}">
+      </div>
+      <div class="manual-narrow">
+        <label for="m{{$i}}-release">Released</label>
+        <input type="text" id="m{{$i}}-release" name="manual:release:{{$p}}" data-field="release" value="{{.Form.Release}}" placeholder="YYYY-MM-DD">
+      </div>
+    </div>
+
+    <div class="manual-pair">
+      <div>
+        <label for="m{{$i}}-genres">Genres</label>
+        <input type="text" id="m{{$i}}-genres" name="manual:genres:{{$p}}" data-field="genres" value="{{.Form.Genres}}" placeholder="Genre; Sub-genre">
+      </div>
+      <div class="manual-narrow">
+        <label for="m{{$i}}-language">Language</label>
+        <input type="text" id="m{{$i}}-language" name="manual:language:{{$p}}" data-field="language" value="{{.Form.Language}}">
+      </div>
+    </div>
+
+    <label for="m{{$i}}-description">Description</label>
+    <textarea id="m{{$i}}-description" name="manual:description:{{$p}}" data-field="description" rows="8">{{.Form.Description}}</textarea>
+
+    <label for="m{{$i}}-asin">ASIN <span class="muted">(optional)</span></label>
+    <input type="text" id="m{{$i}}-asin" name="manual:asin:{{$p}}" data-field="asin" value="{{.Form.ASIN}}" maxlength="10" spellcheck="false" class="manual-asin">
+  </fieldset>
+
+  <fieldset>
+    <legend>Cover</legend>
+    <div class="cover-choices">
+      {{if .FileCover}}
+      <label class="cover-choice">
+        <input type="radio" name="manual:cover:{{$p}}" value="file" {{if eq $.Cover "file"}}checked{{end}}>
+        <img src="{{.FileCover}}" alt="" data-res>
+        <span>File</span>
+      </label>
+      {{end}}
+      {{range .Editions}}{{if .CoverURL}}
+      <label class="cover-choice">
+        <input type="radio" name="manual:cover:{{$p}}" value="edition:{{.CoverURL}}" {{if eq $.Cover (printf "edition:%s" .CoverURL)}}checked{{end}}>
+        <img src="{{hires .CoverURL}}" data-fallback="{{.CoverURL}}" alt="" loading="lazy" data-res>
+        <span>{{.Title}}{{with .Year}} · {{.}}{{end}}</span>
+      </label>
+      {{end}}{{end}}
+      <label class="cover-choice cover-drop">
+        <input type="radio" name="manual:cover:{{$p}}" value="upload" {{if eq $.Cover "upload"}}checked{{end}}>
+        <img class="upload-preview" alt="" data-res hidden>
+        <span><span class="drop-hint">Drop or paste image&nbsp;· </span><button type="button" class="link-button" onclick="this.closest('.manual-panel').querySelector('.cover-file').click()">choose file</button></span>
+      </label>
+    </div>
+    <input type="hidden" name="manual:cover_name:{{$p}}" class="cover-name" value="">
+    <input type="file" class="cover-file" accept="image/jpeg,image/png" hidden>
+    <p class="hint cover-status"></p>
+  </fieldset>
+
+  <ul class="error-list manual-errors" role="alert"></ul>
+  <p class="manual-actions">
+    <button type="button" class="btn-primary" onclick="useManual(this)">Use</button>
+  </p>
+  {{end}}
+</div>
+{{end}}

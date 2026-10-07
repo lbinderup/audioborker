@@ -77,11 +77,16 @@ copy → chapters → tag → verify → replace).
   (`Book.GenrePaths`) tie a sub-genre to its genre; Audnexus flattens them.
   Classification covers the English storefronts' category names only;
   unknown names are never dropped.
-- **Tagging by hand is a separate flow, not a metadata source.** For editions
-  no catalog has, `/manual` builds an LLM prompt, parses the pasted JSON and
-  queues a job whose snapshot comes from the reviewed form — it never goes
-  through `aggregate.Merge` or the match screen's `match:` radios (both assume
-  a catalog `ASIN|region`). `Book.LocalID` makes tone write
+- **Tagging by hand is a kind of match, not a metadata source.** For editions
+  no catalog has, the match dialog's Tag by hand pane builds an LLM prompt and
+  parses the pasted JSON into a review form whose inputs live in the match
+  form as `manual:{field}:{path}`. "Use" assigns it through the item's
+  `match:` radio with the value `manual`, so the queue, the chapter verdict
+  and the rename preview take it like a catalog pick — but its snapshot comes
+  from the reviewed fields, never `aggregate.Merge`. Anything parsing a
+  `match:` choice must handle `manual` (`choiceASIN`: its chapters come from
+  the form's ASIN, if any, in the default region — as its job fetches them).
+  `Book.LocalID` makes tone write
   `AUDIOBORKER_SOURCE=manual` + `AUDIOBORKER_ID`; the Plex agent matches such a
   file by that ID and takes everything from its tags. Re-tagging reuses the
   file's ID so Plex keeps the item. Hand-picked covers live in
@@ -100,6 +105,10 @@ copy → chapters → tag → verify → replace).
   reorder verify after replace, and never use `moveFile` for the swap: its
   copy+delete fallback would write a partial file over a good one
   (`replaceFile` requires a real rename for this reason).
+- **A conversion verifies before it moves, too.** The tagged book is probed
+  in staging (`verifyConversion`) and only then moved to its final path, so a
+  failed job never leaves a book in the library — which a retry would then
+  refuse as "output already exists".
 - **The retag's copy is what makes tone's merge semantics safe.** `tone tag`
   merges rather than replaces, so retagging a file that still had its old atoms
   would leave stale values behind (a book that loses its series keeps `©mvn`).
@@ -124,6 +133,14 @@ copy → chapters → tag → verify → replace).
   click, so keep it strict.
 - **Multi-file input must never produce zero chapters.** Fallback order is
   provider (runtime-validated) → file's own → file boundaries → single chapter.
+- **Read durations only through `pipeline.ProbeFile`.** A version-0 `mdhd`
+  counts samples in 32 bits, so at 44.1 kHz anything past 27h03m wraps —
+  ffprobe reported a 27h11m book as 8 minutes, which rejected its Audible
+  chapters and would have failed verify. The probe recovers the true length
+  from the AAC frame count (`unwrapDuration`). Every m4b ffmpeg writes gets
+  `-movie_timescale 1000` (`movieArgs`): tone writes its chapter track's
+  header in 32 bits of the movie timescale, which newer ffmpeg sets to the
+  sample rate.
 - **ffmpeg concat lists need absolute paths.** The demuxer resolves relative
   entries against the list file's directory, not the working directory.
 - **tone args must be `--flag=value` single tokens.** Values starting with `-`

@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"audioborker/internal/match"
+	"audioborker/internal/metadata"
 	"audioborker/internal/metadata/embedded"
 	"audioborker/internal/pipeline"
 	"audioborker/internal/scan"
@@ -245,8 +246,9 @@ func (s *Server) handleLibraryRenamePreview(w http.ResponseWriter, r *http.Reque
 	rel := q.Get("path")
 	data := renamePreviewData{Old: rel}
 
-	asin, region, ok := strings.Cut(q.Get("choice"), "|")
-	if !ok || asin == "" {
+	choice := q.Get("choice")
+	asin, region, ok := strings.Cut(choice, "|")
+	if choice != manualChoice && (!ok || asin == "") {
 		s.render.partial(w, "match", "rename_preview", data) // nothing to preview yet
 		return
 	}
@@ -257,17 +259,27 @@ func (s *Server) handleLibraryRenamePreview(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	ctx, cancel := context.WithTimeout(r.Context(), 20*time.Second)
-	defer cancel()
-	res, err := s.aggregator().GetBook(ctx, asin, region, metadataOverridesFor(q.Get))
-	if err != nil {
-		data.Err = "Lookup failed: " + err.Error()
-		s.render.partial(w, "match", "rename_preview", data)
-		return
+	var book *metadata.Book
+	if choice == manualChoice {
+		var errs []string
+		if book, _, errs = s.manualBook(manualFields(q.Get, rel)); len(errs) > 0 {
+			s.render.partial(w, "match", "rename_preview", data) // not a whole book yet
+			return
+		}
+	} else {
+		ctx, cancel := context.WithTimeout(r.Context(), 20*time.Second)
+		defer cancel()
+		res, err := s.aggregator().GetBook(ctx, asin, region, metadataOverridesFor(q.Get))
+		if err != nil {
+			data.Err = "Lookup failed: " + err.Error()
+			s.render.partial(w, "match", "rename_preview", data)
+			return
+		}
+		book = res.Book
 	}
 
 	opts := store.JobOptions{OutputDir: set.OutputDir, PathTemplate: set.PathTemplate, Rename: true}
-	target, renamed, err := pipeline.RetagTarget(abs, opts, *res.Book)
+	target, renamed, err := pipeline.RetagTarget(abs, opts, *book)
 	switch {
 	case err != nil:
 		data.Err = err.Error()

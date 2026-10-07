@@ -209,7 +209,7 @@ func verifyRetag(before, after *FileInfo, wantChapters int, asin string) error {
 	// padding), so this is a tolerance rather than an equality test.
 	if delta := abs64(after.DurationMs - before.DurationMs); delta > runtimeTolerance(before.DurationMs) {
 		return fmt.Errorf("verify: the retagged copy is %s but the original is %s — refusing to replace it",
-			fmtDuration(after.DurationMs), fmtDuration(before.DurationMs))
+			msToTimestamp(after.DurationMs), msToTimestamp(before.DurationMs))
 	}
 	if len(after.Chapters) != wantChapters {
 		return fmt.Errorf("verify: wrote %d chapters but the copy has %d — refusing to replace the original",

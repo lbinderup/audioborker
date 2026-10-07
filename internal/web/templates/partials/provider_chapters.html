@@ -6,7 +6,7 @@
         hx-get="/match/provider-chapters"
         hx-target="closest .provider-col"
         hx-swap="innerHTML"
-        hx-vals='js:{choice: document.querySelector(`input[name="match:{{.Path}}"]:checked`)?.value || "", path: {{.Path | printf "%q"}}, ...shiftVals({{.Path | printf "%q"}})}'>
+        hx-vals='js:{choice: document.querySelector(`input[name="match:{{.Path}}"]:checked`)?.value || "", path: {{.Path | printf "%q"}}, ...shiftVals({{.Path | printf "%q"}}), ...manualVals({{.Path | printf "%q"}})}'>
   Load for comparison
 </button>
 {{else}}
