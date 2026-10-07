@@ -71,6 +71,16 @@ func (t toneRunner) tag(ctx context.Context, m4bPath string, book *metadata.Book
 	if book.ASIN != "" {
 		args = append(args, "--meta-additional-field=----:com.pilabor.tone:AUDIBLE_ASIN="+book.ASIN)
 	}
+	// The genre atom holds one value; GENRES keeps them all (sub-genres too),
+	// for readers that look — the Plex agent does, for books tagged by hand.
+	if all := bookGenres(book); len(all) > 1 {
+		args = append(args, "--meta-additional-field=----:com.pilabor.tone:GENRES="+strings.Join(all, "; "))
+	}
+	if book.LocalID != "" {
+		args = append(args,
+			"--meta-additional-field=----:com.pilabor.tone:AUDIOBORKER_SOURCE=manual",
+			"--meta-additional-field=----:com.pilabor.tone:AUDIOBORKER_ID="+book.LocalID)
+	}
 	if coverPath != "" {
 		args = append(args, "--meta-cover-file="+coverPath)
 	}
@@ -92,6 +102,21 @@ func (t toneRunner) tag(ctx context.Context, m4bPath string, book *metadata.Book
 		return fmt.Errorf("tone tag failed: %w", err)
 	}
 	return nil
+}
+
+// bookGenres is Genres then SubGenres, deduplicated, without blanks or ";"
+// (the GENRES separator).
+func bookGenres(book *metadata.Book) []string {
+	var out []string
+	seen := map[string]bool{}
+	for _, g := range append(append([]string(nil), book.Genres...), book.SubGenres...) {
+		g = strings.TrimSpace(strings.ReplaceAll(g, ";", ","))
+		if g != "" && !seen[g] {
+			seen[g] = true
+			out = append(out, g)
+		}
+	}
+	return out
 }
 
 // normalizeText strips carriage returns from free-text tag values so

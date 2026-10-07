@@ -37,7 +37,12 @@ func Book(tags map[string]string) *metadata.Book {
 	// convention (and in our own tagger) the narrator is also written to
 	// composer — so that is the reliable place to read it back from.
 	b.Narrators = splitPeople(n.first("narrator", "composer"))
-	if g := n.first("genre"); g != "" {
+	// The genre atom holds one value, the one players show. audioborker also
+	// writes every genre and sub-genre into a GENRES atom, "; "-separated, so
+	// a book tagged without any catalog (the manual flow) keeps them all.
+	if gs := splitList(n.first("genres")); len(gs) > 0 {
+		b.Genres = gs
+	} else if g := n.first("genre"); g != "" {
 		b.Genres = []string{g}
 	}
 	// Prefer the longest blurb rather than the first: the same
@@ -52,6 +57,17 @@ func Book(tags map[string]string) *metadata.Book {
 		}
 	}
 	return b
+}
+
+// ManualID returns the AUDIOBORKER_ID of a book that was tagged by hand
+// (AUDIOBORKER_SOURCE=manual), or "". Tagging the same book by hand again
+// reuses it, so the Plex agent keeps matching it to the same item.
+func ManualID(tags map[string]string) string {
+	n := normalize(tags)
+	if !strings.EqualFold(n["audioborker_source"], "manual") {
+		return ""
+	}
+	return n["audioborker_id"]
 }
 
 // ASIN returns the Audible ASIN a file claims, or "". Spellings seen in the
@@ -147,6 +163,17 @@ func splitPeople(s string) []string {
 		}
 	}
 	return []string{strings.TrimSpace(s)}
+}
+
+// splitList splits a "; "-separated list, dropping blanks.
+func splitList(s string) []string {
+	var out []string
+	for _, part := range strings.Split(s, ";") {
+		if p := strings.TrimSpace(part); p != "" {
+			out = append(out, p)
+		}
+	}
+	return out
 }
 
 // leadingYear pulls a 4-digit year off the front of a date-ish value.

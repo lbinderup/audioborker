@@ -31,6 +31,9 @@ chapterization abilities.
   the book's fiction/non-fiction label (Audible files *The Lies of Locke
   Lamora* under "Relationships, Parenting & Personal Development") is
   dropped, and the best-supported genre is the one written into the file.
+- **Tag by hand** — for an edition no catalog has: copy a prompt into any
+  LLM, paste its JSON reply, review the fields and pick a cover (the file's,
+  another edition's, or one you drop in).
 - **Chapter preview** — before converting, play the source straight from the
   server (HTTP Range streaming, so it works remotely too) and click any
   embedded chapter to hear whether it lines up. Load the Audible chapter

@@ -1,14 +1,14 @@
 {{define "content"}}
 <section class="card">
   <h1>Library</h1>
-  <p class="muted">Retag books already in <code>{{.OutputDir}}</code>. Pick one or more files, match them against Audible, and their tags and chapters are rewritten — the audio is never re-encoded.</p>
+  <p class="muted"><code>{{.OutputDir}}</code></p>
 
   {{if .Empty}}
-    <p class="muted">No <code>.m4b</code> files found in the library directory.</p>
+    <p class="muted">No <code>.m4b</code> files found.</p>
   {{else}}
   <div class="tree-toolbar">
     <input type="search" id="lib-search" class="lib-search" spellcheck="false"
-           placeholder="Filter the whole library — try an author, series or title…"
+           placeholder="Filter…"
            hx-get="/library/search"
            hx-target="#tree"
            hx-swap="innerHTML"

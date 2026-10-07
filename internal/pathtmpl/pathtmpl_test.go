@@ -43,6 +43,41 @@ func TestRender(t *testing.T) {
 			want:     "Andy Weir/Project Hail Mary",
 		},
 		{
+			name:     "empty asin drops its brackets (books tagged by hand)",
+			template: "{author}/{series_name}/{title}/{title} [{asin}]",
+			mutate:   func(v *Vars) { v.ASIN = "" },
+			want:     "Andy Weir/Hail Mary/Project Hail Mary/Project Hail Mary",
+		},
+		{
+			name:     "a bracket group with a value stays",
+			template: "{author}/{title} ({year}) [{asin}]",
+			mutate:   func(v *Vars) { v.ASIN = "" },
+			want:     "Andy Weir/Project Hail Mary (2021)",
+		},
+		{
+			name:     "a group is empty only when all its tokens are",
+			template: "{author}/{title} [{asin} {year}]",
+			mutate:   func(v *Vars) { v.ASIN = "" },
+			want:     "Andy Weir/Project Hail Mary [ 2021]",
+		},
+		{
+			name:     "literal text in an all-empty group goes with it",
+			template: "{author}/{title} [ASIN {asin}]",
+			mutate:   func(v *Vars) { v.ASIN = "" },
+			want:     "Andy Weir/Project Hail Mary",
+		},
+		{
+			name:     "brackets without tokens are literal",
+			template: "{author}/{title} [Unabridged]",
+			want:     "Andy Weir/Project Hail Mary [Unabridged]",
+		},
+		{
+			name:     "brackets inside a value are untouched",
+			template: "{author}/{title} [{asin}]",
+			mutate:   func(v *Vars) { v.Title = "Book [Remastered]"; v.ASIN = "" },
+			want:     "Andy Weir/Book [Remastered]",
+		},
+		{
 			name:     "value containing a token name is not re-substituted",
 			template: "{author}/{title}",
 			mutate:   func(v *Vars) { v.Author = "{title} year" },

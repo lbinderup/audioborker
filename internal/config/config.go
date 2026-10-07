@@ -77,7 +77,12 @@ func Load(version string) Config {
 
 func (c Config) DBPath() string  { return filepath.Join(c.ConfigDir, "audioborker.db") }
 func (c Config) LogsDir() string { return filepath.Join(c.ConfigDir, "logs") }
-func (c Config) WorkDir() string { return filepath.Join(c.ConfigDir, "work") }
+
+// CoversDir holds cover images chosen by hand in the manual tagging flow.
+// Not the work dir: that is per job and removed when the job ends, and a
+// retry must still find the image.
+func (c Config) CoversDir() string { return filepath.Join(c.ConfigDir, "covers") }
+func (c Config) WorkDir() string   { return filepath.Join(c.ConfigDir, "work") }
 
 // ffBinDefault resolves ffmpeg/ffprobe. On dev machines a parent process
 // started before a winget install may carry a stale PATH, so fall back to

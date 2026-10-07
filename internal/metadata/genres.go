@@ -18,32 +18,54 @@ const (
 	KindNonfiction = "nonfiction"
 )
 
-// genreKinds classifies Audible's top-level categories as the English-language
-// stores name them. Categories holding both kinds (Children's Audiobooks,
-// Comedy & Humor, LGBTQ+, Teen & Young Adult) and names from other stores are
-// absent on purpose: an unclassified genre is never dropped.
-var genreKinds = map[string]string{
-	"literature & fiction":         KindFiction,
-	"science fiction & fantasy":    KindFiction,
-	"mystery, thriller & suspense": KindFiction,
-	"romance":                      KindFiction,
-	"erotica":                      KindFiction,
+// audibleGenres are Audible's top-level categories as the English-language
+// stores name them, with their kind. Categories holding both kinds carry ""
+// and, like names from other stores, are never dropped.
+var audibleGenres = []struct{ name, kind string }{
+	{"Arts & Entertainment", KindNonfiction},
+	{"Biographies & Memoirs", KindNonfiction},
+	{"Business & Careers", KindNonfiction},
+	{"Children's Audiobooks", ""},
+	{"Comedy & Humor", ""},
+	{"Computers & Technology", KindNonfiction},
+	{"Education & Learning", KindNonfiction},
+	{"Erotica", KindFiction},
+	{"Health & Wellness", KindNonfiction},
+	{"History", KindNonfiction},
+	{"Home & Garden", KindNonfiction},
+	{"LGBTQ+", ""},
+	{"Literature & Fiction", KindFiction},
+	{"Money & Finance", KindNonfiction},
+	{"Mystery, Thriller & Suspense", KindFiction},
+	{"Politics & Social Sciences", KindNonfiction},
+	{"Relationships, Parenting & Personal Development", KindNonfiction},
+	{"Religion & Spirituality", KindNonfiction},
+	{"Romance", KindFiction},
+	{"Science & Engineering", KindNonfiction},
+	{"Science Fiction & Fantasy", KindFiction},
+	{"Sports & Outdoors", KindNonfiction},
+	{"Teen & Young Adult", ""},
+	{"Travel & Tourism", KindNonfiction},
+}
 
-	"arts & entertainment":       KindNonfiction,
-	"biographies & memoirs":      KindNonfiction,
-	"business & careers":         KindNonfiction,
-	"computers & technology":     KindNonfiction,
-	"education & learning":       KindNonfiction,
-	"health & wellness":          KindNonfiction,
-	"history":                    KindNonfiction,
-	"home & garden":              KindNonfiction,
-	"money & finance":            KindNonfiction,
-	"politics & social sciences": KindNonfiction,
-	"relationships, parenting & personal development": KindNonfiction,
-	"religion & spirituality":                         KindNonfiction,
-	"science & engineering":                           KindNonfiction,
-	"sports & outdoors":                               KindNonfiction,
-	"travel & tourism":                                KindNonfiction,
+var genreKinds = func() map[string]string {
+	m := map[string]string{}
+	for _, g := range audibleGenres {
+		if g.kind != "" {
+			m[strings.ToLower(g.name)] = g.kind
+		}
+	}
+	return m
+}()
+
+// AudibleGenreNames lists Audible's top-level categories, the vocabulary the
+// genre cleanup understands — offered to whoever tags a book by hand.
+func AudibleGenreNames() []string {
+	out := make([]string, len(audibleGenres))
+	for i, g := range audibleGenres {
+		out[i] = g.name
+	}
+	return out
 }
 
 // GenreKind classifies a top-level genre name: KindFiction, KindNonfiction,

@@ -3,7 +3,6 @@
 <p class="muted">{{.Err}}</p>
 {{else}}
 {{range .Notes}}<p class="muted">⚠ {{.}}</p>{{end}}
-<p class="muted msrc-hint">Fields where the catalogs disagree offer a choice; your picks apply when this batch is queued.</p>
 <table class="msrc-table">
   <thead>
     <tr><th></th>{{if $.HasCurrent}}<th>In this file</th>{{end}}<th>Audnexus</th><th>Audible</th></tr>
@@ -21,18 +20,18 @@
       <td>
         <label class="msrc-pick">
           <input type="radio" name="msrc:{{.Key}}:{{$.Path}}" value="audnexus" {{if eq .Winner "audnexus"}}checked{{end}}>
-          {{if .IsCover}}<img class="msrc-cover" src="{{.Audnexus}}" alt="Audnexus cover" loading="lazy">{{else}}<span>{{.Audnexus}}</span>{{end}}
+          {{if .IsCover}}<span class="cover-stack"><img class="msrc-cover" src="{{hires .Audnexus}}" data-fallback="{{.Audnexus}}" alt="Audnexus cover" loading="lazy" data-res></span>{{else}}<span>{{.Audnexus}}</span>{{end}}
         </label>
       </td>
       <td>
         <label class="msrc-pick">
           <input type="radio" name="msrc:{{.Key}}:{{$.Path}}" value="audible" {{if eq .Winner "audible"}}checked{{end}}>
-          {{if .IsCover}}<img class="msrc-cover" src="{{.Audible}}" alt="Audible cover" loading="lazy">{{else}}<span>{{.Audible}}</span>{{end}}
+          {{if .IsCover}}<span class="cover-stack"><img class="msrc-cover" src="{{hires .Audible}}" data-fallback="{{.Audible}}" alt="Audible cover" loading="lazy" data-res></span>{{else}}<span>{{.Audible}}</span>{{end}}
         </label>
       </td>
       {{else}}
       <td colspan="2" class="msrc-single">
-        {{if .IsCover}}<img class="msrc-cover" src="{{.Value}}" alt="Cover" loading="lazy">{{else}}{{.Value}}{{end}}
+        {{if .IsCover}}<span class="cover-stack"><img class="msrc-cover" src="{{hires .Value}}" data-fallback="{{.Value}}" alt="Cover" loading="lazy" data-res></span>{{else}}{{.Value}}{{end}}
         <span class="source-badge source-{{.Winner}}">{{.Winner}}</span>
       </td>
       {{end}}

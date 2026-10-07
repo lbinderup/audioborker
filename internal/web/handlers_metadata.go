@@ -49,7 +49,7 @@ func (s *Server) handleMatchMetadataSources(w http.ResponseWriter, r *http.Reque
 
 	asin, region, ok := strings.Cut(q.Get("choice"), "|")
 	if !ok || asin == "" {
-		data.Err = "Select a match first — then each field's sources can be compared here."
+		data.Err = "Select a match first."
 		s.render.partial(w, "match", "metadata_sources", data)
 		return
 	}

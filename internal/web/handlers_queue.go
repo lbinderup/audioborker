@@ -236,7 +236,8 @@ func (s *Server) handleClearHistory(w http.ResponseWriter, r *http.Request) {
 	for _, p := range logs {
 		os.Remove(p)
 	}
-	s.queue.Wake() // repaint queue views
+	s.pruneCovers(0) // covers chosen by hand for the jobs just cleared
+	s.queue.Wake()   // repaint queue views
 	http.Redirect(w, r, "/queue", http.StatusSeeOther)
 }
 

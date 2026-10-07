@@ -196,7 +196,7 @@ func (s *Server) handleMatchProviderChapters(w http.ResponseWriter, r *http.Requ
 	}
 	asin, region, ok := strings.Cut(choice, "|")
 	if !ok || asin == "" {
-		data.Err = "Select a match first — then its official chapters can be loaded here."
+		data.Err = "Select a match first."
 		s.render.partial(w, "match", "provider_chapters", data)
 		return
 	}
@@ -336,7 +336,7 @@ func (s *Server) handleMatchChapterPlan(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 	if len(files) > 300 {
-		data.Err = "Too many files to preview the chapter decision; it will be made during conversion."
+		data.Err = "Too many files to preview; decided during conversion."
 		s.render.partial(w, "match", "chapter_plan", data)
 		return
 	}
@@ -396,7 +396,7 @@ func (s *Server) handleMatchChapterPlan(w http.ResponseWriter, r *http.Request) 
 		}
 	case pipeline.SourceSingle:
 		data.Icon, data.Verdict = "▭", "Will embed one whole-book chapter."
-		data.Reason = "No chapter data anywhere: not from Audible, none embedded in the file."
+		data.Reason = "No chapter data from Audible or the file."
 	case pipeline.SourceTitlesFiles:
 		data.Icon, data.Verdict = "🔀", fmt.Sprintf("Will embed %d chapters: Audible's titles on your file boundaries.", n)
 	case pipeline.SourceTitlesExisting:

@@ -8,9 +8,8 @@
     <audio controls preload="metadata" data-rel="{{$first.Rel}}"
            src="/preview/audio?path={{$first.Rel | urlquery}}&root={{$.Root | urlquery}}"></audio>
     {{else}}
-    <p class="muted">This format can't be played in a browser, but the lists below are still shown.</p>
+    <p class="muted">Not playable in the browser.</p>
     {{end}}
-    <p class="hint">Click anything below to jump the player there and hear whether it lines up.</p>
 
     <div class="chapter-columns">
       <div>
@@ -28,9 +27,6 @@
           </div>
           {{end}}
         </div>
-        <p class="hint">Each file's start is where a boundary chapter would begin. If starts land
-          mid-sentence, the files were split arbitrarily — prefer Audible's chapters. If they begin
-          cleanly, boundaries are safe.</p>
         <button type="button" class="btn-ghost btn-small use-chapters" onclick="useChapters(this, 'existing')">
           Use file boundaries
         </button>
@@ -48,7 +44,7 @@
           Use these chapters
         </button>
         {{else}}
-        <p class="muted">No chapters embedded in this file.</p>
+        <p class="muted">No embedded chapters.</p>
         {{end}}
         {{end}}
       </div>

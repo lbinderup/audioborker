@@ -114,7 +114,7 @@ func (s *Server) handleMatchCandidates(w http.ResponseWriter, r *http.Request) {
 		Region:   region,
 	}
 	if query.Keywords == "" && query.Title == "" && query.Author == "" {
-		data.Err = "Enter a title, author or keywords to search."
+		data.Err = "Enter search terms."
 		s.render.partial(w, "match", "candidates", data)
 		return
 	}
@@ -169,7 +169,7 @@ func (s *Server) handleMatchLookup(w http.ResponseWriter, r *http.Request) {
 	data := bookCardData{RelPath: q.Get("path")}
 
 	if !audnexus.ValidASIN(asin) {
-		data.Err = "An ASIN is 10 letters/digits, e.g. B08G9PRS1K."
+		data.Err = "ASIN must be 10 letters/digits."
 		s.render.partial(w, "match", "book_card", data)
 		return
 	}

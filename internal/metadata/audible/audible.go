@@ -91,7 +91,7 @@ func (c *Client) Search(ctx context.Context, q metadata.SearchQuery) ([]metadata
 		"num_results":      {"25"},
 		"products_sort_by": {"Relevance"},
 		"response_groups":  {"contributors,product_desc,media,product_attrs"},
-		"image_sizes":      {"500"},
+		"image_sizes":      {"500,1000"},
 	}
 	if q.Keywords != "" {
 		params.Set("keywords", q.Keywords)
@@ -138,7 +138,7 @@ func (c *Client) Search(ctx context.Context, q metadata.SearchQuery) ([]metadata
 			Year:       yearOf(p.ReleaseDate),
 			Language:   p.Language,
 			RuntimeMin: p.RuntimeMin,
-			CoverURL:   p.ProductImages["500"],
+			CoverURL:   searchCover(p.ProductImages),
 		}
 		for _, a := range p.Authors {
 			r.Authors = append(r.Authors, a.Name)
@@ -258,6 +258,17 @@ func (c *Client) GetBook(ctx context.Context, asin, region string) (*metadata.Bo
 		}
 	}
 	return book, nil
+}
+
+// searchCover picks the full-size artwork. For 500 px the catalog names a
+// separate, low-resolution asset (often only 500×500), while the 1000 size
+// names the full original (2400 px and up) at a 1000 px rendition — and
+// Amazon's CDN serves any rendition of that from the same URL.
+func searchCover(images map[string]string) string {
+	if u := images["1000"]; u != "" {
+		return u
+	}
+	return images["500"]
 }
 
 func yearOf(date string) string {

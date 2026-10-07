@@ -177,6 +177,21 @@ func extractCover(ctx context.Context, ffmpeg, src, workDir string, logf LogFunc
 	return dst
 }
 
+// CoverImage returns the artwork embedded in a media file — its attached
+// picture, as JPEG — or nil when it has none. Exported for the web layer's
+// manual tagging page, which offers to keep it; the pipeline itself uses
+// extractCover.
+func CoverImage(ctx context.Context, ffmpeg, path string) []byte {
+	cmd := exec.CommandContext(ctx, ffmpeg, "-hide_banner", "-nostdin", "-loglevel", "error",
+		"-i", path, "-map", "0:v:0", "-frames:v", "1", "-f", "mjpeg", "pipe:1")
+	setupProcessKill(cmd)
+	out, err := cmd.Output()
+	if err != nil || len(out) == 0 {
+		return nil
+	}
+	return out
+}
+
 // mergeFdkaac transcodes via a pipe: ffmpeg decodes to WAV on stdout,
 // fdkaac encodes to AAC-LC in an .m4a/.m4b container. Used when the user
 // selects the fdkaac encoder (better quality at low bitrates than ffmpeg's

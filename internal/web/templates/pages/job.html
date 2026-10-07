@@ -3,7 +3,8 @@
   <p><a href="/queue" class="muted">← Queue</a></p>
 
   <div class="job-head">
-    {{if .Job.Metadata.CoverURL}}<img class="job-cover" src="{{.Job.Metadata.CoverURL}}" alt="">{{end}}
+    {{with coverFileURL .Job.Options.CoverFile}}<span class="cover-stack"><img class="job-cover" src="{{.}}" alt="" data-res></span>
+    {{else}}{{if .Job.Metadata.CoverURL}}<span class="cover-stack"><img class="job-cover" src="{{hires .Job.Metadata.CoverURL}}" data-fallback="{{.Job.Metadata.CoverURL}}" alt="" data-res></span>{{end}}{{end}}
     <div>
       <h1>{{if .Job.Metadata.Title}}{{.Job.Metadata.Title}}{{else}}{{.Job.InputPath}}{{end}}</h1>
       <p class="muted">

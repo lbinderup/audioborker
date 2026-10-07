@@ -2,14 +2,10 @@
 {{if .Err}}
   <p class="muted">⚠ {{.Err}}</p>
 {{else if not .Results}}
-  <p class="muted">No results — try different keywords or paste an ASIN.</p>
+  <p class="muted">No results.</p>
 {{else}}
   <p class="muted candidates-note">
-    {{if .LocalRuntimeMin}}
-      Your audio runs {{runtime .LocalRuntimeMin}} — candidates with a matching runtime are ranked first.
-    {{else}}
-      Ranked by title and author only (couldn't measure the audio length).
-    {{end}}
+    {{if .LocalRuntimeMin}}Audio: {{runtime .LocalRuntimeMin}}{{else}}Audio length unknown{{end}}
     {{if .AutoSelect}}<span class="rt-exact">✓ top match pre-selected — runtime and title both line up</span>{{end}}
   </p>
   <div class="candidate-grid">
@@ -18,7 +14,7 @@
     <label class="candidate {{if eq $i 0}}candidate-best{{end}}">
       <input type="radio" name="match:{{$path}}" value="{{$r.ASIN}}|{{$region}}"
              {{if and $auto (eq $i 0)}}checked{{end}}>
-      {{if $r.CoverURL}}<img src="{{$r.CoverURL}}" alt="" loading="lazy">{{else}}<span class="cover-blank">📕</span>{{end}}
+      {{if $r.CoverURL}}<img src="{{thumb $r.CoverURL}}" alt="" loading="lazy">{{else}}<span class="cover-blank">📕</span>{{end}}
       <span class="candidate-info">
         <strong>{{$r.Title}}</strong>
         {{if $r.Subtitle}}<span class="muted">{{$r.Subtitle}}</span>{{end}}

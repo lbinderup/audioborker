@@ -11,6 +11,7 @@ import (
 	"sync"
 
 	"audioborker/internal/metadata/aggregate"
+	"audioborker/internal/pipeline"
 	"audioborker/internal/store"
 )
 
@@ -108,6 +109,19 @@ var funcMap = template.FuncMap{
 		return progressData{Stage: j.Stage, Percent: int(j.Progress * 100)}
 	},
 	"fieldSources": fieldSources,
+	// hires is the URL a catalog cover is downloaded from, so a preview shows
+	// (and measures) the image that would be embedded.
+	"hires": pipeline.CoverDownloadURL,
+	// thumb is a small rendition for list thumbnails, so a page of candidates
+	// doesn't pull full-size artwork it shows at 4em.
+	"thumb": func(url string) string { return pipeline.CoverURLAt(url, 240) },
+	// coverFileURL serves a cover chosen by hand ("" when there is none).
+	"coverFileURL": func(path string) string {
+		if name := filepath.Base(path); path != "" && coverNameRe.MatchString(name) {
+			return "/manual/covers/" + name
+		}
+		return ""
+	},
 }
 
 type fieldSource struct{ Label, Source string }

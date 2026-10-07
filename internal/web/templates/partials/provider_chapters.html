@@ -58,13 +58,10 @@
              value="{{.Shift.ToMs}}" autocomplete="off" oninput="shiftChanged(this)">
       <span class="muted">ms</span>
     </div>
-    <p class="hint">Linear between the two anchors, held constant outside them
-      (chapters are numbered 1–{{len .Chapters}}). For drift that grows over the
-      whole book, anchor the first and last chapters.</p>
+    <p class="hint">Linear between the anchors (chapters 1–{{len .Chapters}}).</p>
   </div>
 
-  <p class="hint">Applied to these timings when you click one, and to the chapters actually
-    written. Positive moves them later. Set it, then tap a chapter to hear where it lands.</p>
+  <p class="hint">Positive = later.</p>
 </div>
 
 <button type="button" class="btn-ghost btn-small use-chapters" onclick="useChapters(this, 'provider')">

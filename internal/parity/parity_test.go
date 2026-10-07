@@ -358,6 +358,11 @@ func embeddedCases() []embeddedCase {
 		{"short date", map[string]string{"year": "20-01-01", "album_artist": "Solo Author"}},
 		{"longest blurb by bytes", map[string]string{"description": "abcde", "synopsis": "ééé", "comment": "abcd"}},
 		{"show and episode as series", map[string]string{"show": "Show Name", "episode_id": "3", "label": "Label Pub"}},
+		{"all genres in GENRES", map[string]string{
+			"genre": "Science Fiction & Fantasy", "----:com.pilabor.tone:GENRES": "Science Fiction & Fantasy; Fantasy;  ; Epic ",
+			"----:com.pilabor.tone:AUDIOBORKER_SOURCE": "manual", "----:com.pilabor.tone:AUDIOBORKER_ID": "6f0c1a52-1b8e-4f0e-9a51-3c6c1f7d2e10",
+		}},
+		{"blank GENRES falls back to genre", map[string]string{"genre": "Romance", "GENRES": " ; "}},
 		{"empty", map[string]string{}},
 	}
 	out := make([]embeddedCase, 0, len(cases))

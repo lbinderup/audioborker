@@ -64,12 +64,9 @@ func (rc *RealConverter) runRetag(ctx context.Context, job *store.Job, report Pr
 	} else {
 		logf("replacing in place: %s", target)
 	}
-	coverPath := rc.downloadCover(ctx, job.Metadata.CoverURL, workDir, logf)
-	if coverPath == "" {
-		// The strip drops the art stream, so without this a provider outage
-		// would silently remove artwork the file already had.
-		coverPath = extractCover(ctx, rc.FFmpeg, src, workDir, logf)
-	}
+	// The strip drops the art stream; rc.cover falls back to extracting it,
+	// so a provider outage never silently removes artwork the file had.
+	coverPath := rc.cover(ctx, job, src, workDir, logf)
 
 	// ---- copy: stream copy that also clears every atom -------------------
 	report("copy", 0.06)

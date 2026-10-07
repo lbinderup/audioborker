@@ -77,6 +77,15 @@ copy → chapters → tag → verify → replace).
   (`Book.GenrePaths`) tie a sub-genre to its genre; Audnexus flattens them.
   Classification covers the English storefronts' category names only;
   unknown names are never dropped.
+- **Tagging by hand is a separate flow, not a metadata source.** For editions
+  no catalog has, `/manual` builds an LLM prompt, parses the pasted JSON and
+  queues a job whose snapshot comes from the reviewed form — it never goes
+  through `aggregate.Merge` or the match screen's `match:` radios (both assume
+  a catalog `ASIN|region`). `Book.LocalID` makes tone write
+  `AUDIOBORKER_SOURCE=manual` + `AUDIOBORKER_ID`; the Plex agent matches such a
+  file by that ID and takes everything from its tags. Re-tagging reuses the
+  file's ID so Plex keeps the item. Hand-picked covers live in
+  `/config/covers` (`JobOptions.CoverFile`), not the per-job work dir.
 - **Podcasts are not books.** The Audible search returns podcast episodes
   among results (and Audnexus refuses them); `audible.Search` filters them by
   `content_type` / `content_delivery_type`.
@@ -177,7 +186,11 @@ copy → chapters → tag → verify → replace).
   `github.com/google/uuid`. Prefer stdlib; justify any addition.
 - Comments explain *why*, not *what*. Several comments reference specific
   bragibooks bugs this code exists to avoid — keep that context if you edit them.
-- Errors surfaced to the user should say what to do about it, not just what failed.
+- **UI copy is terse.** Labels, placeholders and buttons carry the meaning;
+  no intro paragraphs, and no hints restating what a field obviously is.
+  Status and error messages are a few words — an error says what to fix only
+  when that isn't evident from the message itself. The *why* belongs in code
+  comments, not on the page.
 
 ## Development
 

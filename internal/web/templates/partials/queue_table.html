@@ -9,7 +9,7 @@
     {{if .error}}<span class="badge badge-err">✕ {{.error}} failed</span>{{end}}
     {{if .cancelled}}<span class="badge">– {{.cancelled}} cancelled</span>{{end}}
   {{end}}
-  {{if eq .Total 0}}Nothing here yet — queue a conversion from the Import screen.{{end}}
+  {{if eq .Total 0}}No jobs.{{end}}
 </p>
 {{if .Jobs}}
 <table class="jobs">

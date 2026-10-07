@@ -25,6 +25,27 @@
   </main>
   <footer>audioborker {{.Version}}</footer>
   <script>
+    // Covers marked data-res get their pixel size written underneath. They
+    // load the URL that gets embedded, so this is the size the file gets;
+    // data-fallback swaps in the plain URL if that fails, as the pipeline does.
+    function coverRes(img) {
+      let cap = img.nextElementSibling;
+      if (!cap || !cap.classList.contains('cover-res')) {
+        cap = document.createElement('span');
+        cap.className = 'cover-res';
+        img.after(cap);
+      }
+      cap.textContent = img.naturalWidth ? img.naturalWidth + '×' + img.naturalHeight : '';
+    }
+    document.addEventListener('load', e => {
+      if (e.target.tagName === 'IMG' && e.target.hasAttribute('data-res')) coverRes(e.target);
+    }, true);
+    document.addEventListener('error', e => {
+      const img = e.target;
+      if (img.tagName === 'IMG' && img.dataset.fallback && img.src !== img.dataset.fallback) img.src = img.dataset.fallback;
+    }, true);
+    document.querySelectorAll('img[data-res]').forEach(img => { if (img.complete && img.naturalWidth) coverRes(img); });
+
     // Success flashes fade out; error flashes stay until dismissed by
     // navigation so problems don't vanish unread.
     document.querySelectorAll('.flash-ok').forEach(el => {

@@ -340,11 +340,16 @@ func TestChaptersTxtFormat(t *testing.T) {
 }
 
 func TestHiResCoverURL(t *testing.T) {
-	if got := hiResCoverURL("https://m.media-amazon.com/images/I/81abc+L.jpg"); !strings.HasSuffix(got, "._SL2000_.jpg") {
-		t.Errorf("got %s", got)
-	}
-	already := "https://x/y._SL500_.jpg"
-	if got := hiResCoverURL(already); got != already {
-		t.Errorf("mutated already-sized url: %s", got)
+	for in, want := range map[string]string{
+		"https://m.media-amazon.com/images/I/81abc+L.jpg":                    "https://m.media-amazon.com/images/I/81abc+L._SL2000_.jpg",
+		"https://m.media-amazon.com/images/I/51xyz-L._SL500_.jpg":            "https://m.media-amazon.com/images/I/51xyz-L._SL2000_.jpg",
+		"https://m.media-amazon.com/images/I/51xyz-L._SL1000_.jpg":           "https://m.media-amazon.com/images/I/51xyz-L._SL2000_.jpg",
+		"https://images-na.ssl-images-amazon.com/images/I/5z._AC_SX342_.jpg": "https://images-na.ssl-images-amazon.com/images/I/5z._SL2000_.jpg",
+		"https://x/y._SL500_.jpg":                                            "https://x/y._SL500_.jpg",
+		"https://m.media-amazon.com/images/I/81abc+L.png":                    "https://m.media-amazon.com/images/I/81abc+L.png",
+	} {
+		if got := hiResCoverURL(in); got != want {
+			t.Errorf("hiResCoverURL(%s) = %s, want %s", in, got, want)
+		}
 	}
 }

@@ -75,6 +75,12 @@ type Book struct {
 	// source ids ("audnexus", "audible") as values. Nil on books fetched from
 	// a single source and on job snapshots created before aggregation existed.
 	Sources map[string]string `json:"sources,omitempty"`
+
+	// LocalID marks a book tagged by hand (the manual, last-resort flow for
+	// editions no catalog has). The tagger writes it with an
+	// AUDIOBORKER_SOURCE=manual marker, which tells the Plex agent the
+	// file's own tags are the whole truth for this book.
+	LocalID string `json:"local_id,omitempty"`
 }
 
 // Chapter offsets are relative to the start of the complete audiobook.

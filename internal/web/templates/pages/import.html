@@ -1,10 +1,10 @@
 {{define "content"}}
 <section class="card">
   <h1>Import</h1>
-  <p class="muted">Select audiobooks from <code>{{.InputDir}}</code> to match and convert. Newest folders first.</p>
+  <p class="muted"><code>{{.InputDir}}</code></p>
 
   {{if .Empty}}
-    <p class="muted">No audiobooks found in the input directory.</p>
+    <p class="muted">No audiobooks found.</p>
   {{else}}
   <form method="post" action="/match" id="import-form">
     <div class="tree-toolbar">

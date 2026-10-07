@@ -2,10 +2,8 @@
 <section class="card">
   {{if .IsLibrary}}
   <h1>Retag</h1>
-  <p class="muted">Assign an Audible match to each library file, adjust chapters if needed, then rewrite their tags. The audio is never re-encoded.</p>
   {{else}}
   <h1>Match</h1>
-  <p class="muted">Assign an Audible match to each book, adjust chapters if needed, then queue the conversions.</p>
   {{end}}
 
   <form method="post" action="/queue" id="match-form" data-root="{{.Root}}">
@@ -40,10 +38,10 @@
           <div class="row-actions">
             <button type="button" class="btn-ghost" onclick="openMatchDialog(this)">Choose match…</button>
             <button type="button" class="btn-ghost match-remove"
-                    title="Remove from this batch (the files stay in the input folder)"
+                    title="Remove from batch"
                     onclick="removeMatchItem(this)">✕ Remove</button>
             {{if not $.IsLibrary}}
-            <select name="cleanup:{{.RelPath}}" class="match-cleanup" title="What happens to the source files after a successful conversion">
+            <select name="cleanup:{{.RelPath}}" class="match-cleanup">
               <option value="">After: default ({{$.CleanupDefault}})</option>
               <option value="leave">After: leave sources</option>
               <option value="move">After: move to completed</option>
@@ -77,7 +75,7 @@
                     hx-vals='js:{path: {{.RelPath | printf "%q"}}, q: document.getElementById("q-{{.Index}}").value, region: document.getElementById("region-{{.Index}}").value, root: matchRoot()}'>
               Search
             </button>
-            <input type="text" class="match-asin" id="asin-{{.Index}}" placeholder="…or paste ASIN" maxlength="10" spellcheck="false">
+            <input type="text" class="match-asin" id="asin-{{.Index}}" placeholder="ASIN" maxlength="10" spellcheck="false">
             <button type="button" class="btn-ghost"
                     hx-get="/match/lookup"
                     hx-target="#candidates-{{.Index}}"
@@ -92,7 +90,7 @@
                hx-get="/match/lookup"
                hx-trigger="load"
                hx-vals='js:{path: {{.RelPath | printf "%q"}}, asin: {{.ASIN | printf "%q"}}, region: {{$.Region | printf "%q"}}, root: matchRoot()}'>
-            <span class="muted">Looking up {{.ASIN}} from the file's own tags…</span>
+            <span class="muted">Looking up {{.ASIN}}…</span>
           </div>
           {{else}}
           <div class="match-candidates" id="candidates-{{.Index}}"
@@ -102,6 +100,10 @@
             <span class="muted">Searching…</span>
           </div>
           {{end}}
+          {{/* The last resort, kept out of the normal flow on purpose: it
+               opens its own page (in a new tab, so this batch survives). */}}
+          <p class="hint manual-link">Not listed?
+            <a href="/manual?root={{$.Root}}&path={{.RelPath}}" target="_blank" rel="noopener">Tag by hand…</a></p>
         </dialog>
 
         <dialog class="chapter-dialog">
@@ -110,7 +112,7 @@
             <button type="button" class="btn-ghost btn-small" onclick="closeChapterEditor(this)">✕ Close</button>
           </div>
           <div class="match-controls">
-            <select name="chapters:{{.RelPath}}" class="match-chapters" title="Which chapter timings to embed in the m4b">
+            <select name="chapters:{{.RelPath}}" class="match-chapters">
               <option value="">Chapters: auto</option>
               <option value="existing">{{if gt .Files 1}}Chapters: one per file (boundaries){{else}}Chapters: keep file's own{{end}}</option>
               <option value="provider">Chapters: force Audible's</option>
@@ -139,8 +141,7 @@
     {{if .IsLibrary}}
     <label class="rename-toggle">
       <input type="checkbox" name="rename" value="1" onchange="renameToggled()">
-      Also rename and move files to match the path template <code>{{.PathTemplate}}</code>
-      <span class="muted">— off means only the tags change; files stay where they are.</span>
+      Move to <code>{{.PathTemplate}}</code>
     </label>
     {{end}}
 

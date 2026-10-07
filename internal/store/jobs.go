@@ -58,6 +58,9 @@ type JobOptions struct {
 	// Rename lets a retag job also move the file to the path the snapshotted
 	// template renders. Off means only the atoms change.
 	Rename bool `json:"rename,omitempty"`
+	// CoverFile is an image the user chose by hand (manual tagging), stored
+	// under the config dir's covers/ folder. It wins over Metadata.CoverURL.
+	CoverFile string `json:"cover_file,omitempty"`
 }
 
 // IsRetag reports whether this job rewrites a library file in place rather
@@ -329,6 +332,28 @@ func (s *Store) ClearHistory() ([]string, error) {
 		return nil, err
 	}
 	return logs, nil
+}
+
+// CoverFilesInUse returns the hand-chosen cover images (JobOptions.CoverFile)
+// that jobs still reference, so unreferenced uploads can be removed.
+func (s *Store) CoverFilesInUse() (map[string]bool, error) {
+	rows, err := s.db.Query(`SELECT options_json FROM jobs`)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	used := map[string]bool{}
+	for rows.Next() {
+		var raw string
+		if err := rows.Scan(&raw); err != nil {
+			return nil, err
+		}
+		var o JobOptions
+		if json.Unmarshal([]byte(raw), &o) == nil && o.CoverFile != "" {
+			used[o.CoverFile] = true
+		}
+	}
+	return used, rows.Err()
 }
 
 // SetLogPath records where the job's log file lives.

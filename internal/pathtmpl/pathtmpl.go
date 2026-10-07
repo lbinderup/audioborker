@@ -9,6 +9,9 @@
 //     leftover separator punctuation from partially-empty segments is
 //     collapsed, so a book without a series never yields " - Title" or an
 //     empty directory level.
+//   - Likewise a bracketed group whose tokens all resolve empty is dropped
+//     with the space before it, so a book without an ASIN (one tagged by
+//     hand) is "Title.m4b", not "Title [].m4b".
 package pathtmpl
 
 import (
@@ -107,6 +110,7 @@ func Render(template string, vars Vars) (string, error) {
 // renderSegment substitutes tokens in one segment and reports whether the
 // segment referenced any token and whether at least one token had a value.
 func renderSegment(seg string, vars Vars) (out string, hadToken, hadValue bool) {
+	seg = dropEmptyGroups(seg, vars)
 	out = tokenRe.ReplaceAllStringFunc(seg, func(m string) string {
 		name := tokenRe.FindStringSubmatch(m)[1]
 		hadToken = true
@@ -120,6 +124,29 @@ func renderSegment(seg string, vars Vars) (out string, hadToken, hadValue bool) 
 		return val
 	})
 	return sanitizeSegment(out), hadToken, hadValue
+}
+
+// groupRe matches a bracketed part of a template segment together with the
+// whitespace before it: " [{asin}]", " ({year})".
+var groupRe = regexp.MustCompile(`\s*(\[[^\[\]]*\]|\([^()]*\))`)
+
+// dropEmptyGroups removes bracketed groups whose tokens all resolve empty.
+// It works on the template, before substitution, so a value that happens to
+// contain brackets is never touched; groups without tokens ("[Unabridged]")
+// are literal text and stay.
+func dropEmptyGroups(seg string, vars Vars) string {
+	return groupRe.ReplaceAllStringFunc(seg, func(g string) string {
+		tokens := tokenRe.FindAllStringSubmatch(g, -1)
+		if len(tokens) == 0 {
+			return g
+		}
+		for _, t := range tokens {
+			if v, _ := vars.lookup(t[1]); v != "" {
+				return g
+			}
+		}
+		return ""
+	})
 }
 
 var (

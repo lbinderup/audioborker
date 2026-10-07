@@ -6,7 +6,7 @@
   <div class="candidate-grid">
     <label class="candidate candidate-best">
       <input type="radio" name="match:{{$path}}" value="{{.Book.ASIN}}|{{.Book.Region}}" checked>
-      {{if .Book.CoverURL}}<img src="{{.Book.CoverURL}}" alt="" loading="lazy">{{else}}<span class="cover-blank">📕</span>{{end}}
+      {{if .Book.CoverURL}}<img src="{{thumb .Book.CoverURL}}" alt="" loading="lazy">{{else}}<span class="cover-blank">📕</span>{{end}}
       <span class="candidate-info">
         <strong>{{.Book.Title}}</strong>
         {{if .Book.Subtitle}}<span class="muted">{{.Book.Subtitle}}</span>{{end}}

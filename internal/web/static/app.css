@@ -697,3 +697,65 @@ progress {
   font-size: 0.8rem;
   white-space: pre-wrap;
 }
+
+/* Tag by hand (the manual, last-resort page) */
+textarea {
+  width: 100%;
+  max-width: 48rem;
+  background: var(--bg-inset);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 0.5rem 0.6rem;
+  font: inherit;
+  resize: vertical;
+}
+textarea:focus { outline: none; border-color: var(--accent-dim); }
+textarea[readonly] { font-family: ui-monospace, monospace; font-size: 0.8rem; color: var(--text-muted); }
+.link-button {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--accent);
+  font: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.manual-intro { max-width: 48rem; }
+.manual-actions { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin: 0.6rem 0; }
+.manual details summary { cursor: pointer; color: var(--text-muted); font-size: 0.85rem; margin: 0.4rem 0; }
+.manual-pair { display: flex; gap: 0.75rem; max-width: 34rem; }
+.manual-pair > div { flex: 1; }
+.manual-pair > .manual-narrow { flex: 0 0 9rem; }
+.manual-asin { max-width: 12rem; font-family: ui-monospace, monospace; }
+.manual-warnings { margin: 0.3rem 0 0; padding-left: 1.1rem; }
+.manual-error { color: var(--err); }
+.manual-filled { border-color: var(--ok) !important; }
+.source-manual { color: var(--warn); }
+
+.cover-choices { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.cover-choice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  width: 9.5rem;
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.78rem;
+  text-align: center;
+  color: var(--text-muted);
+}
+.cover-choice:has(input:checked) { border-color: var(--accent); color: var(--text); background: var(--bg-raised); }
+.cover-choice input[type="radio"] { accent-color: var(--accent); margin: 0; }
+.cover-choice img { width: 8.5rem; height: 8.5rem; object-fit: contain; border-radius: 4px; background: var(--bg-inset); }
+.cover-drop { border-style: dashed; justify-content: flex-start; }
+.cover-drop.drop-over { border-color: var(--accent); background: var(--bg-raised); }
+.manual-link { margin: 0.9rem 0 0; }
+.manual-link a { color: var(--accent); }
+/* .settings-form label would otherwise turn the tiles back into blocks. */
+.cover-choices .cover-choice { display: flex; margin: 0; font-weight: 400; }
+.cover-res { display: block; font-size: 0.72rem; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+.cover-stack { display: inline-flex; flex-direction: column; align-items: center; gap: 0.15rem; }

@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"time"
 
@@ -95,7 +96,7 @@ func (rc *RealConverter) Run(ctx context.Context, job *store.Job, report Progres
 	}
 	logf("output: %s", finalPath)
 
-	coverPath := rc.downloadCover(ctx, job.Metadata.CoverURL, workDir, logf)
+	coverPath := rc.cover(ctx, job, job.SourceFiles[0], workDir, logf)
 	report("plan", 0.10)
 
 	// ---- merge ----------------------------------------------------------
@@ -209,8 +210,27 @@ func planDescription(p mergePlan) string {
 	return fmt.Sprintf("transcode to AAC %dk @ %d Hz", p.BitrateKbps, p.SampleRate)
 }
 
+// cover picks the artwork to embed: an image chosen by hand (the manual
+// tagging flow), else the catalog's, else the one the source already carries.
+// The last step matters for conversions too: the merge maps audio only, so
+// without it a book with no catalog cover — or a failed download — would
+// lose artwork its source files had.
+func (rc *RealConverter) cover(ctx context.Context, job *store.Job, src, workDir string, logf LogFunc) string {
+	if f := job.Options.CoverFile; f != "" {
+		if fi, err := os.Stat(f); err == nil && fi.Size() > 0 {
+			logf("cover: %s (chosen by hand)", f)
+			return f
+		}
+		logf("cover: the chosen image %s is gone, falling back", f)
+	}
+	if p := rc.downloadCover(ctx, job.Metadata.CoverURL, workDir, logf); p != "" {
+		return p
+	}
+	return extractCover(ctx, rc.FFmpeg, src, workDir, logf)
+}
+
 // downloadCover fetches the hi-res cover into the work dir; failures degrade
-// to no cover (tone then leaves whatever the source had).
+// to "" so the caller can fall back to the source's own artwork.
 func (rc *RealConverter) downloadCover(ctx context.Context, url, workDir string, logf LogFunc) string {
 	if url == "" {
 		return ""
@@ -254,13 +274,28 @@ func (rc *RealConverter) downloadCover(ctx context.Context, url, workDir string,
 	return ""
 }
 
-// hiResCoverURL swaps ".../81abc+L.jpg" for ".../81abc+L._SL2000_.jpg".
-func hiResCoverURL(url string) string {
-	if strings.HasSuffix(url, ".jpg") && !strings.Contains(url, "._SL") {
-		return strings.TrimSuffix(url, ".jpg") + "._SL2000_.jpg"
+// amazonImageRe matches an Amazon image CDN URL, with or without a size
+// modifier: ".../I/91F-2mp2T1L.jpg", "…L._SL500_.jpg", "…L._AC_SX342_.jpg".
+var amazonImageRe = regexp.MustCompile(`^(https://[^/]*(?:media-amazon|images-amazon)\.com/images/I/[^./]+)(?:\._[A-Za-z0-9,_]+_)?\.jpg$`)
+
+// hiResCoverURL asks Amazon's CDN for the cover at up to 2000 px. Catalog
+// URLs often name a smaller rendition (product details ._SL1000_), which
+// would otherwise be embedded as is; the CDN never upscales, so a smaller
+// original simply comes back at its own size.
+func hiResCoverURL(url string) string { return CoverURLAt(url, 2000) }
+
+// CoverURLAt is an Amazon cover URL rendered at up to px on its longest
+// side; any other URL is returned unchanged.
+func CoverURLAt(url string, px int) string {
+	if m := amazonImageRe.FindStringSubmatch(url); m != nil {
+		return fmt.Sprintf("%s._SL%d_.jpg", m[1], px)
 	}
 	return url
 }
+
+// CoverDownloadURL is the URL a cover is fetched from first. Previews load
+// it too, so the size they show is the size that gets embedded.
+func CoverDownloadURL(url string) string { return hiResCoverURL(url) }
 
 // cleanupSource applies the job's cleanup mode to the original input.
 func (rc *RealConverter) cleanupSource(job *store.Job, logf LogFunc) error {

@@ -26,20 +26,17 @@
 
       <label for="input_dir">Input directory</label>
       <input type="text" id="input_dir" name="input_dir" value="{{.Settings.InputDir}}" spellcheck="false">
-      <p class="hint">Where new audiobooks are picked up (the <code>/input</code> volume).</p>
 
       <label for="output_dir">Output directory</label>
       <input type="text" id="output_dir" name="output_dir" value="{{.Settings.OutputDir}}" spellcheck="false">
-      <p class="hint">Finished <code>.m4b</code> files land here (the <code>/output</code> volume) — point it at your existing library.</p>
 
       <label for="path_template">Output path template</label>
       <input type="text" id="path_template" name="path_template" value="{{.Settings.PathTemplate}}" spellcheck="false"
              hx-get="/settings/path-preview" hx-trigger="keyup changed delay:400ms" hx-target="#path-preview" hx-swap="innerHTML"
              hx-vals='js:{template: document.getElementById("path_template").value}'>
       <p class="hint">
-        Variables: <code>{author}</code> <code>{narrator}</code> <code>{title}</code> <code>{subtitle}</code>
-        <code>{series_name}</code> <code>{series_position}</code> <code>{year}</code> <code>{asin}</code>.
-        Levels with missing values are dropped cleanly.
+        <code>{author}</code> <code>{narrator}</code> <code>{title}</code> <code>{subtitle}</code>
+        <code>{series_name}</code> <code>{series_position}</code> <code>{year}</code> <code>{asin}</code>
       </p>
       <p class="hint">Preview: <span id="path-preview">{{template "path_preview" .Preview}}</span></p>
     </fieldset>
@@ -50,11 +47,10 @@
       <label for="cleanup_mode">After a successful conversion</label>
       <select id="cleanup_mode" name="cleanup_mode">
         {{$mode := .Settings.CleanupMode}}
-        <option value="leave" {{if eq $mode "leave"}}selected{{end}}>Leave source files in place</option>
-        <option value="move" {{if eq $mode "move"}}selected{{end}}>Move source files to the completed directory</option>
-        <option value="delete" {{if eq $mode "delete"}}selected{{end}}>Delete source files</option>
+        <option value="leave" {{if eq $mode "leave"}}selected{{end}}>Leave</option>
+        <option value="move" {{if eq $mode "move"}}selected{{end}}>Move to completed</option>
+        <option value="delete" {{if eq $mode "delete"}}selected{{end}}>Delete</option>
       </select>
-      <p class="hint">Can be overridden per book when queueing.</p>
 
       <label for="completed_subdir">Completed subfolder</label>
       <div class="path-prefixed">
@@ -64,17 +60,8 @@
                placeholder="(volume root)" autocomplete="off">
       </div>
       <p class="hint">
-        Only used by "move". This is a folder <em>inside</em> the mapped
-        <code>{{.CompletedRoot}}</code> volume — leave it empty to move sources straight
-        into the volume root. Absolute paths aren't accepted: they would point inside the
-        container itself, and anything moved there is lost when the container is recreated.
-      </p>
-      <p class="hint">
-        Sources will be moved to <code class="path-preview">{{.CompletedResolved}}</code>
-        {{if not .CompletedMounted}}
-          <br><span class="warn-text">⚠ {{.CompletedRoot}} doesn't exist — map a volume to it
-          before using the "move" cleanup mode.</span>
-        {{end}}
+        → <code class="path-preview">{{.CompletedResolved}}</code>
+        {{if not .CompletedMounted}}<br><span class="warn-text">⚠ {{.CompletedRoot}} isn't mapped</span>{{end}}
       </p>
     </fieldset>
 
@@ -94,7 +81,6 @@
         {{$region := .Settings.RegionDefault}}
         {{range .Regions}}<option value="{{.}}" {{if eq . $region}}selected{{end}}>{{.}}</option>{{end}}
       </select>
-      <p class="hint">Audible region for search and ASIN lookups; selectable per book too.</p>
     </fieldset>
 
     <fieldset>
@@ -118,9 +104,8 @@
 
       <label class="check">
         <input type="checkbox" name="write_chapters_txt" {{if .Settings.WriteChaptersTxt}}checked{{end}}>
-        Write a <code>.chapters.txt</code> file next to each converted book
+        Write <code>.chapters.txt</code> sidecar
       </label>
-      <p class="hint">Chapters are always embedded in the m4b itself; this sidecar is extra.</p>
     </fieldset>
 
     <button type="submit" class="btn-primary">Save settings</button>
