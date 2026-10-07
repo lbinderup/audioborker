@@ -157,3 +157,32 @@ func TestGetBookRegionPicksTLD(t *testing.T) {
 		t.Errorf("expected api.audible.de in error, got %v", err)
 	}
 }
+
+// searchWithPodcastJSON is trimmed from the live search for "The Last Colony
+// John Scalzi" (2026-10), where a fan podcast episode ranked above the book.
+const searchWithPodcastJSON = `{"products": [
+  {"asin": "B002VA9CAQ", "title": "The Last Colony", "authors": [{"name": "John Scalzi"}],
+   "content_type": "Product", "content_delivery_type": "MultiPartBook", "runtime_length_min": 591},
+  {"asin": "B0FXK18PYR", "title": "The Last Colony - John Scalzi",
+   "content_type": "Podcast", "content_delivery_type": "PodcastEpisode", "runtime_length_min": 591},
+  {"asin": "B0BBCRADIO", "title": "A Radio Dramatization",
+   "content_type": "Radio/TV Program", "content_delivery_type": "SinglePartBook"}
+]}`
+
+func TestSearchSkipsPodcasts(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte(searchWithPodcastJSON))
+	}))
+	defer srv.Close()
+	rs, err := detailClient(srv).Search(context.Background(), metadata.SearchQuery{Keywords: "x", Region: "us"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	var asins []string
+	for _, r := range rs {
+		asins = append(asins, r.ASIN)
+	}
+	if strings.Join(asins, ",") != "B002VA9CAQ,B0BBCRADIO" {
+		t.Errorf("got %v, want the book and the dramatization but no podcast episode", asins)
+	}
+}

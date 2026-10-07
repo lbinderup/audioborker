@@ -27,7 +27,10 @@ chapterization abilities.
   low-res cover in one source is filled from the other. Every field's origin
   is recorded on the job, and a **Metadata…** panel on the match screen shows
   both catalogs side by side and lets you pick the source per field where they
-  disagree.
+  disagree. Genres are cleaned up on the way: a category that contradicts
+  the book's fiction/non-fiction label (Audible files *The Lies of Locke
+  Lamora* under "Relationships, Parenting & Personal Development") is
+  dropped, and the best-supported genre is the one written into the file.
 - **Chapter preview** — before converting, play the source straight from the
   server (HTTP Range streaming, so it works remotely too) and click any
   embedded chapter to hear whether it lines up. Load the Audible chapter

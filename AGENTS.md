@@ -20,7 +20,8 @@ internal/
   metadata/   Provider interface; audible/ = catalog search + product details,
               audnexus/ = books + chapters; aggregate/ = field-by-field merge
               of the per-source records, with provenance (Book.Sources);
-              embedded/ = a local file's own atoms read as a Book
+              embedded/ = a local file's own atoms read as a Book;
+              genres.go = drops genres contradicting fiction/nonfiction
   match/      filename normalization + candidate scoring (pure functions)
   scan/       input listing, junk filtering, natural sort, disc ordering, selection dedupe
   pathtmpl/   {author}/{title} output templates with safe segment dropping
@@ -55,7 +56,23 @@ copy → chapters → tag → verify → replace).
 - **Only raw per-source records go in `metadata_cache`, never merged books.**
   The merge (`aggregate.Merge`) is a pure function over the cached records, so
   per-field overrides and precedence changes need no cache invalidation. The
-  cache PK is `(source, asin, region)`.
+  cache PK is `(source, asin, region)`. The exception is a raw record gaining
+  fields the merge needs: then a migration blanks `book_json` (an empty value
+  reads as a miss) so records are re-fetched, as 0003 did for the genre
+  hierarchy. Chapter data is left alone.
+- **Genres are cleaned inside `aggregate.Merge`, nowhere else.** Audible
+  miscategorizes books (Locke Lamora under "Relationships, Parenting &
+  Personal Development"), so `metadata.CleanGenres` drops top-level genres
+  contradicting the book's kind (Audnexus' `literatureType`, else the majority
+  of Audible's category ladders) with their sub-genres, never emptying the
+  list, and orders by ladder support — `Genres[0]` is what tone writes.
+  Genres are the one field where Audible takes precedence: only its ladders
+  (`Book.GenrePaths`) tie a sub-genre to its genre; Audnexus flattens them.
+  Classification covers the English storefronts' category names only;
+  unknown names are never dropped.
+- **Podcasts are not books.** The Audible search returns podcast episodes
+  among results (and Audnexus refuses them); `audible.Search` filters them by
+  `content_type` / `content_delivery_type`.
 - **An Audible catalog failure must never block queueing.** The aggregator
   treats the audible source as best-effort (error → note), while an Audnexus
   transient error fails the queue action — jobs must not silently snapshot a

@@ -77,10 +77,9 @@ func (s *Server) handleMatchMetadataSources(w http.ResponseWriter, r *http.Reque
 		}
 	}
 
-	nexus := res.PerSource[aggregate.SourceAudnexus]
-	audible := res.PerSource[aggregate.SourceAudible]
 	for _, key := range aggregate.Fields {
-		nv, av := aggregate.Value(nexus, key), aggregate.Value(audible, key)
+		nv := aggregate.SourceValue(res.PerSource, aggregate.SourceAudnexus, key)
+		av := aggregate.SourceValue(res.PerSource, aggregate.SourceAudible, key)
 		cv := aggregate.Value(current, key)
 		if nv == "" && av == "" && cv == "" {
 			continue

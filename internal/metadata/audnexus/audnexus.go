@@ -72,6 +72,7 @@ type apiBook struct {
 		Name string `json:"name"`
 		Type string `json:"type"`
 	} `json:"genres"`
+	LiteratureType string `json:"literatureType"`
 }
 
 func (p *Provider) GetBook(ctx context.Context, asin, region string) (*metadata.Book, error) {
@@ -113,11 +114,18 @@ func (p *Provider) GetBook(ctx context.Context, asin, region string) (*metadata.
 		book.SeriesName = ab.SeriesPrimary.Name
 		book.SeriesPosition = ab.SeriesPrimary.Position
 	}
+	// Audnexus flattens Audible's category ladders into top-level "genre"
+	// entries and "tag" entries for every rung below, without saying which
+	// tag belongs to which genre.
 	for _, g := range ab.Genres {
-		if g.Type == "genre" {
+		switch g.Type {
+		case "genre":
 			book.Genres = append(book.Genres, g.Name)
+		case "tag":
+			book.SubGenres = append(book.SubGenres, g.Name)
 		}
 	}
+	book.LiteratureType = ab.LiteratureType
 	return book, nil
 }
 

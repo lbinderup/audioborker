@@ -31,7 +31,7 @@ const (
 	FieldRelease     = "release" // Year + ReleaseDate
 	FieldPublisher   = "publisher"
 	FieldLanguage    = "language"
-	FieldGenres      = "genres"
+	FieldGenres      = "genres"      // Genres + SubGenres + GenrePaths
 	FieldDescription = "description" // Description + Summary (the blurb pair)
 	FieldRuntime     = "runtime_min"
 	FieldCover       = "cover_url"
@@ -102,7 +102,7 @@ var specs = []fieldSpec{
 		func(d, s *metadata.Book) { d.Language = s.Language }},
 	{FieldGenres,
 		func(b *metadata.Book) bool { return len(b.Genres) == 0 },
-		func(d, s *metadata.Book) { d.Genres = s.Genres }},
+		func(d, s *metadata.Book) { d.Genres, d.SubGenres, d.GenrePaths = s.Genres, s.SubGenres, s.GenrePaths }},
 	{FieldDescription,
 		func(b *metadata.Book) bool { return b.Blurb() == "" },
 		func(d, s *metadata.Book) { d.Description, d.Summary = s.Description, s.Summary }},
@@ -112,12 +112,19 @@ var specs = []fieldSpec{
 	{FieldCover,
 		func(b *metadata.Book) bool { return b.CoverURL == "" },
 		func(d, s *metadata.Book) { d.CoverURL = s.CoverURL }},
+	// Not a user-facing field (absent from Fields): only Audnexus has it, and
+	// it exists to clean the genres.
+	{fieldLiteratureType,
+		func(b *metadata.Book) bool { return b.LiteratureType == "" },
+		func(d, s *metadata.Book) { d.LiteratureType = s.LiteratureType }},
 }
 
+const fieldLiteratureType = "literature_type"
+
 // DefaultPrecedence is the per-field source order used when the user has not
-// overridden a field. Audnexus stays primary for every field today; Audible
-// fills gaps. Kept per-field so a source that proves systematically better
-// for one field can be promoted without touching the UI.
+// overridden a field. Audnexus is primary for every field except genres (see
+// init); Audible fills gaps. Kept per-field so a source that proves
+// systematically better for one field can be promoted without touching the UI.
 var DefaultPrecedence = map[string][]string{}
 
 // defaultOrder is also the identity order: the first source with a record
@@ -128,6 +135,11 @@ func init() {
 	for _, f := range Fields {
 		DefaultPrecedence[f] = defaultOrder
 	}
+	DefaultPrecedence[fieldLiteratureType] = defaultOrder
+	// Audible's category ladders carry the genre → sub-genre hierarchy that
+	// Audnexus flattens away; without it a miscategorized genre's sub-genres
+	// can't be told apart from the real ones.
+	DefaultPrecedence[FieldGenres] = []string{SourceAudible, SourceAudnexus}
 }
 
 // Merge combines per-source books field by field. For each field an override
@@ -136,6 +148,9 @@ func init() {
 // in the result's Sources map (fields nobody supplied get no entry).
 // FieldDescription is completeness-aware: a source carrying the full Summary
 // beats one with only the truncated teaser, regardless of precedence order.
+// The merged genres are then cleaned (metadata.CleanGenres), so whatever the
+// sources, a genre contradicting the book's fiction/nonfiction kind never
+// reaches a file.
 func Merge(books map[string]*metadata.Book, overrides map[string]string) *metadata.Book {
 	out := &metadata.Book{Sources: map[string]string{}}
 	for _, src := range defaultOrder {
@@ -150,8 +165,11 @@ func Merge(books map[string]*metadata.Book, overrides map[string]string) *metada
 			continue
 		}
 		spec.copyTo(out, books[src])
-		out.Sources[spec.key] = src
+		if spec.key != fieldLiteratureType {
+			out.Sources[spec.key] = src
+		}
 	}
+	out.Genres, out.SubGenres = metadata.CleanGenres(out)
 	return out
 }
 
@@ -220,6 +238,19 @@ func Value(b *metadata.Book, key string) string {
 		return b.CoverURL
 	}
 	return ""
+}
+
+// SourceValue is Value for one source's record as the merge would use it if
+// that source were picked. Only genres differ from the raw record: they are
+// cleaned, using the fiction/nonfiction label Audnexus carries even when
+// Audible's ladders are picked, so the comparison panel never offers a genre
+// that would not actually be tagged.
+func SourceValue(books map[string]*metadata.Book, src, key string) string {
+	b := books[src]
+	if key != FieldGenres || b == nil || len(b.Genres) == 0 {
+		return Value(b, key)
+	}
+	return Value(Merge(books, map[string]string{FieldGenres: src}), key)
 }
 
 // BookSource is the one-method slice of metadata.Provider the aggregator

@@ -52,7 +52,9 @@ func TestCacheIsPerSource(t *testing.T) {
 
 // TestMigrateCacheToPerSource builds a database frozen at schema v1 (the
 // pre-aggregation single-source cache) and verifies that opening it migrates
-// existing rows to source='audnexus' without losing data.
+// existing rows to source='audnexus' without losing data (0002), and that the
+// cached book — but not the chapters — is then dropped for re-fetching, since
+// it predates the genre hierarchy (0003).
 func TestMigrateCacheToPerSource(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "test.db")
 
@@ -73,7 +75,8 @@ func TestMigrateCacheToPerSource(t *testing.T) {
 	}
 	if _, err := db.Exec(
 		"INSERT INTO metadata_cache (asin, region, book_json, chapters_json, fetched_at) VALUES (?, ?, ?, ?, ?)",
-		"B000000001", "us", `{"asin":"B000000001","title":"Old Row"}`, "", 42,
+		"B000000001", "us", `{"asin":"B000000001","title":"Old Row"}`,
+		`{"asin":"B000000001","chapters":[{"title":"Opening","start_ms":0,"length_ms":1000}]}`, 42,
 	); err != nil {
 		t.Fatal(err)
 	}
@@ -87,9 +90,12 @@ func TestMigrateCacheToPerSource(t *testing.T) {
 	}
 	defer s.Close()
 
-	got, err := s.CachedBook("audnexus", "B000000001", "us")
-	if err != nil || got == nil || got.Title != "Old Row" {
-		t.Errorf("migrated row not readable as audnexus: %+v, %v", got, err)
+	ch, err := s.CachedChapters("audnexus", "B000000001", "us")
+	if err != nil || ch == nil || len(ch.Chapters) != 1 || ch.Chapters[0].Title != "Opening" {
+		t.Errorf("migrated chapters not readable as audnexus: %+v, %v", ch, err)
+	}
+	if got, err := s.CachedBook("audnexus", "B000000001", "us"); err != nil || got != nil {
+		t.Errorf("pre-genre-hierarchy book should be a cache miss after 0003, got %+v, %v", got, err)
 	}
 	var fetched int64
 	if err := s.db.QueryRow("SELECT fetched_at FROM metadata_cache WHERE source='audnexus' AND asin='B000000001'").Scan(&fetched); err != nil || fetched != 42 {

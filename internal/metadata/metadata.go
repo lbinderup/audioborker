@@ -52,6 +52,16 @@ type Book struct {
 	Publisher      string   `json:"publisher"`
 	Language       string   `json:"language"`
 	Genres         []string `json:"genres"`
+	// SubGenres are the more specific categories below Genres ("Fantasy",
+	// "Epic"). Genres[0] is what gets written into the file; Plex shows all.
+	SubGenres []string `json:"sub_genres,omitempty"`
+	// GenrePaths are the catalog's category paths, top-level genre first,
+	// when it has them (Audible's category ladders). They tie each sub-genre
+	// to its genre, which is what lets CleanGenres drop both together.
+	GenrePaths [][]string `json:"genre_paths,omitempty"`
+	// LiteratureType is Audnexus' "fiction" / "nonfiction" label, the
+	// strongest signal for spotting a miscategorized genre.
+	LiteratureType string `json:"literature_type,omitempty"`
 	// Description is the provider's short teaser (Audnexus truncates it to
 	// ~250 chars ending in "..."); Summary is the full publisher blurb,
 	// converted to plain text. Prefer Summary for tagging — see Book.Blurb.

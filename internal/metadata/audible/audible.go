@@ -49,6 +49,18 @@ type product struct {
 	RuntimeMin    int               `json:"runtime_length_min"`
 	Language      string            `json:"language"`
 	ProductImages map[string]string `json:"product_images"`
+	// "Product" / "Podcast", and e.g. "MultiPartBook" / "PodcastEpisode".
+	ContentType         string `json:"content_type"`
+	ContentDeliveryType string `json:"content_delivery_type"`
+}
+
+// isPodcast reports whether a catalog product is podcast content. The search
+// mixes podcast episodes in with books (a fan podcast titled "The Last Colony
+// - John Scalzi" outranked the book itself), and Audnexus refuses them, so
+// picking one could only end in a failed lookup.
+func isPodcast(p product) bool {
+	return strings.EqualFold(p.ContentType, "Podcast") ||
+		strings.HasPrefix(strings.ToLower(p.ContentDeliveryType), "podcast")
 }
 
 // productDetail extends the search subset with fields the single-product
@@ -115,7 +127,7 @@ func (c *Client) Search(ctx context.Context, q metadata.SearchQuery) ([]metadata
 
 	out := make([]metadata.SearchResult, 0, len(body.Products))
 	for _, p := range body.Products {
-		if p.ASIN == "" || p.Title == "" {
+		if p.ASIN == "" || p.Title == "" || isPodcast(p) {
 			continue
 		}
 		r := metadata.SearchResult{
@@ -219,15 +231,31 @@ func (c *Client) GetBook(ctx context.Context, asin, region string) (*metadata.Bo
 	if book.SeriesName == "" && len(p.Series) > 0 {
 		book.SeriesName = p.Series[0].Title
 	}
-	// Each category ladder is a path like Genres → Fantasy → Epic; the first
-	// rung is the genre. Ladders repeat it, so dedupe preserving order.
-	seen := map[string]bool{}
+	// Each category ladder is a path like Science Fiction & Fantasy → Fantasy
+	// → Epic: the first rung is the genre, the rest are sub-genres. Ladders
+	// repeat rungs, so dedupe preserving order. The paths themselves are kept
+	// raw: metadata.CleanGenres needs them to drop a miscategorized genre
+	// together with its sub-genres.
+	seenGenre, seenSub := map[string]bool{}, map[string]bool{}
 	for _, cl := range p.CategoryLadders {
-		if len(cl.Ladder) == 0 || seen[cl.Ladder[0].Name] {
+		if len(cl.Ladder) == 0 {
 			continue
 		}
-		seen[cl.Ladder[0].Name] = true
-		book.Genres = append(book.Genres, cl.Ladder[0].Name)
+		path := make([]string, 0, len(cl.Ladder))
+		for _, rung := range cl.Ladder {
+			path = append(path, rung.Name)
+		}
+		book.GenrePaths = append(book.GenrePaths, path)
+		if !seenGenre[path[0]] {
+			seenGenre[path[0]] = true
+			book.Genres = append(book.Genres, path[0])
+		}
+		for _, s := range path[1:] {
+			if !seenSub[s] {
+				seenSub[s] = true
+				book.SubGenres = append(book.SubGenres, s)
+			}
+		}
 	}
 	return book, nil
 }

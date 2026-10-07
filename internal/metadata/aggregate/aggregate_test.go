@@ -3,6 +3,7 @@ package aggregate
 import (
 	"context"
 	"errors"
+	"strings"
 	"testing"
 
 	"audioborker/internal/metadata"
@@ -218,5 +219,61 @@ func TestAggregatorIdentityIsTheRequest(t *testing.T) {
 	}
 	if res.Book.ASIN != "B000000001" || res.Book.Region != "us" {
 		t.Errorf("identity drifted: %s %s", res.Book.ASIN, res.Book.Region)
+	}
+}
+
+// lockeSources is the shape of both catalogs' records for The Lies of Locke
+// Lamora: Audible's ladders put it under a non-fiction category too, Audnexus
+// flattens that and labels the book fiction.
+func lockeSources() map[string]*metadata.Book {
+	return map[string]*metadata.Book{
+		SourceAudnexus: {ASIN: "B004K50434", Title: "The Lies of Locke Lamora", LiteratureType: "fiction",
+			Genres:    []string{"Relationships, Parenting & Personal Development", "Science Fiction & Fantasy"},
+			SubGenres: []string{"Parenting & Families", "Fantasy", "Epic"}},
+		SourceAudible: {ASIN: "B004K50434", Title: "The Lies of Locke Lamora",
+			Genres:    []string{"Relationships, Parenting & Personal Development", "Science Fiction & Fantasy"},
+			SubGenres: []string{"Parenting & Families", "Fantasy", "Epic"},
+			GenrePaths: [][]string{
+				{"Relationships, Parenting & Personal Development", "Parenting & Families"},
+				{"Science Fiction & Fantasy", "Fantasy", "Epic"},
+				{"Science Fiction & Fantasy", "Fantasy"},
+			}},
+	}
+}
+
+func TestMergeCleansGenres(t *testing.T) {
+	b := Merge(lockeSources(), nil)
+	if b.Sources[FieldGenres] != SourceAudible {
+		t.Errorf("genres should come from Audible's ladders, got %q", b.Sources[FieldGenres])
+	}
+	if strings.Join(b.Genres, "|") != "Science Fiction & Fantasy" || strings.Join(b.SubGenres, "|") != "Fantasy|Epic" {
+		t.Errorf("got %q / %q", b.Genres, b.SubGenres)
+	}
+	if b.LiteratureType != "fiction" {
+		t.Errorf("literature type not merged: %q", b.LiteratureType)
+	}
+	if _, ok := b.Sources["literature_type"]; ok {
+		t.Error("literature type is not a user-facing field and must not appear in Sources")
+	}
+	// Picking Audnexus' flat list still drops the miscategorized genre.
+	b = Merge(lockeSources(), map[string]string{FieldGenres: SourceAudnexus})
+	if strings.Join(b.Genres, "|") != "Science Fiction & Fantasy" || len(b.SubGenres) != 0 {
+		t.Errorf("audnexus pick: got %q / %q", b.Genres, b.SubGenres)
+	}
+}
+
+func TestSourceValueShowsWhatWouldBeTagged(t *testing.T) {
+	books := lockeSources()
+	for _, src := range []string{SourceAudnexus, SourceAudible} {
+		if got := SourceValue(books, src, FieldGenres); got != "Science Fiction & Fantasy" {
+			t.Errorf("%s genres = %q", src, got)
+		}
+	}
+	if got := SourceValue(books, SourceAudnexus, FieldTitle); got != "The Lies of Locke Lamora" {
+		t.Errorf("other fields are the raw value, got %q", got)
+	}
+	delete(books, SourceAudible)
+	if got := SourceValue(books, SourceAudible, FieldGenres); got != "" {
+		t.Errorf("a missing source has no value, got %q", got)
 	}
 }
