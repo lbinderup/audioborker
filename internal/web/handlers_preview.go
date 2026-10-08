@@ -182,17 +182,13 @@ type providerChaptersData struct {
 	RuntimeMs int64
 	Runtime   string
 	Accurate  bool
-	Shift     metadata.ShiftSpec // current per-book offset, preserved across reloads
 	Err       string
 }
 
 // handleMatchProviderChapters fetches the selected candidate's chapter
 // timings so the user can seek the local audio to them for comparison.
 func (s *Server) handleMatchProviderChapters(w http.ResponseWriter, r *http.Request) {
-	data := providerChaptersData{
-		Path:  r.URL.Query().Get("path"),
-		Shift: shiftSpecFrom(r.URL.Query().Get),
-	}
+	data := providerChaptersData{Path: r.URL.Query().Get("path")}
 	asin, region, ok := s.choiceASIN(r.URL.Query().Get)
 	if !ok {
 		data.Err = "Select a match first."
@@ -222,14 +218,6 @@ func (s *Server) handleMatchProviderChapters(w http.ResponseWriter, r *http.Requ
 		data.Chapters = append(data.Chapters, previewChapter{
 			Title: c.Title, StartMs: c.StartMs, Stamp: msClock(c.StartMs),
 		})
-	}
-	// Anchor defaults: first and last chapter, so switching to interpolated
-	// mode starts from a whole-book span.
-	if data.Shift.FromIdx == 0 {
-		data.Shift.FromIdx = 1
-	}
-	if data.Shift.ToIdx == 0 {
-		data.Shift.ToIdx = len(data.Chapters)
 	}
 	s.render.partial(w, "match", "provider_chapters", data)
 }
@@ -340,6 +328,7 @@ type chapterPlanData struct {
 	Icon     string
 	Verdict  string
 	Reason   string
+	Shift    string // "" when no shift applies to the chosen chapters
 	Warnings []string
 	Err      string
 }
@@ -392,14 +381,13 @@ func (s *Server) handleMatchChapterPlan(w http.ResponseWriter, r *http.Request) 
 			}
 		}
 	}
-	// The verdict must reflect the same shift the conversion will apply.
-	if shift := shiftSpecFrom(q.Get); !shift.IsZero() && provider != nil {
-		provider = provider.ShiftedBy(shift)
-	}
-
-	plan := pipeline.PlanChapters(mode, provider, infos, totalMs, "")
+	// The same shift the conversion will apply, to whichever list it picks.
+	plan := pipeline.PlanChapters(mode, provider, infos, totalMs, "", shiftSpecFrom(q.Get))
 	data.Source = plan.Source
 	data.Warnings = append(data.Warnings, plan.Warnings...)
+	if !plan.Shift.IsZero() {
+		data.Shift = "Shifted " + plan.Shift.String() + "."
+	}
 
 	n := len(plan.Chapters)
 	switch plan.Source {

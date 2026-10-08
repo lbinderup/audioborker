@@ -59,7 +59,10 @@ copy → chapters → tag → verify → replace).
   `resolveChapters` the conversion runs. Never fork this logic for display.
   The title mix modes (`titles-files`/`titles-existing` — provider titles on
   local timings) live inside `resolveChapters` too, and degrade to the
-  automatic decision on any alignment failure, never to zero chapters.
+  automatic decision on any alignment failure, never to zero chapters. So
+  does the shift (`applyShift`): it runs *after* the choice, so it moves
+  whichever list is embedded — the catalog's or the file's own, never file
+  boundaries. Never pre-shift a source before the decision.
 - **Only raw per-source records go in `metadata_cache`, never merged books.**
   The merge (`aggregate.Merge`) is a pure function over the cached records, so
   per-field overrides and precedence changes need no cache invalidation. The

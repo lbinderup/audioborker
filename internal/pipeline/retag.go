@@ -85,9 +85,9 @@ func (rc *RealConverter) runRetag(ctx context.Context, job *store.Job, report Pr
 	}
 	provided, chapterWarns := rc.providerChapters(ctx, job, chapterMode, logf)
 	warnings = append(warnings, chapterWarns...)
-	resolved := resolveChapters(chapterMode, provided, []*FileInfo{orig}, orig.DurationMs, job.Metadata.Title)
+	resolved := resolveChapters(chapterMode, provided, []*FileInfo{orig}, orig.DurationMs, job.Metadata.Title, opts.EffectiveChapterShift())
 	warnings = append(warnings, resolved.Warnings...)
-	logf("chapters: %d entries from %q", len(resolved.Chapters), resolved.Source)
+	logChapters(logf, resolved)
 
 	chaptersPath := filepath.Join(stagingDir, "book.chapters.txt")
 	if err := os.WriteFile(chaptersPath, []byte(chaptersTxt(resolved.Chapters)), 0o666); err != nil {

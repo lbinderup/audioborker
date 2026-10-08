@@ -15,6 +15,7 @@ import (
 type ResolvedChapters struct {
 	Source   string             `json:"source"` // one of the Source* constants
 	Chapters []metadata.Chapter `json:"chapters"`
+	Shift    metadata.ShiftSpec `json:"shift,omitzero"` // as applied; zero when none was
 	Warnings []string           `json:"-"`
 }
 
@@ -47,8 +48,8 @@ const (
 	ChapterModeProvider = "provider" // force provider chapters even on runtime mismatch
 	// Mix modes: the provider's chapter TITLES on LOCAL timings — for rips
 	// whose boundaries are right but whose names are junk ("Track 01").
-	// Timings are local by construction, so the runtime gate and ShiftSpec
-	// don't apply.
+	// Timings are local by construction, so the runtime gate doesn't apply;
+	// a shift moves the file's own timings as it would without the titles.
 	ChapterModeTitlesFiles    = "titles-files"    // titles onto file boundaries (multi-file)
 	ChapterModeTitlesExisting = "titles-existing" // titles onto the file's own chapters (single-file)
 )
@@ -57,14 +58,46 @@ const (
 // converting: the match screen calls this so the "auto" decision is visible
 // before queueing. totalMs is the summed source duration (a close stand-in
 // for the merged duration the pipeline validates against).
-func PlanChapters(mode string, provider *metadata.ChapterInfo, files []*FileInfo, totalMs int64, bookTitle string) ResolvedChapters {
+func PlanChapters(mode string, provider *metadata.ChapterInfo, files []*FileInfo, totalMs int64, bookTitle string, shift metadata.ShiftSpec) ResolvedChapters {
 	if mode == "" {
 		mode = ChapterModeAuto
 	}
-	return resolveChapters(mode, provider, files, totalMs, bookTitle)
+	return resolveChapters(mode, provider, files, totalMs, bookTitle, shift)
 }
 
-// resolveChapters decides what chapters to embed. In "auto" mode the
+// resolveChapters decides what chapters to embed, then applies the shift to
+// them — after the choice, so it follows whichever list is embedded.
+func resolveChapters(mode string, provider *metadata.ChapterInfo, files []*FileInfo, actualMs int64, bookTitle string, shift metadata.ShiftSpec) ResolvedChapters {
+	return applyShift(chooseChapters(mode, provider, files, actualMs, bookTitle), shift, provider, actualMs)
+}
+
+// applyShift moves the chosen chapters' timings by the job's ShiftSpec: the
+// catalog's chapters, or the file's own (also under the catalog's titles) —
+// a file whose chapter names are right but whose timings are off. File
+// boundaries and the whole-book chapter are exact by construction, so a
+// shift there is ignored, with a warning rather than silently.
+func applyShift(r ResolvedChapters, shift metadata.ShiftSpec, provider *metadata.ChapterInfo, actualMs int64) ResolvedChapters {
+	if shift.IsZero() || len(r.Chapters) == 0 {
+		return r
+	}
+	runtime := actualMs // chapters must not start past the audio
+	switch r.Source {
+	case SourceProvider:
+		runtime = provider.RuntimeMs
+	case SourceExisting, SourceTitlesExisting:
+	case SourceFiles, SourceTitlesFiles:
+		r.Warnings = append(r.Warnings, "Shift ignored: file boundaries are exact.")
+		return r
+	default:
+		r.Warnings = append(r.Warnings, "Shift ignored: one whole-book chapter.")
+		return r
+	}
+	shifted := (&metadata.ChapterInfo{RuntimeMs: runtime, Chapters: r.Chapters}).ShiftedBy(shift)
+	r.Chapters, r.Shift = shifted.Chapters, shift
+	return r
+}
+
+// chooseChapters decides what chapters to embed. In "auto" mode the
 // priority is:
 //  1. Provider chapters whose runtime matches the merged audio.
 //  2. Chapters already present in a single input file.
@@ -72,7 +105,7 @@ func PlanChapters(mode string, provider *metadata.ChapterInfo, files []*FileInfo
 //  4. A single whole-book chapter (single-file input with no data at all).
 //
 // Multi-file input NEVER produces zero chapters (bragibooks/m4b-merge gap).
-func resolveChapters(mode string, provider *metadata.ChapterInfo, files []*FileInfo, actualMs int64, bookTitle string) ResolvedChapters {
+func chooseChapters(mode string, provider *metadata.ChapterInfo, files []*FileInfo, actualMs int64, bookTitle string) ResolvedChapters {
 	var out ResolvedChapters
 
 	// Mix modes run first: they combine two sources, so they can't sit in

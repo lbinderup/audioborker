@@ -272,7 +272,8 @@
 
     // ---- chapter shift ----------------------------------------------------
     // Two modes, both submitted with the queue so the conversion applies the
-    // same offsets that were auditioned:
+    // same offsets that were auditioned, to whichever chapters it embeds —
+    // Audible's or the file's own:
     //   fixed:  one ms value for every chapter
     //   interp: linear between two anchor chapters, constant outside them
     function shiftSpecFor(item) {
@@ -286,7 +287,7 @@
           mode,
           fromIdx: val('input[name^="shift_from_idx:"]') || 1,
           fromMs: val('input[name^="shift_from_ms:"]'),
-          toIdx: val('input[name^="shift_to_idx:"]') || 1,
+          toIdx: val('input[name^="shift_to_idx:"]'), // 0 = the last chapter
           toMs: val('input[name^="shift_to_ms:"]'),
         };
       }
@@ -307,14 +308,15 @@
       return { shift_mode: 'fixed', shift: s.fixedMs };
     }
     // The client-side mirror of metadata.ShiftedBy: what offset applies at
-    // original position ms. Anchor times come from the rendered chapter list.
-    function shiftForMs(item, ms) {
-      const s = shiftSpecFor(item);
+    // original position ms of a chapter in list. The anchors index that list,
+    // as the conversion indexes whichever list it embeds.
+    function shiftForMs(list, ms) {
+      const s = shiftSpecFor(list.closest('.match-item'));
       if (s.mode !== 'interp') return s.fixedMs || 0;
-      const chs = [...item.querySelectorAll('.provider-col .chapter-btn')];
+      const chs = [...list.querySelectorAll('.chapter-btn')];
       if (!chs.length) return 0;
       const idx = i => Math.min(Math.max(i, 1), chs.length) - 1;
-      let a = idx(s.fromIdx), b = idx(s.toIdx), sa = s.fromMs, sb = s.toMs;
+      let a = idx(s.fromIdx), b = s.toIdx ? idx(s.toIdx) : chs.length - 1, sa = s.fromMs, sb = s.toMs;
       if (a === b) return sa;
       if (a > b) { [a, b] = [b, a]; [sa, sb] = [sb, sa]; }
       const t0 = +chs[a].dataset.ms, t1 = +chs[b].dataset.ms;
@@ -353,9 +355,9 @@
       const panel = btn.closest('.chapter-preview');
       const audio = panel?.querySelector('audio');
       if (!audio) return;
-      const item = btn.closest('.match-item');
-      // Provider timings are shifted; the file's own offsets are absolute.
-      const shift = btn.closest('.provider-col') ? shiftForMs(item, +btn.dataset.ms) : 0;
+      // Chapters play where the shift puts them; file boundaries are exact.
+      const list = btn.closest('.chapter-list.shiftable');
+      const shift = list ? shiftForMs(list, +btn.dataset.ms) : 0;
       const ms = Math.max(0, (+btn.dataset.ms) + shift);
       const filesAttr = panel.dataset.files;
       if (!filesAttr) { // single file: offsets are already local

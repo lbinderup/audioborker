@@ -432,7 +432,7 @@ details.tree-dir[open] > summary::before { transform: rotate(90deg); }
   font-size: 0.8rem;
 }
 .shift-controls .muted { white-space: nowrap; }
-.shift-input {
+.shift-controls .shift-input {
   width: 5.5rem;
   text-align: right;
   font-family: ui-monospace, monospace;
@@ -543,14 +543,14 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.6); }
 .shift-mode label { display: flex; align-items: center; gap: 0.3rem; }
 .shift-mode input[type="radio"] { accent-color: var(--accent); width: auto; }
 .shift-interp .shift-controls { margin-bottom: 0.3rem; }
-.shift-idx {
+.shift-controls .shift-idx {
   width: 3.2rem;
   text-align: right;
   font-family: ui-monospace, monospace;
   font-size: 0.8rem;
   padding: 0.25rem 0.45rem;
 }
-.shift-ms {
+.shift-controls .shift-ms {
   width: 5rem;
   text-align: right;
   font-family: ui-monospace, monospace;

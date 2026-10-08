@@ -4,6 +4,7 @@
 {{else}}
   <span class="plan-verdict plan-{{.Source}}">{{.Icon}} {{.Verdict}}</span>
   <span class="muted">{{.Reason}}</span>
+  {{with .Shift}}<span class="muted">{{.}}</span>{{end}}
   {{range .Warnings}}<span class="warn-text">⚠ {{.}}</span>{{end}}
 {{end}}
 {{end}}

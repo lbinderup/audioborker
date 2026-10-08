@@ -48,9 +48,9 @@ type JobOptions struct {
 	WriteChaptersTxt bool   `json:"write_chapters_txt"`
 	AudnexusURL      string `json:"audnexus_url"`
 	ChapterMode      string `json:"chapter_mode"` // auto|existing|provider ("" = auto)
-	// ChapterShift offsets provider chapter timings to match this rip —
-	// fixed or interpolated between two anchor chapters. Ignored for
-	// file-boundary chapters.
+	// ChapterShift offsets the embedded chapters' timings to match this rip —
+	// the catalog's chapters or the file's own, fixed or interpolated between
+	// two anchor chapters. Ignored for file-boundary chapters.
 	ChapterShift metadata.ShiftSpec `json:"chapter_shift,omitempty"`
 	// ChapterShiftMs is the legacy fixed-only field, still read so old jobs
 	// retry identically.

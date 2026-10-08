@@ -57,6 +57,11 @@ chapterization abilities.
   boundaries or the file's own embedded timings. Counts are matched strictly
   (short "Opening/End Credits" stingers the rip lacks are skipped
   automatically); on any mismatch it falls back to the automatic decision.
+- **Chapter shift** — the opposite case: names right, timings off. Shift
+  whichever chapters get embedded — Audible's or the file's own — by a fixed
+  offset, or interpolated between two anchor chapters for drift that grows
+  over the book. Clicking a chapter plays it where the shift puts it. File
+  boundaries are exact and never shifted.
 - **Library — retag what you already have** — browse the output volume (or
   filter the whole thing from one search box), pick one or more `.m4b` files,
   and rewrite their tags and chapters through the same match screen imports

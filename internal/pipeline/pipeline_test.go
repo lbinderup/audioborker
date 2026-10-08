@@ -117,7 +117,7 @@ func TestResolveChaptersProviderMatch(t *testing.T) {
 		IsAccurate: true,
 		Chapters:   []metadata.Chapter{{Title: "One", StartMs: 0, LengthMs: 180_000}},
 	}
-	r := resolveChapters(ChapterModeAuto, provider, files, 180_000, "Book")
+	r := resolveChapters(ChapterModeAuto, provider, files, 180_000, "Book", metadata.ShiftSpec{})
 	if r.Source != SourceProvider || len(r.Chapters) != 1 || len(r.Warnings) != 0 {
 		t.Errorf("%+v", r)
 	}
@@ -129,7 +129,7 @@ func TestResolveChaptersRuntimeMismatchFallsBack(t *testing.T) {
 		RuntimeMs: 500_000, // way off vs 180000
 		Chapters:  []metadata.Chapter{{Title: "One"}},
 	}
-	r := resolveChapters(ChapterModeAuto, provider, files, 180_000, "Book")
+	r := resolveChapters(ChapterModeAuto, provider, files, 180_000, "Book", metadata.ShiftSpec{})
 	if r.Source != "files" || len(r.Chapters) != 3 || len(r.Warnings) == 0 {
 		t.Errorf("%+v", r)
 	}
@@ -144,14 +144,14 @@ func TestResolveChaptersInaccurateWarns(t *testing.T) {
 		IsAccurate: false,
 		Chapters:   []metadata.Chapter{{Title: "One"}},
 	}
-	r := resolveChapters(ChapterModeAuto, provider, chapterFixtures(2), 180_000, "Book")
+	r := resolveChapters(ChapterModeAuto, provider, chapterFixtures(2), 180_000, "Book", metadata.ShiftSpec{})
 	if r.Source != SourceProvider || len(r.Warnings) != 1 {
 		t.Errorf("%+v", r)
 	}
 }
 
 func TestResolveChaptersNeverZeroForMultiFile(t *testing.T) {
-	r := resolveChapters(ChapterModeAuto, nil, chapterFixtures(4), 240_000, "Book")
+	r := resolveChapters(ChapterModeAuto, nil, chapterFixtures(4), 240_000, "Book", metadata.ShiftSpec{})
 	if r.Source != "files" || len(r.Chapters) != 4 {
 		t.Errorf("%+v", r)
 	}
@@ -162,7 +162,7 @@ func TestResolveChaptersSingleFileKeepsExisting(t *testing.T) {
 		Path: "book.m4b", DurationMs: 100_000,
 		Chapters: []ProbedChapter{{Title: "Intro", StartMs: 0, EndMs: 5000}, {Title: "Ch1", StartMs: 5000, EndMs: 100_000}},
 	}}
-	r := resolveChapters(ChapterModeAuto, nil, files, 100_000, "Book")
+	r := resolveChapters(ChapterModeAuto, nil, files, 100_000, "Book", metadata.ShiftSpec{})
 	if r.Source != "existing" || len(r.Chapters) != 2 || r.Chapters[1].LengthMs != 95_000 {
 		t.Errorf("%+v", r)
 	}
@@ -170,7 +170,7 @@ func TestResolveChaptersSingleFileKeepsExisting(t *testing.T) {
 
 func TestResolveChaptersSingleFileNoData(t *testing.T) {
 	files := []*FileInfo{{Path: "book.mp3", DurationMs: 100_000}}
-	r := resolveChapters(ChapterModeAuto, nil, files, 100_000, "My Book")
+	r := resolveChapters(ChapterModeAuto, nil, files, 100_000, "My Book", metadata.ShiftSpec{})
 	if r.Source != "single" || len(r.Chapters) != 1 || r.Chapters[0].Title != "My Book" {
 		t.Errorf("%+v", r)
 	}
@@ -185,7 +185,7 @@ func TestResolveChaptersAutoPrefersProviderWhenBothExistAndRuntimeMatches(t *tes
 		RuntimeMs: 180_000, IsAccurate: true,
 		Chapters: []metadata.Chapter{{Title: "Official Chapter", StartMs: 0, LengthMs: 180_000}},
 	}
-	r := resolveChapters(ChapterModeAuto, provider, files, 180_000, "Book")
+	r := resolveChapters(ChapterModeAuto, provider, files, 180_000, "Book", metadata.ShiftSpec{})
 	if r.Source != SourceProvider || r.Chapters[0].Title != "Official Chapter" {
 		t.Errorf("runtime-matching provider should beat existing chapters in auto: %+v", r)
 	}
@@ -200,7 +200,7 @@ func TestResolveChaptersModeExistingIgnoresProvider(t *testing.T) {
 		RuntimeMs: 180_000, IsAccurate: true,
 		Chapters: []metadata.Chapter{{Title: "Provider Ch", StartMs: 0, LengthMs: 180_000}},
 	}
-	r := resolveChapters(ChapterModeExisting, provider, files, 180_000, "Book")
+	r := resolveChapters(ChapterModeExisting, provider, files, 180_000, "Book", metadata.ShiftSpec{})
 	if r.Source != "existing" || r.Chapters[0].Title != "My Intro" {
 		t.Errorf("%+v", r)
 	}
@@ -211,14 +211,14 @@ func TestResolveChaptersModeProviderForcesDespiteMismatch(t *testing.T) {
 		RuntimeMs: 900_000, IsAccurate: true, // way off vs 180000
 		Chapters: []metadata.Chapter{{Title: "Provider Ch", StartMs: 0, LengthMs: 900_000}},
 	}
-	r := resolveChapters(ChapterModeProvider, provider, chapterFixtures(3), 180_000, "Book")
+	r := resolveChapters(ChapterModeProvider, provider, chapterFixtures(3), 180_000, "Book", metadata.ShiftSpec{})
 	if r.Source != SourceProvider || len(r.Warnings) == 0 {
 		t.Errorf("forced provider should be used with a warning: %+v", r)
 	}
 }
 
 func TestResolveChaptersModeProviderWithNoneFallsBack(t *testing.T) {
-	r := resolveChapters(ChapterModeProvider, nil, chapterFixtures(3), 180_000, "Book")
+	r := resolveChapters(ChapterModeProvider, nil, chapterFixtures(3), 180_000, "Book", metadata.ShiftSpec{})
 	if r.Source != "files" || len(r.Warnings) == 0 {
 		t.Errorf("%+v", r)
 	}
@@ -234,7 +234,7 @@ func TestMixTitlesOnFileBoundariesExactCount(t *testing.T) {
 			{Title: "The End", StartMs: 117_000, LengthMs: 61_000},
 		},
 	}
-	r := resolveChapters(ChapterModeTitlesFiles, provider, files, 180_000, "Book")
+	r := resolveChapters(ChapterModeTitlesFiles, provider, files, 180_000, "Book", metadata.ShiftSpec{})
 	if r.Source != SourceTitlesFiles || len(r.Chapters) != 3 || len(r.Warnings) != 0 {
 		t.Fatalf("%+v", r)
 	}
@@ -254,7 +254,7 @@ func TestMixTitlesDropsShortOpeningCredits(t *testing.T) {
 			{Title: "Chapter 2", StartMs: 66_000, LengthMs: 60_000},
 		},
 	}
-	r := resolveChapters(ChapterModeTitlesFiles, provider, files, 120_000, "Book")
+	r := resolveChapters(ChapterModeTitlesFiles, provider, files, 120_000, "Book", metadata.ShiftSpec{})
 	if r.Source != SourceTitlesFiles || len(r.Chapters) != 2 {
 		t.Fatalf("%+v", r)
 	}
@@ -276,7 +276,7 @@ func TestMixTitlesDropsIntroAndOutro(t *testing.T) {
 			{Title: "End Credits", LengthMs: 30_000},
 		},
 	}
-	r := resolveChapters(ChapterModeTitlesFiles, provider, files, 120_000, "Book")
+	r := resolveChapters(ChapterModeTitlesFiles, provider, files, 120_000, "Book", metadata.ShiftSpec{})
 	if r.Source != SourceTitlesFiles || len(r.Chapters) != 2 ||
 		r.Chapters[0].Title != "Chapter 1" || r.Chapters[1].Title != "Chapter 2" {
 		t.Fatalf("%+v", r)
@@ -292,7 +292,7 @@ func TestMixTitlesLongExtraChapterFallsBack(t *testing.T) {
 			{Title: "Chapter 2", LengthMs: 60_000},
 		},
 	}
-	r := resolveChapters(ChapterModeTitlesFiles, provider, files, 120_000, "Book")
+	r := resolveChapters(ChapterModeTitlesFiles, provider, files, 120_000, "Book", metadata.ShiftSpec{})
 	// Falls through to auto; provider runtime 0 vs 120000 mismatches, so file
 	// boundaries win — and the multi-file zero-chapters invariant holds.
 	if r.Source != SourceFiles || len(r.Chapters) != 2 || len(r.Warnings) == 0 {
@@ -309,7 +309,7 @@ func TestMixTitlesCountMismatchFallsBack(t *testing.T) {
 			{Title: "5", LengthMs: 60_000},
 		},
 	}
-	r := resolveChapters(ChapterModeTitlesFiles, provider, files, 120_000, "Book")
+	r := resolveChapters(ChapterModeTitlesFiles, provider, files, 120_000, "Book", metadata.ShiftSpec{})
 	if r.Source != SourceFiles || len(r.Warnings) == 0 {
 		t.Errorf("%+v", r)
 	}
@@ -329,7 +329,7 @@ func TestMixTitlesOnExistingChapters(t *testing.T) {
 			{Title: "Another Name", StartMs: 50_000, LengthMs: 70_000},
 		},
 	}
-	r := resolveChapters(ChapterModeTitlesExisting, provider, files, 120_000, "Book")
+	r := resolveChapters(ChapterModeTitlesExisting, provider, files, 120_000, "Book", metadata.ShiftSpec{})
 	if r.Source != SourceTitlesExisting || len(r.Chapters) != 2 {
 		t.Fatalf("%+v", r)
 	}
@@ -343,14 +343,14 @@ func TestMixTitlesExistingOnMultiFileFallsBack(t *testing.T) {
 	provider := &metadata.ChapterInfo{
 		Chapters: []metadata.Chapter{{Title: "One", LengthMs: 60_000}},
 	}
-	r := resolveChapters(ChapterModeTitlesExisting, provider, chapterFixtures(3), 180_000, "Book")
+	r := resolveChapters(ChapterModeTitlesExisting, provider, chapterFixtures(3), 180_000, "Book", metadata.ShiftSpec{})
 	if r.Source != SourceFiles || len(r.Chapters) != 3 || len(r.Warnings) == 0 {
 		t.Errorf("%+v", r)
 	}
 }
 
 func TestMixTitlesNoProviderFallsBack(t *testing.T) {
-	r := resolveChapters(ChapterModeTitlesFiles, nil, chapterFixtures(3), 180_000, "Book")
+	r := resolveChapters(ChapterModeTitlesFiles, nil, chapterFixtures(3), 180_000, "Book", metadata.ShiftSpec{})
 	if r.Source != SourceFiles || len(r.Chapters) != 3 || len(r.Warnings) == 0 {
 		t.Errorf("%+v", r)
 	}
@@ -401,5 +401,90 @@ func TestHiResCoverURL(t *testing.T) {
 		if got := hiResCoverURL(in); got != want {
 			t.Errorf("hiResCoverURL(%s) = %s, want %s", in, got, want)
 		}
+	}
+}
+
+// embeddedBook is a single file whose own chapters are named well but start
+// late — the case the shift on embedded chapters exists for.
+func embeddedBook() []*FileInfo {
+	return []*FileInfo{{
+		Path: "book.m4b", DurationMs: 120_000,
+		Chapters: []ProbedChapter{
+			{Title: "Prologue", StartMs: 0, EndMs: 40_000},
+			{Title: "One", StartMs: 40_000, EndMs: 80_000},
+			{Title: "Two", StartMs: 80_000, EndMs: 120_000},
+		},
+	}}
+}
+
+func starts(chs []metadata.Chapter) []int64 {
+	out := make([]int64, len(chs))
+	for i, c := range chs {
+		out[i] = c.StartMs
+	}
+	return out
+}
+
+func TestShiftAppliesToEmbeddedChapters(t *testing.T) {
+	r := resolveChapters(ChapterModeExisting, nil, embeddedBook(), 120_000, "Book",
+		metadata.ShiftSpec{Mode: "fixed", FixedMs: -1500})
+	if r.Source != SourceExisting || r.Shift.FixedMs != -1500 {
+		t.Fatalf("%+v", r)
+	}
+	// Names kept, timings moved; the first can't start before the audio.
+	if got := starts(r.Chapters); got[0] != 0 || got[1] != 38_500 || got[2] != 78_500 {
+		t.Errorf("starts %v", got)
+	}
+	if r.Chapters[1].Title != "One" || r.Chapters[2].LengthMs != 41_500 {
+		t.Errorf("%+v", r.Chapters)
+	}
+}
+
+func TestShiftInterpolatesEmbeddedChaptersToLast(t *testing.T) {
+	// ToIdx 0 anchors the last chapter of whichever list is embedded.
+	r := resolveChapters(ChapterModeAuto, nil, embeddedBook(), 120_000, "Book",
+		metadata.ShiftSpec{Mode: "interp", FromIdx: 1, FromMs: 0, ToMs: 2000})
+	if got := starts(r.Chapters); got[0] != 0 || got[1] != 41_000 || got[2] != 82_000 {
+		t.Errorf("starts %v", got)
+	}
+}
+
+func TestShiftStillAppliesToProviderChapters(t *testing.T) {
+	provider := &metadata.ChapterInfo{
+		RuntimeMs: 120_000,
+		Chapters: []metadata.Chapter{
+			{Title: "A", StartMs: 0, LengthMs: 60_000},
+			{Title: "B", StartMs: 60_000, LengthMs: 60_000},
+		},
+	}
+	r := resolveChapters(ChapterModeAuto, provider, embeddedBook(), 120_000, "Book",
+		metadata.ShiftSpec{Mode: "fixed", FixedMs: 700})
+	if r.Source != SourceProvider || starts(r.Chapters)[1] != 60_700 {
+		t.Errorf("%+v", r)
+	}
+	if provider.Chapters[1].StartMs != 60_000 {
+		t.Error("shifting must not mutate the provider's cached list")
+	}
+}
+
+func TestShiftAppliesToTitlesOnEmbeddedTimings(t *testing.T) {
+	provider := &metadata.ChapterInfo{Chapters: []metadata.Chapter{
+		{Title: "P", LengthMs: 40_000}, {Title: "1", LengthMs: 40_000}, {Title: "2", LengthMs: 40_000},
+	}}
+	r := resolveChapters(ChapterModeTitlesExisting, provider, embeddedBook(), 120_000, "Book",
+		metadata.ShiftSpec{Mode: "fixed", FixedMs: 1000})
+	if r.Source != SourceTitlesExisting || r.Chapters[1].Title != "1" || starts(r.Chapters)[1] != 41_000 {
+		t.Errorf("%+v", r)
+	}
+}
+
+func TestShiftIgnoredForFileBoundaries(t *testing.T) {
+	r := resolveChapters(ChapterModeAuto, nil, chapterFixtures(3), 180_000, "Book",
+		metadata.ShiftSpec{Mode: "fixed", FixedMs: 1000})
+	if r.Source != SourceFiles || starts(r.Chapters)[1] != 60_000 || !r.Shift.IsZero() {
+		t.Errorf("%+v", r)
+	}
+	if len(r.Warnings) != 1 || !strings.Contains(r.Warnings[0], "Shift ignored") {
+		t.Errorf("warnings %v", r.Warnings)
 	}
 }

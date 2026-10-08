@@ -143,9 +143,9 @@ func (rc *RealConverter) Run(ctx context.Context, job *store.Job, report Progres
 	}
 	provided, chapterWarns := rc.providerChapters(ctx, job, chapterMode, logf)
 	warnings = append(warnings, chapterWarns...)
-	resolved := resolveChapters(chapterMode, provided, files, merged.DurationMs, job.Metadata.Title)
+	resolved := resolveChapters(chapterMode, provided, files, merged.DurationMs, job.Metadata.Title, opts.EffectiveChapterShift())
 	warnings = append(warnings, resolved.Warnings...)
-	logf("chapters: %d entries from %q", len(resolved.Chapters), resolved.Source)
+	logChapters(logf, resolved)
 
 	chaptersPath := filepath.Join(stagingDir, "book.chapters.txt")
 	if err := os.WriteFile(chaptersPath, []byte(chaptersTxt(resolved.Chapters)), 0o666); err != nil {
@@ -355,10 +355,11 @@ func (rc *RealConverter) cleanupSource(job *store.Job, logf LogFunc) error {
 	}
 }
 
-// providerChapters fetches the catalog's chapter list for a job and applies
-// its snapshotted shift. A missing or failed lookup is not fatal — chapter
-// resolution falls back to the file's own data — so this returns warnings
-// rather than an error. Shared by conversions and retags.
+// providerChapters fetches the catalog's chapter list for a job. A missing or
+// failed lookup is not fatal — chapter resolution falls back to the file's
+// own data — so this returns warnings rather than an error. Shared by
+// conversions and retags. The job's shift is applied by resolveChapters, to
+// whichever list it picks.
 func (rc *RealConverter) providerChapters(ctx context.Context, job *store.Job, chapterMode string, logf LogFunc) (*metadata.ChapterInfo, []string) {
 	opts := job.Options
 	var warnings []string
@@ -376,11 +377,14 @@ func (rc *RealConverter) providerChapters(ctx context.Context, job *store.Job, c
 			}
 		}
 	}
-	if shift := opts.EffectiveChapterShift(); !shift.IsZero() && provided != nil {
-		provided = provided.ShiftedBy(shift)
-		logf("applied chapter shift: %s", shift)
-	}
 	return provided, warnings
+}
+
+func logChapters(logf LogFunc, r ResolvedChapters) {
+	logf("chapters: %d entries from %q", len(r.Chapters), r.Source)
+	if !r.Shift.IsZero() {
+		logf("applied chapter shift: %s", r.Shift)
+	}
 }
 
 // pruneEmptyDirs removes dir if (recursively) empty, ignoring junk files.

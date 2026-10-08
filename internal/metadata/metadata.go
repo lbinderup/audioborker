@@ -110,8 +110,9 @@ func (b Book) Blurb() string {
 	return b.Description
 }
 
-// ShiftSpec describes how provider chapter timings are offset to match a
-// specific rip. Two modes:
+// ShiftSpec describes how chapter timings are offset to match a specific
+// rip — the catalog's chapters, or the file's own when their names are right
+// but their timings are off. Two modes:
 //
 //   - "fixed": every chapter moves by FixedMs.
 //   - "interp": the shift is FromMs at anchor chapter FromIdx and ToMs at
@@ -119,6 +120,8 @@ func (b Book) Blurb() string {
 //     chapters' original start times in between, and held constant outside
 //     the anchors. This models rips whose drift accumulates over the book —
 //     what sounds right at chapter 1 can be a second off by chapter 120.
+//     ToIdx 0 means the last chapter: the anchors index whichever list ends
+//     up embedded, and the catalog's and the file's differ in length.
 type ShiftSpec struct {
 	Mode    string `json:"mode,omitempty"` // "" (none) | "fixed" | "interp"
 	FixedMs int64  `json:"fixed_ms,omitempty"`
@@ -144,8 +147,12 @@ func (s ShiftSpec) String() string {
 	case "fixed":
 		return fmt.Sprintf("fixed %+d ms", s.FixedMs)
 	case "interp":
-		return fmt.Sprintf("interpolated %+d ms @ chapter %d → %+d ms @ chapter %d",
-			s.FromMs, s.FromIdx, s.ToMs, s.ToIdx)
+		to := fmt.Sprint(s.ToIdx)
+		if s.ToIdx == 0 {
+			to = "last"
+		}
+		return fmt.Sprintf("interpolated %+d ms @ chapter %d → %+d ms @ chapter %s",
+			s.FromMs, s.FromIdx, s.ToMs, to)
 	}
 	return "none"
 }
@@ -180,6 +187,9 @@ func (c *ChapterInfo) ShiftedBy(spec ShiftSpec) *ChapterInfo {
 		return i
 	}
 	fi, ti := clampIdx(spec.FromIdx), clampIdx(spec.ToIdx)
+	if spec.ToIdx == 0 {
+		ti = n
+	}
 	fMs, tMs := spec.FromMs, spec.ToMs
 	if fi > ti {
 		fi, ti = ti, fi

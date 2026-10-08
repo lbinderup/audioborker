@@ -33,10 +33,10 @@
         {{else}}
         <h3 class="src-existing">Embedded chapters {{if .Chapters}}<span class="muted">({{len .Chapters}} · {{.Duration}})</span>{{end}}</h3>
         {{if .Chapters}}
-        <div class="chapter-list">
-          {{range .Chapters}}
-          <button type="button" class="chapter-btn" data-ms="{{.StartMs}}" onclick="seekPreview(this)">
-            <span class="chapter-stamp">{{.Stamp}}</span> {{.Title}}
+        <div class="chapter-list shiftable">
+          {{range $i, $c := .Chapters}}
+          <button type="button" class="chapter-btn" data-ms="{{$c.StartMs}}" data-idx="{{add $i 1}}" onclick="seekPreview(this)">
+            <span class="chapter-idx">{{add $i 1}}</span><span class="chapter-stamp">{{$c.Stamp}}</span> {{$c.Title}}
           </button>
           {{end}}
         </div>
@@ -55,10 +55,55 @@
                 hx-get="/match/provider-chapters"
                 hx-target="closest .provider-col"
                 hx-swap="innerHTML"
-                hx-vals='js:{choice: document.querySelector(`input[name="match:{{.RelPath}}"]:checked`)?.value || "", path: {{.RelPath | printf "%q"}}, ...shiftVals({{.RelPath | printf "%q"}}), ...manualVals({{.RelPath | printf "%q"}})}'>
+                hx-vals='js:{choice: document.querySelector(`input[name="match:{{.RelPath}}"]:checked`)?.value || "", path: {{.RelPath | printf "%q"}}, ...manualVals({{.RelPath | printf "%q"}})}'>
           Load for comparison
         </button>
       </div>
+    </div>
+
+    {{/* Applies to whichever chapters get embedded — Audible's or the
+         file's own — so it sits under both lists. */}}
+    <div class="chapter-shift">
+      <label>Shift chapters</label>
+      <div class="shift-mode">
+        <label><input type="radio" name="shift_mode:{{.RelPath}}" value="fixed" checked onchange="shiftModeChanged(this)"> Fixed</label>
+        <label><input type="radio" name="shift_mode:{{.RelPath}}" value="interp" onchange="shiftModeChanged(this)"> Interpolated</label>
+      </div>
+
+      <div class="shift-fixed">
+        <div class="shift-controls">
+          <button type="button" class="btn-ghost btn-small" onclick="nudgeShift(this, -1000)" title="1 second earlier">−1000</button>
+          <input type="text" inputmode="numeric" class="shift-input"
+                 name="shift:{{.RelPath}}" value="0" autocomplete="off"
+                 oninput="shiftChanged(this)">
+          <span class="muted">ms</span>
+          <button type="button" class="btn-ghost btn-small" onclick="nudgeShift(this, 1000)" title="1 second later">+1000</button>
+        </div>
+      </div>
+
+      <div class="shift-interp" hidden>
+        <div class="shift-controls">
+          <span class="muted">at chapter</span>
+          <input type="text" inputmode="numeric" class="shift-idx" name="shift_from_idx:{{.RelPath}}"
+                 value="1" autocomplete="off" oninput="shiftChanged(this)">
+          <span class="muted">shift</span>
+          <input type="text" inputmode="numeric" class="shift-ms" name="shift_from_ms:{{.RelPath}}"
+                 value="0" autocomplete="off" oninput="shiftChanged(this)">
+          <span class="muted">ms</span>
+        </div>
+        <div class="shift-controls">
+          <span class="muted">at chapter</span>
+          <input type="text" inputmode="numeric" class="shift-idx" name="shift_to_idx:{{.RelPath}}"
+                 value="" placeholder="last" autocomplete="off" oninput="shiftChanged(this)">
+          <span class="muted">shift</span>
+          <input type="text" inputmode="numeric" class="shift-ms" name="shift_to_ms:{{.RelPath}}"
+                 value="0" autocomplete="off" oninput="shiftChanged(this)">
+          <span class="muted">ms</span>
+        </div>
+        <p class="hint">Linear between the anchors.</p>
+      </div>
+
+      <p class="hint">Positive = later.{{if .Multi}} File boundaries aren't shifted.{{end}}</p>
     </div>
   {{end}}
 </div>
