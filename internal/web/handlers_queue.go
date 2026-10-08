@@ -83,7 +83,7 @@ func (s *Server) handleQueueCreate(w http.ResponseWriter, r *http.Request) {
 			continue
 		}
 
-		if active, err := s.store.HasActiveJobForPath(kind, p); err == nil && active {
+		if active, err := s.store.HasActiveJobForPath(kind, p); err == nil && active || retag && s.hasActiveLibraryJob(p) {
 			skipped = append(skipped, p+" (already queued)")
 			continue
 		}
@@ -217,7 +217,7 @@ func (s *Server) queueData(r *http.Request) queueData {
 func (s *Server) handleQueue(w http.ResponseWriter, r *http.Request) {
 	data := s.queueData(r)
 	if n := r.URL.Query().Get("queued"); n != "" && n != "0" {
-		data.Flash = n + " conversion(s) queued."
+		data.Flash = n + " job(s) queued."
 	}
 	if reasons := r.URL.Query().Get("skipped"); reasons != "" {
 		data.Error = "Skipped: " + reasons

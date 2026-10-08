@@ -33,6 +33,8 @@ type Server struct {
 
 	durations    *durationCache
 	previewFixes previewFixes
+	sortChecks   sortChecks
+	sortLimit    limiter
 }
 
 func New(cfg config.Config, st *store.Store, mgr *queue.Manager, broker *queue.Broker) *http.Server {

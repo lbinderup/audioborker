@@ -1,11 +1,13 @@
 package pipeline
 
 import (
+	"context"
 	"os"
 	"path/filepath"
 	"testing"
 
 	"audioborker/internal/metadata"
+	"audioborker/internal/store"
 )
 
 func TestSortFile(t *testing.T) {
@@ -51,5 +53,38 @@ func TestSortFile(t *testing.T) {
 	// No title, no way to place it.
 	if _, _, err := SortTarget(other, out, tmpl, metadata.Book{Authors: []string{"A"}}); err == nil {
 		t.Error("an untitled file was given a target")
+	}
+}
+
+func TestRunSortUsesTheCheckedTags(t *testing.T) {
+	out := t.TempDir()
+	src := filepath.Join(out, "Unsorted", "sg.m4b")
+	if err := os.MkdirAll(filepath.Dir(src), 0o777); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(src, []byte("x"), 0o666); err != nil {
+		t.Fatal(err)
+	}
+	// No ffprobe exists here: the job must go by the tags it carries.
+	rc := &RealConverter{FFprobe: filepath.Join(out, "no-ffprobe")}
+	job := &store.Job{
+		InputPath: "Unsorted/sg.m4b", SourceFiles: []string{src},
+		Metadata: metadata.Book{Title: "Small Gods", Authors: []string{"Terry Pratchett"}},
+		Options:  store.JobOptions{Kind: store.KindSort, OutputDir: out, PathTemplate: "{author}/{title}"},
+	}
+	res, err := rc.Run(context.Background(), job, func(string, float64) {}, func(string, ...any) {})
+	want := filepath.Join(out, "Terry Pratchett", "Small Gods.m4b")
+	if err != nil || res.OutputPath != want {
+		t.Fatalf("Run = %+v, %v", res, err)
+	}
+	// Again: now it is in place, and that's a success, not an error.
+	job.SourceFiles = []string{want}
+	if res, err := rc.Run(context.Background(), job, func(string, float64) {}, func(string, ...any) {}); err != nil || res.OutputPath != want {
+		t.Fatalf("in place: %+v, %v", res, err)
+	}
+	// Without tags to go by it has to probe — and says so when it can't.
+	job.Metadata = metadata.Book{}
+	if _, err := rc.Run(context.Background(), job, func(string, float64) {}, func(string, ...any) {}); err == nil {
+		t.Error("a job without tags ran without reading any")
 	}
 }

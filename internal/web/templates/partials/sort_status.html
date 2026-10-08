@@ -1,0 +1,12 @@
+{{define "sort_status"}}
+<div class="sort-status" data-state="{{.State}}">
+  {{if eq .State "move"}}
+  <input type="hidden" name="paths" value="{{.Old}}">
+  <div class="sort-new">→ {{.New}}</div>
+  {{else if eq .State "same"}}
+  <div class="muted">✓ In place</div>
+  {{else}}
+  <div class="warn-text">⚠ {{.Err}}</div>
+  {{end}}
+</div>
+{{end}}

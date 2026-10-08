@@ -3,28 +3,53 @@
   <h1>Sort</h1>
   <p class="muted"><code>{{.PathTemplate}}</code></p>
 
-  <form method="post" action="/library/sort/apply">
+  {{/* Rows check themselves, a few at a time; only files found out of place
+       submit (sort_status adds their paths), and each becomes a queued job. */}}
+  <form method="post" action="/library/sort/apply" id="sort-form">
     <ul class="sort-list">
-      {{range .Rows}}
+      {{range .Paths}}
       <li class="sort-row">
-        <div class="sort-old">{{.Old}}</div>
-        {{if .Err}}<div class="warn-text">⚠ {{.Err}}</div>
-        {{else if .InPlace}}<div class="muted">✓ In place</div>
-        {{else}}
-        <input type="hidden" name="paths" value="{{.Old}}">
-        <div class="sort-new">→ {{.New}}</div>
-        {{end}}
+        <div class="sort-old">{{.}}</div>
+        <div class="sort-status" data-state="pending"
+             hx-get="/library/sort/row?path={{. | urlquery}}" hx-trigger="load" hx-swap="outerHTML">
+          <span class="muted">Checking…</span>
+        </div>
       </li>
       {{end}}
     </ul>
 
     <div class="selection-bar">
-      <span class="muted">{{.Moves}} to move{{if .InPlace}} · {{.InPlace}} in place{{end}}{{if .Skipped}} · {{.Skipped}} skipped{{end}}</span>
+      <span class="muted" id="sort-summary"></span>
       <span>
         <a href="/library" class="btn-ghost">← Back</a>
-        <button type="submit" class="btn-primary" {{if not .Moves}}disabled{{end}}>Move {{.Moves}} →</button>
+        <button type="submit" class="btn-primary" id="sort-go" disabled>Checking…</button>
       </span>
     </div>
   </form>
+
+  <script>
+    function sortTally() {
+      const states = [...document.querySelectorAll('.sort-status')].map(e => e.dataset.state);
+      const n = s => states.filter(x => x === s).length;
+      const pending = n('pending'), move = n('move');
+      const btn = document.getElementById('sort-go');
+      btn.disabled = pending > 0 || move === 0;
+      btn.textContent = pending ? `Checking ${states.length - pending} of ${states.length}…` : `Move ${move} →`;
+      const parts = [move + ' to move'];
+      if (n('same')) parts.push(n('same') + ' in place');
+      if (n('skip')) parts.push(n('skip') + ' skipped');
+      document.getElementById('sort-summary').textContent = parts.join(' · ');
+    }
+    document.body.addEventListener('htmx:afterSwap', sortTally);
+    // A row whose check fails outright mustn't hold the button forever.
+    ['htmx:responseError', 'htmx:sendError'].forEach(t => document.body.addEventListener(t, e => {
+      const row = e.target.closest?.('.sort-status');
+      if (!row) return;
+      row.dataset.state = 'skip';
+      row.innerHTML = '<div class="warn-text">⚠ Check failed</div>';
+      sortTally();
+    }));
+    sortTally();
+  </script>
 </section>
 {{end}}

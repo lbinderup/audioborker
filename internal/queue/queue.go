@@ -165,7 +165,11 @@ func (m *Manager) run(ctx context.Context, job *store.Job) {
 
 	m.log.Info("job started", "job", job.ID, "input", job.InputPath)
 	m.broker.Publish(Event{Kind: EventStatus, JobID: job.ID, Status: store.StatusRunning})
-	logf("job %s started: %s (%s, region %s)", job.ID, job.InputPath, job.ASIN, job.Region)
+	if job.ASIN != "" {
+		logf("job %s started: %s (%s, region %s)", job.ID, job.InputPath, job.ASIN, job.Region)
+	} else {
+		logf("job %s started: %s", job.ID, job.InputPath)
+	}
 
 	result, err := m.conv.Run(timeoutCtx, job, report, logf)
 

@@ -1,6 +1,7 @@
 package pipeline
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"os"
@@ -8,6 +9,7 @@ import (
 	"strings"
 
 	"audioborker/internal/metadata"
+	"audioborker/internal/metadata/embedded"
 	"audioborker/internal/store"
 )
 
@@ -25,6 +27,53 @@ func SortTarget(src, outputDir, pathTemplate string, book metadata.Book) (target
 		return "", false, err
 	}
 	return target, target == src, nil
+}
+
+// runSort moves one library file to the path its own tags render to. Sorting
+// runs as queued jobs, one per file: done inside a request, a library-sized
+// batch of probes and moves outlasted the reverse proxy's timeout.
+func (rc *RealConverter) runSort(ctx context.Context, job *store.Job, report ProgressFunc, logf LogFunc) (*Result, error) {
+	if len(job.SourceFiles) != 1 {
+		return nil, fmt.Errorf("a sort job covers exactly one file, got %d", len(job.SourceFiles))
+	}
+	src := job.SourceFiles[0]
+	// The tags the preview read travel with the job; only a job queued
+	// without them (the app restarted, or the file changed since its check)
+	// reads them itself.
+	book := job.Metadata
+	if strings.TrimSpace(book.Title) == "" {
+		report("probe", 0)
+		info, err := prober{ffprobe: rc.FFprobe}.probe(ctx, src)
+		if err != nil {
+			return nil, err
+		}
+		book = *embedded.Book(info.Tags)
+	} else {
+		logf("tags as checked: %q", book.Title)
+	}
+	report("move", 0.5)
+	target, moved, err := SortFile(src, job.Options.OutputDir, job.Options.PathTemplate, book)
+	var warnings []string
+	switch {
+	case err != nil && !moved:
+		return nil, err
+	case err != nil:
+		warnings = append(warnings, capitalized(err.Error())+".")
+	}
+	if moved {
+		logf("moved to %s", target)
+	} else {
+		logf("already in place")
+	}
+	report("move", 1)
+	return &Result{OutputPath: target, Warnings: warnings}, nil
+}
+
+func capitalized(s string) string {
+	if s == "" {
+		return s
+	}
+	return strings.ToUpper(s[:1]) + s[1:]
 }
 
 // SortFile moves a library file to its SortTarget, with its chapters.txt — a

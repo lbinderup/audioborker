@@ -51,6 +51,9 @@ func (rc *RealConverter) Run(ctx context.Context, job *store.Job, report Progres
 	if job.Options.IsRetag() {
 		return rc.runRetag(ctx, job, report, logf)
 	}
+	if job.Options.IsSort() {
+		return rc.runSort(ctx, job, report, logf)
+	}
 	opts := job.Options
 	workDir := filepath.Join(rc.WorkRoot, job.ID)
 	stagingDir := filepath.Join(opts.OutputDir, ".audioborker-work", job.ID)

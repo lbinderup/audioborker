@@ -38,6 +38,9 @@ func (f *FakeConverter) Run(ctx context.Context, job *store.Job, report Progress
 	if job.Options.IsRetag() {
 		return f.runRetag(ctx, job, report, logf)
 	}
+	if job.Options.IsSort() {
+		return f.runSort(ctx, job, report, logf)
+	}
 	logf("fake converter: starting %s (asin %s)", job.InputPath, job.ASIN)
 
 	type step struct {
@@ -139,6 +142,25 @@ func (f *FakeConverter) runRetag(ctx context.Context, job *store.Job, report Pro
 	})
 	logf("fake retag: rewrote %s", target)
 	return &Result{OutputPath: target, ChaptersJSON: string(chapters)}, nil
+}
+
+// runSort simulates a library sort. Without ffprobe there are no tags to
+// sort by, so nothing moves; the queue UX is what this exercises.
+func (f *FakeConverter) runSort(ctx context.Context, job *store.Job, report ProgressFunc, logf LogFunc) (*Result, error) {
+	logf("fake sort: %s stays where it is", job.InputPath)
+	for _, stage := range []string{"probe", "move"} {
+		select {
+		case <-ctx.Done():
+			return nil, ctx.Err()
+		case <-time.After(f.delay() / 2):
+		}
+		report(stage, map[string]float64{"probe": 0.5, "move": 1}[stage])
+	}
+	out := job.InputPath
+	if len(job.SourceFiles) == 1 {
+		out = job.SourceFiles[0]
+	}
+	return &Result{OutputPath: out}, nil
 }
 
 // varsFor maps a job's metadata snapshot to path-template variables.

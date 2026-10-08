@@ -83,7 +83,7 @@ chapterization abilities.
   stream-copied, tagged, verified, and only then swapped in — so a failure or a
   cancel always leaves the original untouched. **Sort selected** moves files
   to the path template by the tags they already have, without a retag —
-  previewed first, never over another file.
+  previewed first, then queued one job per file, never over another file.
 - **Output where you want it** — a dedicated `/output` volume with a safe path
   template (`{author}/{series_name}/{Book series_position:00 - }{title}/{title} [{asin}]` by default; also
   `{narrator}`, `{subtitle}`, `{year}`). Missing variables drop cleanly — a

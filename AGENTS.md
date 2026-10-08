@@ -125,8 +125,13 @@ copy → chapters → tag → verify → replace).
 - **Sorting the library is a retag's rename without the retag.**
   `pipeline.SortFile` takes its target from `retagTarget` (so it agrees with
   the rename preview and refuses an occupied path), renames only — never a
-  copy+delete — and takes the file's chapters.txt along. The apply step
-  recomputes every target rather than trusting paths the preview page sends.
+  copy+delete — and takes the file's chapters.txt along. Nothing slow runs in
+  a request: the preview's rows check themselves (`/library/sort/row`, a few
+  ffprobes at a time), and confirming queues one `KindSort` job per file. The
+  tags a row's check read travel as the job's `Metadata`, so the job doesn't
+  probe again — unless it has none (a restart, or the file changed since its
+  check). Jobs recompute the target from those tags and the snapshotted
+  template rather than trusting paths the page sends.
 - **Cleanup is forced to `leave` for retag jobs.** `cleanupSource` resolves
   `InputDir + InputPath`, which for a retag *is* the file just written — a
   `delete` default would destroy the book it had just fixed.

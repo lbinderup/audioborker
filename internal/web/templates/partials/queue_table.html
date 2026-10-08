@@ -1,10 +1,10 @@
 {{define "queue_table"}}
 {{/* Counts live inside this partial so SSE-triggered refreshes keep them
-     in sync with the rows (a finished job clears "1 converting"). */}}
+     in sync with the rows (a finished job clears "1 running"). */}}
 <p class="muted queue-counts">
   {{with .Counts}}
     {{if .pending}}<span class="badge badge-pending">◇ {{.pending}} pending</span>{{end}}
-    {{if .running}}<span class="badge badge-running">◐ {{.running}} converting</span>{{end}}
+    {{if .running}}<span class="badge badge-running">◐ {{.running}} running</span>{{end}}
     {{if .done}}<span class="badge badge-done">◆ {{.done}} done</span>{{end}}
     {{if .error}}<span class="badge badge-err">✕ {{.error}} failed</span>{{end}}
     {{if .cancelled}}<span class="badge">– {{.cancelled}} cancelled</span>{{end}}

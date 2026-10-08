@@ -3,6 +3,7 @@ package web
 import (
 	"context"
 	"errors"
+	"fmt"
 	"io/fs"
 	"log/slog"
 	"net/http"
@@ -13,6 +14,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"audioborker/internal/match"
@@ -53,12 +55,6 @@ func (s *Server) handleLibrary(w http.ResponseWriter, r *http.Request) {
 	}
 	if err != nil {
 		data.Error = "Could not read the library directory (" + set.OutputDir + "): " + err.Error()
-	}
-	if n := r.URL.Query().Get("sorted"); n != "" {
-		data.Flash = "Moved " + n + " file(s)."
-	}
-	if failed := r.URL.Query().Get("failed"); failed != "" {
-		data.Error = "Not moved: " + failed
 	}
 	s.render.render(w, "library", data)
 }
@@ -366,56 +362,116 @@ func libraryFilesFor(root string, paths []string) []string {
 	return out
 }
 
-type sortRow struct {
-	Old, New string // library-relative
-	InPlace  bool
-	Err      string
-}
-
 type sortData struct {
 	baseData
 	PathTemplate string
-	Rows         []sortRow
-	Moves        int
-	InPlace      int
-	Skipped      int
+	Paths        []string // library-relative; each row checks itself
 }
 
-// sortRows works out where each selected file belongs by its own tags. The
-// preview and the move both call it, so what was shown is what moves —
-// recomputed rather than trusting paths the page sends back.
-func (s *Server) sortRows(ctx context.Context, paths []string) sortData {
-	set := s.settings()
-	data := sortData{baseData: s.base("Sort", "library"), PathTemplate: set.PathTemplate}
-	for _, rel := range libraryFilesFor(set.OutputDir, paths) {
-		row := sortRow{Old: rel}
-		abs, err := scan.Resolve(set.OutputDir, rel)
-		if err == nil {
-			if active, aerr := s.store.HasActiveJobForPath(store.KindRetag, rel); aerr == nil && active {
-				err = errors.New("queued for a retag")
-			}
-		}
-		var info *pipeline.FileInfo
-		if err == nil {
-			info, err = pipeline.ProbeFile(ctx, s.cfg.FFprobePath, abs)
-		}
-		var target string
-		if err == nil {
-			target, row.InPlace, err = pipeline.SortTarget(abs, set.OutputDir, set.PathTemplate, *embedded.Book(info.Tags))
-		}
-		switch {
-		case err != nil:
-			row.Err = err.Error()
-			data.Skipped++
-		case row.InPlace:
-			data.InPlace++
-		default:
-			row.New = libraryRel(set.OutputDir, target)
-			data.Moves++
-		}
-		data.Rows = append(data.Rows, row)
+// handleLibrarySort lists the selected files at once; each row then asks
+// /library/sort/row where its file belongs. Probing a library-sized batch in
+// this one request outlasted the reverse proxy's timeout.
+func (s *Server) handleLibrarySort(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		http.Error(w, "bad form", http.StatusBadRequest)
+		return
 	}
-	return data
+	set := s.settings()
+	s.render.render(w, "sort", sortData{
+		baseData:     s.base("Sort", "library"),
+		PathTemplate: set.PathTemplate,
+		Paths:        libraryFilesFor(set.OutputDir, r.PostForm["paths"]),
+	})
+}
+
+type sortRow struct {
+	Old, New string // library-relative
+	State    string // "move", "same" or "skip"
+	Err      string
+}
+
+// sortChecks remembers the tags each row's check read, so confirming queues
+// jobs that carry them (Job.Metadata) instead of probing every file again.
+// An entry is only good while the file is unchanged.
+type sortChecks struct {
+	mu sync.Mutex
+	m  map[string]sortCheck
+}
+
+type sortCheck struct {
+	sig  string // size and mtime when the tags were read
+	book metadata.Book
+}
+
+func fileSig(info os.FileInfo) string {
+	return fmt.Sprintf("%d|%d", info.Size(), info.ModTime().UnixNano())
+}
+
+func (c *sortChecks) put(abs string, info os.FileInfo, book metadata.Book) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	if c.m == nil || len(c.m) >= 5000 {
+		c.m = map[string]sortCheck{}
+	}
+	c.m[abs] = sortCheck{sig: fileSig(info), book: book}
+}
+
+func (c *sortChecks) get(abs string, info os.FileInfo) (metadata.Book, bool) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	chk, ok := c.m[abs]
+	return chk.book, ok && chk.sig == fileSig(info)
+}
+
+// handleLibrarySortRow works out where one file belongs by its own tags.
+func (s *Server) handleLibrarySortRow(w http.ResponseWriter, r *http.Request) {
+	set := s.settings()
+	row := sortRow{Old: r.URL.Query().Get("path"), State: "skip"}
+	render := func() { s.render.partial(w, "sort", "sort_status", row) }
+
+	ctx, cancel := context.WithTimeout(r.Context(), time.Minute)
+	defer cancel()
+	// A page of rows fires its checks at once (all of them over HTTP/2), and
+	// a NAS shouldn't run that many ffprobes side by side.
+	release, err := s.sortLimit.acquire(ctx)
+	if err != nil {
+		row.Err = "Timed out waiting to check"
+		render()
+		return
+	}
+	defer release()
+
+	abs, err := scan.Resolve(set.OutputDir, row.Old)
+	var stat os.FileInfo
+	if err == nil {
+		stat, err = os.Stat(abs)
+	}
+	if err == nil {
+		if active, aerr := s.store.HasActiveJobForPath(store.KindRetag, row.Old); aerr == nil && active {
+			err = errors.New("queued for a retag")
+		}
+	}
+	var info *pipeline.FileInfo
+	if err == nil {
+		info, err = pipeline.ProbeFile(ctx, s.cfg.FFprobePath, abs)
+	}
+	var book *metadata.Book
+	var target string
+	var inPlace bool
+	if err == nil {
+		book = embedded.Book(info.Tags)
+		target, inPlace, err = pipeline.SortTarget(abs, set.OutputDir, set.PathTemplate, *book)
+	}
+	switch {
+	case err != nil:
+		row.Err = capitalize(err.Error())
+	case inPlace:
+		row.State = "same"
+	default:
+		row.State, row.New = "move", libraryRel(set.OutputDir, target)
+		s.sortChecks.put(abs, stat, *book)
+	}
+	render()
 }
 
 func libraryRel(root, abs string) string {
@@ -425,53 +481,86 @@ func libraryRel(root, abs string) string {
 	return abs
 }
 
-// handleLibrarySort previews where the selected files would move.
-func (s *Server) handleLibrarySort(w http.ResponseWriter, r *http.Request) {
-	if err := r.ParseForm(); err != nil {
-		http.Error(w, "bad form", http.StatusBadRequest)
-		return
-	}
-	ctx, cancel := context.WithTimeout(r.Context(), 2*time.Minute)
-	defer cancel()
-	s.render.render(w, "sort", s.sortRows(ctx, r.PostForm["paths"]))
-}
-
-// handleLibrarySortApply moves the files the preview listed. Renames on one
-// volume are instant, so this runs here rather than as queued jobs.
+// handleLibrarySortApply queues a sort job per file the preview found out of
+// place, carrying the tags its check read, and goes to the queue. The jobs
+// work out the target again from those tags and the snapshotted template —
+// cheap, and it never trusts a path the page sends back.
 func (s *Server) handleLibrarySortApply(w http.ResponseWriter, r *http.Request) {
 	if err := r.ParseForm(); err != nil {
 		http.Error(w, "bad form", http.StatusBadRequest)
 		return
 	}
-	ctx, cancel := context.WithTimeout(r.Context(), 2*time.Minute)
-	defer cancel()
 	set := s.settings()
-	moved, failed := 0, []string{}
-	for _, row := range s.sortRows(ctx, r.PostForm["paths"]).Rows {
-		if row.Err != "" || row.InPlace {
-			continue
-		}
-		abs, err := scan.Resolve(set.OutputDir, row.Old)
+	queued, skipped := 0, []string{}
+	for _, rel := range scan.DedupeSelection(r.PostForm["paths"]) {
+		abs, err := scan.Resolve(set.OutputDir, rel)
+		var stat os.FileInfo
 		if err == nil {
-			var info *pipeline.FileInfo
-			if info, err = pipeline.ProbeFile(ctx, s.cfg.FFprobePath, abs); err == nil {
-				_, _, err = pipeline.SortFile(abs, set.OutputDir, set.PathTemplate, *embedded.Book(info.Tags))
-			}
+			stat, err = os.Stat(abs)
 		}
 		if err != nil {
-			failed = append(failed, row.Old+" ("+err.Error()+")")
+			skipped = append(skipped, rel+" ("+err.Error()+")")
 			continue
 		}
-		moved++
+		if s.hasActiveLibraryJob(rel) {
+			skipped = append(skipped, rel+" (already queued)")
+			continue
+		}
+		job := &store.Job{
+			InputPath:   rel,
+			SourceFiles: []string{abs},
+			Options: store.JobOptions{
+				Kind: store.KindSort, InputDir: set.OutputDir, OutputDir: set.OutputDir,
+				PathTemplate: set.PathTemplate, CleanupMode: "leave",
+			},
+		}
+		// Without a check to go by (a restart, or the file changed since),
+		// the job reads the tags itself.
+		if book, ok := s.sortChecks.get(abs, stat); ok {
+			job.Metadata = book
+		}
+		if err := s.store.CreateJob(job); err != nil {
+			skipped = append(skipped, rel+" (queue: "+err.Error()+")")
+			continue
+		}
+		queued++
 	}
-	q := url.Values{"sorted": {strconv.Itoa(moved)}}
-	if len(failed) > 0 {
-		slog.Warn("library sort: files not moved", "reasons", failed)
-		reasons := strings.Join(failed, "; ")
+	s.queue.Wake()
+	q := url.Values{"queued": {strconv.Itoa(queued)}}
+	if len(skipped) > 0 {
+		slog.Warn("library sort: files not queued", "reasons", skipped)
+		reasons := strings.Join(skipped, "; ")
 		if len(reasons) > 500 {
 			reasons = reasons[:500] + "…"
 		}
-		q.Set("failed", reasons)
+		q.Set("skipped", reasons)
 	}
-	http.Redirect(w, r, "/library?"+q.Encode(), http.StatusSeeOther)
+	http.Redirect(w, r, "/queue?"+q.Encode(), http.StatusSeeOther)
+}
+
+// hasActiveLibraryJob reports a pending or running retag or sort of a
+// library file: either would pull the file out from under the other.
+func (s *Server) hasActiveLibraryJob(rel string) bool {
+	for _, kind := range []string{store.KindRetag, store.KindSort} {
+		if active, err := s.store.HasActiveJobForPath(kind, rel); err == nil && active {
+			return true
+		}
+	}
+	return false
+}
+
+// limiter bounds concurrent work; its zero value allows four at a time.
+type limiter struct {
+	once sync.Once
+	ch   chan struct{}
+}
+
+func (l *limiter) acquire(ctx context.Context) (release func(), err error) {
+	l.once.Do(func() { l.ch = make(chan struct{}, 4) })
+	select {
+	case l.ch <- struct{}{}:
+		return func() { <-l.ch }, nil
+	case <-ctx.Done():
+		return nil, ctx.Err()
+	}
 }

@@ -21,7 +21,8 @@ const (
 )
 
 // Job kinds. A convert job merges source files into a new m4b; a retag job
-// rewrites the tags and chapters of an m4b already in the library. The kind
+// rewrites the tags and chapters of an m4b already in the library; a sort job
+// only moves a library file to the path its own tags render to. The kind
 // lives in JobOptions rather than its own column because options_json is
 // exactly the snapshot of "what the pipeline should do" — and because
 // CloneForRetry copies Options verbatim, a retried retag stays a retag with no
@@ -29,6 +30,7 @@ const (
 const (
 	KindConvert = "" // zero value: every job queued before the Library existed
 	KindRetag   = "retag"
+	KindSort    = "sort"
 )
 
 // JobOptions is the per-job snapshot of every setting the pipeline consults.
@@ -66,6 +68,9 @@ type JobOptions struct {
 // IsRetag reports whether this job rewrites a library file in place rather
 // than producing a new one.
 func (o JobOptions) IsRetag() bool { return o.Kind == KindRetag }
+
+// IsSort reports whether this job only moves a library file.
+func (o JobOptions) IsSort() bool { return o.Kind == KindSort }
 
 // EffectiveChapterShift merges the current spec with the legacy field.
 func (o JobOptions) EffectiveChapterShift() metadata.ShiftSpec {
