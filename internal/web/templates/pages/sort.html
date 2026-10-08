@@ -9,11 +9,14 @@
     <ul class="sort-list">
       {{range .Paths}}
       <li class="sort-row">
-        <div class="sort-old">{{.}}</div>
-        <div class="sort-status" data-state="pending"
-             hx-get="/library/sort/row?path={{. | urlquery}}" hx-trigger="load" hx-swap="outerHTML">
-          <span class="muted">Checking…</span>
+        <div class="sort-paths">
+          <div class="sort-old">{{.}}</div>
+          <div class="sort-status" data-state="pending"
+               hx-get="/library/sort/row?path={{. | urlquery}}" hx-trigger="load" hx-swap="outerHTML">
+            <span class="muted">Checking…</span>
+          </div>
         </div>
+        <button type="button" class="btn-ghost btn-small sort-remove" title="Don't sort" onclick="dropSortRow(this)">✕</button>
       </li>
       {{end}}
     </ul>
@@ -39,6 +42,11 @@
       if (n('same')) parts.push(n('same') + ' in place');
       if (n('skip')) parts.push(n('skip') + ' skipped');
       document.getElementById('sort-summary').textContent = parts.join(' · ');
+    }
+    // A dropped row takes its hidden path with it, so it is never queued.
+    function dropSortRow(btn) {
+      btn.closest('.sort-row').remove();
+      sortTally();
     }
     document.body.addEventListener('htmx:afterSwap', sortTally);
     // A row whose check fails outright mustn't hold the button forever.

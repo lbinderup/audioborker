@@ -18,6 +18,8 @@ import (
 //	job-{id}-status    → partials/job_row.html    (queue table row swap)
 //	job-{id}-log       → one escaped log line     (detail page appends)
 //	queue-changed      → empty; triggers a table refresh via hx-trigger
+//	connected          → sent on subscribe; pages refresh on it to catch up
+//	                     on whatever happened before their stream was open
 func (s *Server) handleEvents(w http.ResponseWriter, r *http.Request) {
 	flusher, ok := w.(http.Flusher)
 	if !ok {

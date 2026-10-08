@@ -25,7 +25,6 @@
             <div class="muted row-line current-tags">Currently tagged as:
               {{if .Current}}<strong>{{if .Current.Title}}{{.Current.Title}}{{else}}(no title){{end}}</strong>{{with .Current.SeriesName}} · {{.}}{{end}}{{if .Current.Authors}} · {{index .Current.Authors 0}}{{end}}{{else}}<em>could not read this file's tags</em>{{end}}
             </div>
-            <div class="rename-preview"></div>
             {{end}}
             {{if not .Err}}
             <div class="row-chapters">
@@ -55,6 +54,8 @@
           </div>
           {{end}}
         </div>
+        {{/* Full width under the row: library paths are long. */}}
+        {{if $.IsLibrary}}<div class="rename-preview"></div>{{end}}
 
         {{if not .Err}}
         <dialog class="match-dialog">

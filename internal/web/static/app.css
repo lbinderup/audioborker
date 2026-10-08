@@ -325,7 +325,17 @@ details.tree-dir[open] > summary::before { transform: rotate(90deg); }
 
 /* Library sort preview */
 .sort-list { list-style: none; margin: 0 0 1rem; padding: 0; }
-.sort-row { padding: 0.45rem 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; overflow-wrap: anywhere; }
+.sort-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.85rem;
+  overflow-wrap: anywhere;
+}
+.sort-paths { flex: 1; min-width: 0; }
+.sort-remove:hover { color: var(--err); border-color: var(--err); }
 .sort-old { color: var(--text-muted); }
 .sort-new { color: var(--text); }
 
@@ -393,7 +403,21 @@ details.tree-dir[open] > summary::before { transform: rotate(90deg); }
   font-size: 0.88rem;
 }
 .rename-toggle code { font-size: 0.8rem; }
-.rename-line { font-size: 0.82rem; overflow-wrap: anywhere; }
+.rename-box {
+  margin-top: 0.6rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.82rem;
+}
+.rename-line { display: grid; grid-template-columns: 2.6rem 1fr; gap: 0.5rem; overflow-wrap: anywhere; }
+.rename-line + .rename-line { margin-top: 0.15rem; }
+.rename-label {
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding-top: 0.1rem;
+}
 
 /* Chapter preview */
 .chapter-preview {

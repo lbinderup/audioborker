@@ -32,7 +32,7 @@
 
   <div id="job-status-block"
        hx-get="/jobs/{{.Job.ID}}/status"
-       hx-trigger="sse:job-{{.Job.ID}}-status"
+       hx-trigger="sse:job-{{.Job.ID}}-status, sse:connected"
        hx-swap="innerHTML">
     {{template "job_status" .Job}}
   </div>

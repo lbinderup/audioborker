@@ -8,7 +8,10 @@
     </form>
   </div>
 
-  <div id="queue-table" hx-get="/queue/table?page={{.Page}}" hx-trigger="sse:queue-changed" hx-swap="innerHTML">
+  {{/* Also on sse:connected: a job can finish between this page rendering
+       and its stream connecting (a sort job takes milliseconds), and that
+       event went to nobody. Reconnects after a network blip are covered too. */}}
+  <div id="queue-table" hx-get="/queue/table?page={{.Page}}" hx-trigger="sse:queue-changed, sse:connected" hx-swap="innerHTML">
     {{template "queue_table" .}}
   </div>
 </section>

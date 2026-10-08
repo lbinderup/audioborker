@@ -1,9 +1,12 @@
 {{define "rename_preview"}}
 {{if .Err}}
-<div class="row-line warn-text">⚠ {{.Err}}</div>
+<div class="rename-box warn-text">⚠ {{.Err}}</div>
 {{else if .Same}}
-<div class="row-line muted">📁 Already in place</div>
+<div class="rename-box muted">📁 Already in place</div>
 {{else if .New}}
-<div class="row-line rename-line">📁 <span class="muted">{{.Old}}</span> → <strong>{{.New}}</strong></div>
+<div class="rename-box">
+  <div class="rename-line"><span class="rename-label">From</span><span class="muted">{{.Old}}</span></div>
+  <div class="rename-line"><span class="rename-label">To</span><strong>{{.New}}</strong></div>
+</div>
 {{end}}
 {{end}}
