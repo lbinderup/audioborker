@@ -4,16 +4,20 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
+	"log/slog"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"audioborker/internal/match"
 	"audioborker/internal/metadata"
 	"audioborker/internal/metadata/aggregate"
+	"audioborker/internal/mp4fix"
 	"audioborker/internal/pipeline"
 	"audioborker/internal/scan"
 )
@@ -53,7 +57,53 @@ func (s *Server) handlePreviewAudio(w http.ResponseWriter, r *http.Request) {
 	}
 	defer f.Close()
 	w.Header().Set("Content-Type", ct)
-	http.ServeContent(w, r, filepath.Base(abs), info.ModTime(), f)
+	var content io.ReadSeeker = f
+	modTime := info.ModTime()
+	if fix := s.previewFixes.get(abs, f, info); fix != nil {
+		content = fix.Reader(f)
+		// These aren't the bytes on disk, so they get their own validator:
+		// against the file's mtime, a browser that cached the stored headers
+		// revalidated into a 304 and went on playing 2:29 of a 27-hour book.
+		modTime = time.Time{}
+		w.Header().Set("ETag", fmt.Sprintf(`"mp4fix1-%d-%d"`, info.Size(), info.ModTime().UnixNano()))
+	}
+	http.ServeContent(w, r, filepath.Base(abs), modTime, content)
+}
+
+// previewFixes remembers which MP4s need their overflowed length headers
+// corrected for the browser (see mp4fix), so the player's many Range
+// requests inspect a file once. A fix holds the rebuilt moov — about 17 MB
+// for a 27-hour book — so the cache stays small.
+type previewFixes struct {
+	mu sync.Mutex
+	m  map[string]*mp4fix.Fix // nil value: checked, nothing to fix
+}
+
+func (c *previewFixes) get(abs string, f *os.File, info os.FileInfo) *mp4fix.Fix {
+	switch strings.ToLower(filepath.Ext(abs)) {
+	case ".m4b", ".m4a", ".mp4":
+	default:
+		return nil
+	}
+	key := fmt.Sprintf("%s|%d|%d", abs, info.Size(), info.ModTime().UnixNano())
+	c.mu.Lock()
+	fix, ok := c.m[key]
+	c.mu.Unlock()
+	if ok {
+		return fix
+	}
+	fix, err := mp4fix.Inspect(f, info.Size())
+	if err != nil {
+		slog.Warn("preview: can't inspect mp4 headers", "file", abs, "err", err)
+		fix = nil
+	}
+	c.mu.Lock()
+	if c.m == nil || len(c.m) >= 8 {
+		c.m = map[string]*mp4fix.Fix{}
+	}
+	c.m[key] = fix
+	c.mu.Unlock()
+	return fix
 }
 
 type previewChapter struct {
@@ -84,8 +134,10 @@ type previewData struct {
 	Playable   bool   // first file is browser-playable
 	DurationMs int64
 	Duration   string
-	Chapters   []previewChapter // single-file only: chapters already embedded
-	Err        string
+	Chapters   []previewChapter // single-file only: the file's own chapters
+	// ChaptersFrom names the chapters.txt they came from ("" = embedded).
+	ChaptersFrom string
+	Err          string
 }
 
 // handleMatchPreview renders the chapter-preview panel for one match item:
@@ -126,7 +178,7 @@ func (s *Server) handleMatchPreview(w http.ResponseWriter, r *http.Request) {
 	var bounds []boundary
 	var offset int64
 	for i, f := range files {
-		info, err := pipeline.ProbeFile(ctx, s.cfg.FFprobePath, f)
+		info, err := pipeline.ProbeSource(ctx, s.cfg.FFprobePath, f)
 		if err != nil {
 			fail("ffprobe failed: " + err.Error())
 			return
@@ -156,6 +208,7 @@ func (s *Server) handleMatchPreview(w http.ResponseWriter, r *http.Request) {
 		bounds = append(bounds, boundary{Rel: frel, Start: offset, End: offset + info.DurationMs})
 
 		if len(files) == 1 {
+			data.ChaptersFrom = info.ChaptersFrom
 			for _, c := range info.Chapters {
 				data.Chapters = append(data.Chapters, previewChapter{
 					Title: c.Title, StartMs: c.StartMs, Stamp: msClock(c.StartMs),
@@ -331,6 +384,40 @@ type chapterPlanData struct {
 	Shift    string // "" when no shift applies to the chosen chapters
 	Warnings []string
 	Err      string
+
+	// The two sources the row's chips pick between: the file's own chapters
+	// (or, for several files, one per file) and Audible's.
+	Multi         bool
+	FileCount     int
+	FileFrom      string // the chapters.txt the file's chapters come from, if any
+	ProviderCount int
+	Overflow      string // set when a file's length header overflowed
+}
+
+// FileUsed and ProviderUsed light the chip of the list being embedded; a
+// title mix uses both, so neither is lit and the verdict says which.
+func (d chapterPlanData) FileUsed() bool {
+	return d.Source == pipeline.SourceExisting || d.Source == pipeline.SourceFiles
+}
+func (d chapterPlanData) ProviderUsed() bool { return d.Source == pipeline.SourceProvider }
+
+// overflowNote reports files whose 32-bit length header overflowed (see
+// pipeline.unwrapDuration), so a batch hit by it stands out on the match
+// screen. Players read those headers, so such a file shows a few minutes.
+func overflowNote(infos []*pipeline.FileInfo) string {
+	var hit []*pipeline.FileInfo
+	for _, info := range infos {
+		if info.HeaderMs > 0 {
+			hit = append(hit, info)
+		}
+	}
+	switch {
+	case len(hit) == 0:
+		return ""
+	case len(infos) == 1:
+		return "Length header overflowed: the file claims " + msClock(hit[0].HeaderMs) + " (fixed in the output)."
+	}
+	return fmt.Sprintf("Length headers overflowed in %d of %d files (fixed in the output).", len(hit), len(infos))
 }
 
 // handleMatchChapterPlan runs the pipeline's actual chapter decision against
@@ -360,7 +447,7 @@ func (s *Server) handleMatchChapterPlan(w http.ResponseWriter, r *http.Request) 
 	infos := make([]*pipeline.FileInfo, 0, len(files))
 	var totalMs int64
 	for _, f := range files {
-		info, err := pipeline.ProbeFile(ctx, s.cfg.FFprobePath, f)
+		info, err := pipeline.ProbeSource(ctx, s.cfg.FFprobePath, f)
 		if err != nil {
 			data.Err = "ffprobe failed: " + err.Error()
 			s.render.partial(w, "match", "chapter_plan", data)
@@ -368,6 +455,17 @@ func (s *Server) handleMatchChapterPlan(w http.ResponseWriter, r *http.Request) 
 		}
 		infos = append(infos, info)
 		totalMs += info.DurationMs
+	}
+	data.Overflow = overflowNote(infos)
+	data.Multi = len(infos) > 1
+	if data.Multi {
+		data.FileCount = len(infos)
+	} else if len(infos) == 1 {
+		data.FileCount = len(infos[0].Chapters)
+		data.FileFrom = infos[0].ChaptersFrom
+		if e := infos[0].SidecarErr; e != "" {
+			data.Warnings = append(data.Warnings, e)
+		}
 	}
 
 	var provider *metadata.ChapterInfo
@@ -380,6 +478,9 @@ func (s *Server) handleMatchChapterPlan(w http.ResponseWriter, r *http.Request) 
 				data.Warnings = append(data.Warnings, "Chapter lookup failed ("+err.Error()+") — decision shown without provider data.")
 			}
 		}
+	}
+	if provider != nil {
+		data.ProviderCount = len(provider.Chapters)
 	}
 	// The same shift the conversion will apply, to whichever list it picks.
 	plan := pipeline.PlanChapters(mode, provider, infos, totalMs, "", shiftSpecFrom(q.Get))
@@ -397,6 +498,9 @@ func (s *Server) handleMatchChapterPlan(w http.ResponseWriter, r *http.Request) 
 		data.Icon, data.Verdict = "🌐", fmt.Sprintf("Will embed Audible's %d chapters.", n)
 	case pipeline.SourceExisting:
 		data.Icon, data.Verdict = "📼", fmt.Sprintf("Will keep the file's own %d chapters.", n)
+		if data.FileFrom != "" {
+			data.Icon, data.Verdict = "📄", fmt.Sprintf("Will embed the %d chapters from %s.", n, data.FileFrom)
+		}
 		if mode == pipeline.ChapterModeExisting {
 			data.Reason = "You chose to keep them."
 		} else if provider == nil {

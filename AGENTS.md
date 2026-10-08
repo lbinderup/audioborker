@@ -26,6 +26,7 @@ internal/
   scan/       input listing, junk filtering, natural sort, disc ordering, selection dedupe
   pathtmpl/   {author}/{title} output templates with safe segment dropping
   pipeline/   Converter interface; real.go = ffmpeg+tone, fake.go = simulation
+  mp4fix/     corrected moov for the audio preview when a track length overflowed
   queue/      worker pool, job state machine, cancellation registry, SSE broker
   web/        net/http mux, handlers, embedded html/template + htmx assets
   parity/     test-only: golden fixtures pinning what plex/ ports from the above
@@ -134,13 +135,29 @@ copy → chapters → tag → verify → replace).
   near-perfect hit, the language matches the region, and the runner-up is
   clearly worse — a confidently wrong pre-selection costs far more than a
   click, so keep it strict.
+- **A `.chapters.txt` next to a source file is that file's own chapters.**
+  `ProbeSource` reads it when the embedded chapters are missing or were cut
+  short by an overflowed header (Poseidon's Wake kept 2 of 57 inside, all 57
+  in the sidecar); a complete embedded set wins. Use `ProbeSource` only for a
+  book's *source*: the pipeline writes a chapters.txt next to its staged
+  copy, and verify must count the chapters inside the file, or tone failing
+  to write them would hide behind that sidecar. A book that came with a
+  sidecar leaves with one rewritten to match what was baked in
+  (`writesSidecar`), and source cleanup moves or deletes a file's sidecar
+  with it.
 - **Multi-file input must never produce zero chapters.** Fallback order is
   provider (runtime-validated) → file's own → file boundaries → single chapter.
 - **Read durations only through `pipeline.ProbeFile`.** A version-0 `mdhd`
   counts samples in 32 bits, so at 44.1 kHz anything past 27h03m wraps —
   ffprobe reported a 27h11m book as 8 minutes, which rejected its Audible
   chapters and would have failed verify. The probe recovers the true length
-  from the AAC frame count (`unwrapDuration`). Every m4b ffmpeg writes gets
+  from the AAC frame count (`unwrapDuration`), records what the header
+  claimed (`FileInfo.HeaderMs`, which the match screen calls out), and lets a
+  chapter list sized to the wrapped length run to the real end. Browsers read
+  the header too, so the preview streams such a file through `mp4fix`: a
+  rebuilt moov with a 64-bit mdhd and chunk offsets moved to match, under an
+  ETag of its own (an mtime validator let a browser keep the stale headers).
+  The file on disk is never written. Every m4b ffmpeg writes gets
   `-movie_timescale 1000` (`movieArgs`): tone writes its chapter track's
   header in 32 bits of the movie timescale, which newer ffmpeg sets to the
   sample rate.

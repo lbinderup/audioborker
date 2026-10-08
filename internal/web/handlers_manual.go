@@ -81,7 +81,7 @@ func (s *Server) manualPanel(ctx context.Context, rootToken, rel string) manualP
 
 	var current *metadata.Book
 	in := promptInput{Path: rel, Files: d.Files, RuntimeMin: d.RuntimeMin}
-	if info, err := pipeline.ProbeFile(ctx, s.cfg.FFprobePath, files[0]); err == nil {
+	if info, err := pipeline.ProbeSource(ctx, s.cfg.FFprobePath, files[0]); err == nil {
 		tags := info.Tags
 		if len(files) > 1 {
 			// In a multi-file book each file's title is a part ("Part 1");

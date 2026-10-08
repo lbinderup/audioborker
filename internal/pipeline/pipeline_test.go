@@ -488,3 +488,27 @@ func TestShiftIgnoredForFileBoundaries(t *testing.T) {
 		t.Errorf("warnings %v", r.Warnings)
 	}
 }
+
+func TestExtendTruncatedChapters(t *testing.T) {
+	// Poseidon's Wake: the header claimed 149,141 ms of a 97,540,690 ms book,
+	// and the chapter track ended there.
+	chs := []ProbedChapter{{Title: "Opening Credits", EndMs: 35_665}, {Title: "Chapter One", StartMs: 35_665, EndMs: 149_141}}
+	if !extendTruncatedChapters(chs, 149_141, 97_540_690) {
+		t.Error("not reported as truncated")
+	}
+	if chs[1].EndMs != 97_540_690 || chs[0].EndMs != 35_665 {
+		t.Errorf("%+v", chs)
+	}
+	// A chapter list that ends elsewhere is the file's own business.
+	other := []ProbedChapter{{Title: "A", EndMs: 60_000}}
+	extendTruncatedChapters(other, 149_141, 97_540_690)
+	if other[0].EndMs != 60_000 {
+		t.Errorf("%+v", other)
+	}
+	// No overflow, no change.
+	healthy := []ProbedChapter{{Title: "A", EndMs: 149_141}}
+	extendTruncatedChapters(healthy, 0, 97_540_690)
+	if healthy[0].EndMs != 149_141 {
+		t.Errorf("%+v", healthy)
+	}
+}

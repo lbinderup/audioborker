@@ -39,7 +39,9 @@ chapterization abilities.
   server (HTTP Range streaming, so it works remotely too) and click any
   embedded chapter to hear whether it lines up. Load the Audible chapter
   timings beside them for comparison, then pick a side with **Use these
-  chapters**. A verdict line always states what *will* be embedded and why —
+  chapters** — or straight from the match list, where each book shows how
+  many chapters the file has and how many Audible has, and either count
+  picks that source. A verdict line always states what *will* be embedded and why —
   e.g. *"Will keep the file's own 3 chapters — provider chapters expect a
   runtime of 8h18m but your audio is 6h57m."*
 - **Convert** — a persistent queue with **live progress**, per-job logs,
@@ -51,7 +53,10 @@ chapterization abilities.
   Audible chapter data is used when its runtime matches your audio, otherwise
   the file's own chapters, otherwise chapters derived from file boundaries with
   cleaned filename titles. A multi-file book never ends up chapterless.
-  Optionally writes the classic `Book.chapters.txt` sidecar next to the m4b.
+  A `Book.chapters.txt` next to the file counts as its own chapters when the
+  file's are missing or cut short, and a book that came with one gets it
+  rewritten to match what was embedded. Optionally writes that sidecar for
+  every book.
 - **Chapter title mix-and-match** — when your rip's *timings* are right but its
   chapter *names* are junk ("Track 01"), put Audible's titles onto your file
   boundaries or the file's own embedded timings. Counts are matched strictly
@@ -60,8 +65,14 @@ chapterization abilities.
 - **Chapter shift** — the opposite case: names right, timings off. Shift
   whichever chapters get embedded — Audible's or the file's own — by a fixed
   offset, or interpolated between two anchor chapters for drift that grows
-  over the book. Clicking a chapter plays it where the shift puts it. File
-  boundaries are exact and never shifted.
+  over the book. Clicking a chapter plays it where the shift puts it, or
+  pause where a chapter really begins and set the shift from the player.
+  File boundaries are exact and never shifted.
+- **Books past 27 hours** — some taggers store a track's length in 32 bits,
+  which overflows at about 27 hours, so players show such a book as a few
+  minutes. audioborker measures the true length, flags affected files on the
+  match list, plays them in full in the preview, and writes output with
+  correct headers.
 - **Library — retag what you already have** — browse the output volume (or
   filter the whole thing from one search box), pick one or more `.m4b` files,
   and rewrite their tags and chapters through the same match screen imports

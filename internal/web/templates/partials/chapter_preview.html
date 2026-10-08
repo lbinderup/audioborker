@@ -31,7 +31,7 @@
           Use file boundaries
         </button>
         {{else}}
-        <h3 class="src-existing">Embedded chapters {{if .Chapters}}<span class="muted">({{len .Chapters}} · {{.Duration}})</span>{{end}}</h3>
+        <h3 class="src-existing">{{if .ChaptersFrom}}<span title="{{.ChaptersFrom}}">From .chapters.txt</span>{{else}}Embedded chapters{{end}} {{if .Chapters}}<span class="muted">({{len .Chapters}} · {{.Duration}})</span>{{end}}</h3>
         {{if .Chapters}}
         <div class="chapter-list shiftable">
           {{range $i, $c := .Chapters}}
@@ -79,6 +79,12 @@
           <span class="muted">ms</span>
           <button type="button" class="btn-ghost btn-small" onclick="nudgeShift(this, 1000)" title="1 second later">+1000</button>
         </div>
+        <div class="shift-controls">
+          <span class="muted">chapter</span>
+          <input type="text" inputmode="numeric" class="shift-idx shift-at" autocomplete="off" placeholder="#">
+          <span class="muted">starts at the player</span>
+          <button type="button" class="btn-ghost btn-small" onclick="shiftFromPlayer(this)">⏱ Set</button>
+        </div>
       </div>
 
       <div class="shift-interp" hidden>
@@ -90,6 +96,8 @@
           <input type="text" inputmode="numeric" class="shift-ms" name="shift_from_ms:{{.RelPath}}"
                  value="0" autocomplete="off" oninput="shiftChanged(this)">
           <span class="muted">ms</span>
+          <button type="button" class="btn-ghost btn-small" onclick="shiftFromPlayer(this)"
+                  title="This chapter starts at the player">⏱</button>
         </div>
         <div class="shift-controls">
           <span class="muted">at chapter</span>
@@ -99,6 +107,8 @@
           <input type="text" inputmode="numeric" class="shift-ms" name="shift_to_ms:{{.RelPath}}"
                  value="0" autocomplete="off" oninput="shiftChanged(this)">
           <span class="muted">ms</span>
+          <button type="button" class="btn-ghost btn-small" onclick="shiftFromPlayer(this)"
+                  title="This chapter starts at the player">⏱</button>
         </div>
         <p class="hint">Linear between the anchors.</p>
       </div>

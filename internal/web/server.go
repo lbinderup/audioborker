@@ -31,7 +31,8 @@ type Server struct {
 	agg     *aggregate.Aggregator
 	audible *audible.Client
 
-	durations *durationCache
+	durations    *durationCache
+	previewFixes previewFixes
 }
 
 func New(cfg config.Config, st *store.Store, mgr *queue.Manager, broker *queue.Broker) *http.Server {

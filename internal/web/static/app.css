@@ -296,6 +296,22 @@ details.tree-dir[open] > summary::before { transform: rotate(90deg); }
 .plan-files { color: var(--text); }
 .plan-single { color: var(--text-muted); }
 .plan-titles-files, .plan-titles-existing { color: var(--accent); }
+.plan-sources { display: inline-flex; gap: 0.35rem; align-self: center; }
+.plan-src {
+  background: none;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.1rem 0.6rem;
+  font: inherit;
+  font-size: 0.78rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.plan-src:hover:not(:disabled) { color: var(--text); border-color: var(--text-muted); }
+.plan-src:disabled { opacity: 0.45; cursor: default; }
+.plan-src-on, .plan-src-on:hover:not(:disabled) { color: var(--text); border-color: var(--ok); background: rgba(76, 175, 125, 0.12); }
+.plan-overflow { flex-basis: 100%; }
 
 /* Library browser */
 .lib-search {

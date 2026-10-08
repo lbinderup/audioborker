@@ -338,6 +338,59 @@
       wrap.querySelector('.shift-interp').hidden = !interp;
       shiftChanged(radio);
     }
+    // ---- shift from the player ---------------------------------------------
+    // Pause where a chapter really begins and the shift is worked out: the
+    // player's position minus that chapter's listed start. The fixed mode asks
+    // which chapter; an interpolated anchor already names it.
+    function shiftFromPlayer(btn) {
+      const row = btn.closest('.shift-controls');
+      const item = btn.closest('.match-item');
+      const pos = playerMs(item.querySelector('.chapter-preview'));
+      const list = shiftedList(item);
+      const chs = list ? [...list.querySelectorAll('.chapter-btn')] : [];
+      const at = row.querySelector('.shift-at, .shift-idx');
+      const isLast = at?.name?.startsWith('shift_to_idx:') && !at.value.trim();
+      const n = isLast ? chs.length : parseInt(at?.value, 10);
+      if (pos === null) return flashButton(btn, 'Play first');
+      if (!chs.length) return flashButton(btn, 'No chapters');
+      if (!(n >= 1 && n <= chs.length)) { at?.focus(); return flashButton(btn, 'Which chapter?'); }
+      const target = row.querySelector('.shift-ms') || row.closest('.shift-fixed').querySelector('input[name^="shift:"]');
+      target.value = Math.round(pos - +chs[n - 1].dataset.ms);
+      shiftChanged(target);
+      flashButton(btn, '✓');
+    }
+    // The player's position in the whole book: a multi-file preview plays one
+    // file at a time, so add where that file starts.
+    function playerMs(panel) {
+      const audio = panel?.querySelector('audio');
+      if (!audio || audio.readyState < 1 || audio.currentTime === 0) return null;
+      let ms = audio.currentTime * 1000;
+      if (panel.dataset.files) {
+        const f = JSON.parse(panel.dataset.files).find(x => x.rel === audio.dataset.rel);
+        if (f) ms += f.start;
+      }
+      return ms;
+    }
+    // The list the shift moves: the one being embedded. Without an explicit
+    // choice the row's lit chip says which; failing that, Audible's if loaded.
+    function shiftedList(item) {
+      const lists = [...item.querySelectorAll('.chapter-list.shiftable')];
+      const provider = lists.find(l => l.closest('.provider-col'));
+      const own = lists.find(l => !l.closest('.provider-col'));
+      const mode = item.querySelector('select[name^="chapters:"]')?.value || '';
+      if (mode === 'existing' || mode === 'titles-existing') return own || provider;
+      if (mode === 'provider') return provider || own;
+      const lit = item.querySelector('.plan-src-on')?.getAttribute('onclick') || '';
+      if (lit.includes("'existing'")) return own || provider;
+      return provider || own;
+    }
+    function flashButton(btn, text) {
+      const original = btn.dataset.label || (btn.dataset.label = btn.textContent.trim());
+      btn.textContent = text;
+      clearTimeout(btn._flash);
+      btn._flash = setTimeout(() => { btn.textContent = original; }, 1500);
+    }
+
     // Typing in a field shouldn't fire a request per keystroke.
     let shiftTimer;
     function shiftChanged(input) {
@@ -395,6 +448,14 @@
       setTimeout(() => { btn.textContent = original; }, 1800);
       updateSourceHighlight(item);
     }
+    // The row's chips make the same choice without opening the editor.
+    function pickChapters(btn, mode) {
+      const item = btn.closest('.match-item');
+      const sel = item?.querySelector('select[name^="chapters:"]');
+      if (!sel || sel.value === mode) return;
+      sel.value = mode;
+      sel.dispatchEvent(new Event('change', { bubbles: true }));
+    }
     // Color the selected source's header green so the choice is visible at
     // a glance inside the editor.
     function updateSourceHighlight(item) {
@@ -417,10 +478,15 @@
       const params = new URLSearchParams({ path, choice, mode, root: matchRoot() });
       const sv = { ...shiftVals(path), ...manualVals(path) };
       for (const k in sv) params.set(k, sv[k]);
-      target.innerHTML = '<span class="muted">Deciding chapters…</span>';
+      // A row asks again when its match changes, so an earlier, slower
+      // answer must not overwrite a later one.
+      const seq = String(+(target.dataset.seq || 0) + 1);
+      target.dataset.seq = seq;
+      target.dataset.choice = choice;
+      if (!target.innerHTML.trim()) target.innerHTML = '<span class="muted">Deciding chapters…</span>';
       fetch('/match/chapter-plan?' + params.toString())
-        .then(r => r.text()).then(html => { target.innerHTML = html; })
-        .catch(() => { target.innerHTML = ''; });
+        .then(r => r.text()).then(html => { if (target.dataset.seq === seq) target.innerHTML = html; })
+        .catch(() => { if (target.dataset.seq === seq) target.innerHTML = ''; });
     }
 
     // ---- rename preview (library retags) -------------------------------------
@@ -703,15 +769,21 @@
         updateRenamePreview(item); // a different title means a different path
       }
     });
+    // Every row shows its chapter sources (and any overflowed length header)
+    // from the start, and again whenever its match changes — including one
+    // pre-selected by a search, which fires no change event.
+    const hasPlan = item => item.querySelector('.row-chapters') && item.querySelector('.chapter-plan');
+    function refreshPlanIfStale(item) {
+      const choice = item.querySelector('input[type=radio][name^="match:"]:checked')?.value || '';
+      if (hasPlan(item) && item.querySelector('.chapter-plan').dataset.choice !== choice) updateChapterPlan(item);
+    }
+    document.querySelectorAll('.match-item').forEach(refreshPlanIfStale);
     document.body.addEventListener('htmx:afterSwap', () => {
       updateMatchCount();
       document.querySelectorAll('.match-item').forEach(item => {
         updateSourceHighlight(item);
-        if (item.querySelector('input[type=radio][name^="match:"]:checked')) {
-          refreshRowSummary(item);
-          const plan = item.querySelector('.chapter-plan');
-          if (plan && !plan.innerHTML.trim()) updateChapterPlan(item);
-        }
+        if (item.querySelector('input[type=radio][name^="match:"]:checked')) refreshRowSummary(item);
+        refreshPlanIfStale(item);
       });
     });
   </script>

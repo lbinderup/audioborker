@@ -18,7 +18,18 @@ type FileInfo struct {
 	Channels    int
 	Codec       string // e.g. "mp3", "aac", "flac"
 	Container   string // e.g. "mov,mp4,m4a,3gp,3g2,mj2", "mp3"
-	Chapters    []ProbedChapter
+	// HeaderMs is the length an overflowed 32-bit header claims (see
+	// unwrapDuration); 0 when the header was right. DurationMs is the real one.
+	HeaderMs int64
+	Chapters []ProbedChapter
+	// ChaptersTruncated marks embedded chapters sized to an overflowed
+	// header: the last one was stretched to the real end, the rest are lost.
+	ChaptersTruncated bool
+	// ChaptersFrom names the chapters.txt the chapters came from ("" = the
+	// file's own); SidecarErr says why one next to the file was ignored.
+	// Both are set only by ProbeSource.
+	ChaptersFrom string
+	SidecarErr   string
 	// Tags is the container-level metadata ffprobe reports. Key spelling is
 	// whatever the writing tool used — ffprobe lowercases the standard atoms
 	// and passes freeform ones through verbatim — so read it through
@@ -41,6 +52,21 @@ func (f FileInfo) IsAACInMP4() bool {
 // layer's chapter-preview feature.
 func ProbeFile(ctx context.Context, ffprobePath, path string) (*FileInfo, error) {
 	return prober{ffprobe: ffprobePath}.probe(ctx, path)
+}
+
+// ProbeSource is ProbeFile for a book's source file, whose chapters.txt
+// counts as its own chapters when the embedded ones are missing or cut
+// short (see withSidecarChapters).
+func ProbeSource(ctx context.Context, ffprobePath, path string) (*FileInfo, error) {
+	return prober{ffprobe: ffprobePath}.probeSource(ctx, path)
+}
+
+func (p prober) probeSource(ctx context.Context, path string) (*FileInfo, error) {
+	info, err := p.probe(ctx, path)
+	if err == nil {
+		withSidecarChapters(info)
+	}
+	return info, err
 }
 
 type prober struct {
@@ -112,7 +138,7 @@ func (p prober) probe(ctx context.Context, path string) (*FileInfo, error) {
 		}
 		nbFrames, _ := strconv.ParseInt(s.NbFrames, 10, 64)
 		if ms, ok := unwrapDuration(s.CodecName, s.TimeBase, s.DurationTS, nbFrames); ok && ms > info.DurationMs {
-			info.DurationMs = ms
+			info.HeaderMs, info.DurationMs = info.DurationMs, ms
 			// ffprobe may have computed the bitrates from the wrapped length
 			// as well (this book claimed 13 Mbit/s), so average over the file.
 			if size, err := strconv.ParseInt(raw.Format.Size, 10, 64); err == nil && size > 0 {
@@ -131,7 +157,25 @@ func (p prober) probe(ctx context.Context, path string) (*FileInfo, error) {
 			EndMs:   secondsToMs(c.EndTime),
 		})
 	}
+	info.ChaptersTruncated = extendTruncatedChapters(info.Chapters, info.HeaderMs, info.DurationMs)
 	return info, nil
+}
+
+// extendTruncatedChapters lets the last chapter run to the real end when the
+// tool that wrote the file sized its chapters to an overflowed length header:
+// Poseidon's Wake carried 2 chapters ending at 2:29 of a 27-hour book. The
+// rest of that tool's list is lost, but its audio is no longer left without
+// a chapter.
+func extendTruncatedChapters(chs []ProbedChapter, headerMs, durationMs int64) bool {
+	if headerMs <= 0 || len(chs) == 0 {
+		return false
+	}
+	last := &chs[len(chs)-1]
+	if abs64(last.EndMs-headerMs) > 1000 {
+		return false
+	}
+	last.EndMs = durationMs
+	return true
 }
 
 // unwrapDuration recovers a track length that overflowed its 32-bit header.

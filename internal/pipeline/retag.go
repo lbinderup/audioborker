@@ -43,7 +43,7 @@ func (rc *RealConverter) runRetag(ctx context.Context, job *store.Job, report Pr
 	// titles-on-existing-timings mode would have nothing to work from.
 	report("probe", 0)
 	prober := prober{ffprobe: rc.FFprobe}
-	orig, err := prober.probe(ctx, src)
+	orig, err := prober.probeSource(ctx, src)
 	if err != nil {
 		return nil, err
 	}
@@ -52,6 +52,7 @@ func (rc *RealConverter) runRetag(ctx context.Context, job *store.Job, report Pr
 			filepath.Base(src), orig.Codec, orig.Container)
 	}
 	logf("current file: %s, %d chapters, %d tags", fmtDuration(orig.DurationMs), len(orig.Chapters), len(orig.Tags))
+	logSourceChapters(logf, orig)
 
 	// ---- plan: where it lands, and which cover it keeps ------------------
 	report("plan", 0.04)
@@ -116,13 +117,15 @@ func (rc *RealConverter) runRetag(ctx context.Context, job *store.Job, report Pr
 
 	// ---- replace ----------------------------------------------------------
 	report("replace", 0.95)
+	// Decided before the replace: the sidecar the file had is what counts.
+	writeSidecar := writesSidecar(opts.WriteChaptersTxt, []string{src})
 	if err := os.MkdirAll(filepath.Dir(target), 0o777); err != nil {
 		return nil, err
 	}
 	if err := replaceFile(staged, target); err != nil {
 		return nil, err
 	}
-	if opts.WriteChaptersTxt {
+	if writeSidecar {
 		if err := copyFile(chaptersPath, sidecarFor(target)); err != nil {
 			warnings = append(warnings, "Could not write the chapters.txt sidecar: "+err.Error())
 		}
@@ -231,11 +234,6 @@ func replaceFile(src, dst string) error {
 		return fmt.Errorf("could not replace %s (is it open in a player?): %w", dst, err)
 	}
 	return nil
-}
-
-// sidecarFor is the chapters.txt path that accompanies an m4b.
-func sidecarFor(m4b string) string {
-	return strings.TrimSuffix(m4b, ".m4b") + ".chapters.txt"
 }
 
 // pruneEmptyParents removes the directories a rename left behind, walking up

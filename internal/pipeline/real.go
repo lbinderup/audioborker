@@ -69,11 +69,12 @@ func (rc *RealConverter) Run(ctx context.Context, job *store.Job, report Progres
 	prober := prober{ffprobe: rc.FFprobe}
 	files := make([]*FileInfo, 0, len(job.SourceFiles))
 	for i, path := range job.SourceFiles {
-		info, err := prober.probe(ctx, path)
+		info, err := prober.probeSource(ctx, path)
 		if err != nil {
 			return nil, err
 		}
 		files = append(files, info)
+		logSourceChapters(logf, info)
 		report("probe", scaled(0, 0.08, float64(i+1)/float64(len(job.SourceFiles))))
 	}
 	if len(files) == 0 {
@@ -181,9 +182,8 @@ func (rc *RealConverter) Run(ctx context.Context, job *store.Job, report Progres
 	if err := moveFile(stagedM4B, finalPath); err != nil {
 		return nil, err
 	}
-	if opts.WriteChaptersTxt {
-		sidecar := strings.TrimSuffix(finalPath, ".m4b") + ".chapters.txt"
-		if err := copyFile(chaptersPath, sidecar); err != nil {
+	if writesSidecar(opts.WriteChaptersTxt, job.SourceFiles) {
+		if err := copyFile(chaptersPath, sidecarFor(finalPath)); err != nil {
 			warnings = append(warnings, "Could not write the chapters.txt sidecar: "+err.Error())
 		}
 	}
@@ -331,7 +331,14 @@ func (rc *RealConverter) cleanupSource(job *store.Job, logf LogFunc) error {
 			dst = dst + "-" + job.ID[:8]
 		}
 		logf("cleanup: moving source to %s", dst)
-		return moveTree(src, dst)
+		if err := moveTree(src, dst); err != nil {
+			return err
+		}
+		// A folder takes its sidecars along; a single file's goes with it.
+		if side := sidecarFor(src); !isDir(dst) && fileExists(side) && !fileExists(sidecarFor(dst)) {
+			return moveFile(side, sidecarFor(dst))
+		}
+		return nil
 	case "delete":
 		logf("cleanup: deleting source files")
 		info, err := os.Stat(src)
@@ -339,12 +346,13 @@ func (rc *RealConverter) cleanupSource(job *store.Job, logf LogFunc) error {
 			return err
 		}
 		if !info.IsDir() {
-			return os.Remove(src)
+			return removeWithSidecar(src)
 		}
 		// Delete only the files we consumed, then prune empty dirs — a junk
 		// file someone stashed in the folder should not be silently nuked.
+		// A file's chapters.txt is part of it, so it goes too.
 		for _, f := range job.SourceFiles {
-			if err := os.Remove(f); err != nil && !os.IsNotExist(err) {
+			if err := removeWithSidecar(f); err != nil {
 				return err
 			}
 		}
@@ -378,6 +386,17 @@ func (rc *RealConverter) providerChapters(ctx context.Context, job *store.Job, c
 		}
 	}
 	return provided, warnings
+}
+
+// logSourceChapters notes where a source file's own chapters came from when
+// that wasn't the file itself.
+func logSourceChapters(logf LogFunc, info *FileInfo) {
+	if info.ChaptersFrom != "" {
+		logf("%d chapters read from %s", len(info.Chapters), info.ChaptersFrom)
+	}
+	if info.SidecarErr != "" {
+		logf("%s", info.SidecarErr)
+	}
 }
 
 func logChapters(logf LogFunc, r ResolvedChapters) {
