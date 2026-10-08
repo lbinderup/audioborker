@@ -31,6 +31,10 @@ type Settings struct {
 	BitrateKbps       int    `key:"bitrate_kbps"` // 0 = auto-probe
 	Encoder           string `key:"encoder"`      // aac|fdkaac
 	WriteChaptersTxt  bool   `key:"write_chapters_txt"`
+	// RetagMoveDefault pre-ticks the retag screen's "Move to the path
+	// template" box. On unless turned off: a retag is usually the moment a
+	// file gets the name its new tags call for.
+	RetagMoveDefault bool `key:"retag_move_default"`
 }
 
 var Regions = []string{"us", "ca", "uk", "au", "fr", "de", "jp", "it", "in", "es"}
@@ -53,6 +57,7 @@ func Defaults(inputDir, outputDir string) Settings {
 		BitrateKbps:       0,
 		Encoder:           "aac",
 		WriteChaptersTxt:  true,
+		RetagMoveDefault:  true,
 	}
 }
 
@@ -116,6 +121,9 @@ func (s *Store) GetSettings(def Settings) (Settings, error) {
 	if v, ok := got["write_chapters_txt"]; ok {
 		out.WriteChaptersTxt = v == "true"
 	}
+	if v, ok := got["retag_move_default"]; ok {
+		out.RetagMoveDefault = v == "true"
+	}
 	return out, nil
 }
 
@@ -137,6 +145,7 @@ func (s *Store) SaveSettings(set Settings) error {
 		"bitrate_kbps":       strconv.Itoa(set.BitrateKbps),
 		"encoder":            set.Encoder,
 		"write_chapters_txt": strconv.FormatBool(set.WriteChaptersTxt),
+		"retag_move_default": strconv.FormatBool(set.RetagMoveDefault),
 	}
 	return s.inTx(func(tx *sql.Tx) error {
 		for k, v := range kv {

@@ -110,6 +110,7 @@ func (s *Server) handleSettingsPost(w http.ResponseWriter, r *http.Request) {
 		RegionDefault:    r.PostFormValue("region_default"),
 		Encoder:          r.PostFormValue("encoder"),
 		WriteChaptersTxt: r.PostFormValue("write_chapters_txt") == "on",
+		RetagMoveDefault: r.PostFormValue("retag_move_default") == "on",
 	}
 	set.WorkerConcurrency, _ = strconv.Atoi(r.PostFormValue("worker_concurrency"))
 	set.BitrateKbps, _ = strconv.Atoi(r.PostFormValue("bitrate_kbps"))

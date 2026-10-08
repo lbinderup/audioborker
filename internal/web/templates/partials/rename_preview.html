@@ -2,7 +2,7 @@
 {{if .Err}}
 <div class="row-line warn-text">⚠ {{.Err}}</div>
 {{else if .Same}}
-<div class="row-line muted">📁 Already where the template puts it — the file stays put.</div>
+<div class="row-line muted">📁 Already in place</div>
 {{else if .New}}
 <div class="row-line rename-line">📁 <span class="muted">{{.Old}}</span> → <strong>{{.New}}</strong></div>
 {{end}}

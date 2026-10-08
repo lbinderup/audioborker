@@ -89,6 +89,14 @@ func libraryList(root, rel string) ([]scan.Entry, error) {
 			kept = append(kept, e)
 		}
 	}
+	// Alphabetical at every level: scan.List puts the newest folders first,
+	// which suits fresh downloads on Import but not browsing a library.
+	sort.SliceStable(kept, func(i, j int) bool {
+		if kept[i].IsDir != kept[j].IsDir {
+			return kept[i].IsDir
+		}
+		return scan.NaturalLess(kept[i].Name, kept[j].Name)
+	})
 	return kept, nil
 }
 
@@ -199,11 +207,12 @@ func (s *Server) handleLibraryMatch(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := matchData{
-		baseData:     s.base("Retag", "library"),
-		Regions:      store.Regions,
-		Region:       set.RegionDefault,
-		Root:         RootLibrary,
-		PathTemplate: set.PathTemplate,
+		baseData:      s.base("Retag", "library"),
+		Regions:       store.Regions,
+		Region:        set.RegionDefault,
+		Root:          RootLibrary,
+		PathTemplate:  set.PathTemplate,
+		RenameDefault: set.RetagMoveDefault,
 	}
 	ctx, cancel := context.WithTimeout(r.Context(), 60*time.Second)
 	defer cancel()

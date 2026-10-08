@@ -49,6 +49,7 @@ func TestSettingsRoundTrip(t *testing.T) {
 	want.WorkerConcurrency = 2
 	want.BitrateKbps = 128
 	want.WriteChaptersTxt = false
+	want.RetagMoveDefault = false // on by default, so off must survive a save
 	if err := s.SaveSettings(want); err != nil {
 		t.Fatal(err)
 	}

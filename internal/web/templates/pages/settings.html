@@ -39,6 +39,11 @@
         <code>{series_name}</code> <code>{series_position}</code> <code>{year}</code> <code>{asin}</code>
       </p>
       <p class="hint">Preview: <span id="path-preview">{{template "path_preview" .Preview}}</span></p>
+
+      <label class="check">
+        <input type="checkbox" name="retag_move_default" {{if .Settings.RetagMoveDefault}}checked{{end}}>
+        Retag: move to the path template by default
+      </label>
     </fieldset>
 
     <fieldset>

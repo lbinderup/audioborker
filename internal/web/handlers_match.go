@@ -43,8 +43,10 @@ type matchData struct {
 	// already in the library. It travels with every request the page makes so
 	// each one resolves paths against the same directory.
 	Root string
-	// PathTemplate is shown next to the rename toggle (library only).
-	PathTemplate string
+	// PathTemplate is shown next to the rename toggle (library only), which
+	// starts ticked when RenameDefault is set.
+	PathTemplate  string
+	RenameDefault bool
 }
 
 // IsLibrary reports whether this is a retag batch, for template branching.

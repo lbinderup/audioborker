@@ -149,7 +149,7 @@
 
     {{if .IsLibrary}}
     <label class="rename-toggle">
-      <input type="checkbox" name="rename" value="1" onchange="renameToggled()">
+      <input type="checkbox" name="rename" value="1" {{if .RenameDefault}}checked{{end}} onchange="renameToggled()">
       Move to <code>{{.PathTemplate}}</code>
     </label>
     {{end}}
@@ -514,8 +514,9 @@
         params.set('msrc:' + r.name.split(':')[1], r.value);
       });
       if (choice === 'manual') manualParams(item, params, false);
+      target.dataset.choice = choice;
       fetch('/library/rename-preview?' + params.toString())
-        .then(r => r.text()).then(html => { target.innerHTML = html; })
+        .then(r => r.text()).then(html => { if (target.dataset.choice === choice) target.innerHTML = html; })
         .catch(() => { target.innerHTML = ''; });
     }
     function renameToggled() {
@@ -785,6 +786,11 @@
       if (!hasPlan(item)) return; // a row with an error has nothing to show
       refreshRowSummary(item);
       refreshPlanIfStale(item);
+      // The move box can start ticked (a setting), and a match a search
+      // pre-selects fires no change event, so the preview follows here too.
+      const choice = item.querySelector('input[type=radio][name^="match:"]:checked')?.value || '';
+      const preview = item.querySelector('.rename-preview');
+      if (preview && renameEnabled() && choice && preview.dataset.choice !== choice) updateRenamePreview(item);
     }
     document.querySelectorAll('.match-item').forEach(refreshRow);
     document.body.addEventListener('htmx:afterSwap', () => {
