@@ -88,8 +88,11 @@ chapterization abilities.
   template (`{author}/{series_name}/{title}/{title} [{asin}]` by default; also
   `{narrator}`, `{subtitle}`, `{series_position}`, `{year}`). Missing variables
   drop cleanly — a standalone book simply skips its series folder level, with
-  no ` - Title` stubs and no empty folders. The settings page previews both a
-  series book and a standalone as you type.
+  no ` - Title` stubs and no empty folders. Text inside a variable's braces
+  only appears with a value, and `:00` zero-pads a number:
+  `{Book series_position:00 - }{title}` is `Book 01 - Title` in a series and
+  plain `Title` without one. The settings page previews both a series book
+  and a standalone as you type.
 - **Source cleanup you control** — after a *verified* conversion: leave the
   sources, move them into the mapped `/completed` volume (optionally a
   subfolder of it), or delete them (only the audio files it consumed; other

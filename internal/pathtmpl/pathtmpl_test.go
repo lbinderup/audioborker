@@ -49,6 +49,28 @@ func TestRender(t *testing.T) {
 			want:     "Andy Weir/Hail Mary/Project Hail Mary/Project Hail Mary",
 		},
 		{
+			name:     "conditional text shows with a series position",
+			template: "{author}/{series_name}/{Book series_position:00 - }{title}/{title} [{asin}]",
+			want:     "Andy Weir/Hail Mary/Book 01 - Project Hail Mary/Project Hail Mary [B08G9PRS1K]",
+		},
+		{
+			name:     "and disappears for a standalone",
+			template: "{author}/{series_name}/{Book series_position:00 - }{title}/{title} [{asin}]",
+			mutate:   func(v *Vars) { v.SeriesName = ""; v.SeriesPosition = "" },
+			want:     "Andy Weir/Project Hail Mary/Project Hail Mary [B08G9PRS1K]",
+		},
+		{
+			name:     "padding keeps a fraction and leaves wide numbers alone",
+			template: "{series_position:00} {year:000} {title:00}",
+			mutate:   func(v *Vars) { v.SeriesPosition = "1.5"; v.Year = "2021" },
+			want:     "01.5 2021 Project Hail Mary",
+		},
+		{
+			name:     "text in a token's braces is text, even a name capitalized",
+			template: "{author}/{Title title (series_name)}",
+			want:     "Andy Weir/Title Project Hail Mary (series_name)",
+		},
+		{
 			name:     "a bracket group with a value stays",
 			template: "{author}/{title} ({year}) [{asin}]",
 			mutate:   func(v *Vars) { v.ASIN = "" },
@@ -145,5 +167,22 @@ func TestValidate(t *testing.T) {
 	}
 	if err := Validate(""); err == nil {
 		t.Error("empty template accepted")
+	}
+	for _, ok := range []string{
+		"{author}/{series_name}/{Book series_position:00 - }{title}",
+		"{author}/{title} [{asin}]",
+	} {
+		if err := Validate(ok); err != nil {
+			t.Errorf("Validate(%q): %v", ok, err)
+		}
+	}
+	for _, bad := range []string{
+		"{author}/{Book position - }{title}", // no variable in the braces
+		"{author}/{title",                    // unclosed
+		"{author/title}",                     // braces across a folder
+	} {
+		if err := Validate(bad); err == nil {
+			t.Errorf("Validate(%q) accepted", bad)
+		}
 	}
 }

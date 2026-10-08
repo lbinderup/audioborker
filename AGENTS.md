@@ -179,7 +179,10 @@ copy → chapters → tag → verify → replace).
   lives under the output volume so the final move is an atomic rename.
 - **Path templates drop empty segments.** A standalone book skips its
   `{series_name}` folder; separators collapse. Substitution is single-pass so
-  values containing `{token}` text are never re-substituted.
+  values containing `{token}` text are never re-substituted. Text inside a
+  token's braces is conditional (`{Book series_position:00 - }`, Sonarr's
+  convention) and `:00` pads the leading number; token names match only as
+  whole lowercase words, so capitalized text in the braces stays text.
 - **`/config` must be local disk.** SQLite WAL breaks on NFS/SMB.
 - **Create files with permissive modes (`0o666` / `0o777`), never `0o644`.**
   The container sets a umask (default 002) and the OS subtracts from these

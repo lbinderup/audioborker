@@ -12,6 +12,11 @@
 //   - Likewise a bracketed group whose tokens all resolve empty is dropped
 //     with the space before it, so a book without an ASIN (one tagged by
 //     hand) is "Title.m4b", not "Title [].m4b".
+//   - Text inside a token's braces is conditional, as in Sonarr: in
+//     "{Book series_position - }{title}" the "Book " and " - " appear only
+//     when there is a position, so one template names series books and
+//     standalones alike. A ":00" after the name zero-pads the number it
+//     starts with to that many digits: {series_position:00} gives "01".
 package pathtmpl
 
 import (
@@ -55,7 +60,18 @@ func (v Vars) lookup(name string) (string, bool) {
 	return "", false
 }
 
-var tokenRe = regexp.MustCompile(`\{([a-z_]+)\}`)
+// tokenRe matches one token with its conditional text and padding:
+// {prefix name:00 suffix}. Names are matched as whole lowercase words, so
+// "Title" in conditional text is text, and "title" never matches inside
+// "subtitle". Braces never span a "/": segments are split first.
+var tokenRe = regexp.MustCompile(`\{([^{}/]*?)\b(author|narrator|title|subtitle|series_name|series_position|year|asin)\b(?::(0+))?([^{}/]*)\}`)
+
+// braceRe finds every braced part, for Validate to name the unknown or
+// unclosed ones; closedBraceRe is what Render substitutes, in one pass.
+var (
+	braceRe       = regexp.MustCompile(`\{[^{}]*\}?`)
+	closedBraceRe = regexp.MustCompile(`\{[^{}]*\}`)
+)
 
 // Validate checks that every {token} in the template is known and that the
 // template can produce a non-empty path for a fully-populated book.
@@ -63,9 +79,12 @@ func Validate(template string) error {
 	if strings.TrimSpace(template) == "" {
 		return fmt.Errorf("template is empty")
 	}
-	for _, m := range tokenRe.FindAllStringSubmatch(template, -1) {
-		if _, ok := (Vars{}).lookup(m[1]); !ok {
-			return fmt.Errorf("unknown variable {%s}", m[1])
+	for _, b := range braceRe.FindAllString(template, -1) {
+		switch {
+		case !strings.HasSuffix(b, "}"):
+			return fmt.Errorf("%s is missing its closing brace", b)
+		case !tokenRe.MatchString(b) || tokenRe.FindString(b) != b:
+			return fmt.Errorf("unknown variable %s", b)
 		}
 	}
 	if !tokenRe.MatchString(template) {
@@ -111,19 +130,35 @@ func Render(template string, vars Vars) (string, error) {
 // segment referenced any token and whether at least one token had a value.
 func renderSegment(seg string, vars Vars) (out string, hadToken, hadValue bool) {
 	seg = dropEmptyGroups(seg, vars)
-	out = tokenRe.ReplaceAllStringFunc(seg, func(m string) string {
-		name := tokenRe.FindStringSubmatch(m)[1]
+	out = closedBraceRe.ReplaceAllStringFunc(seg, func(m string) string {
 		hadToken = true
-		val, ok := vars.lookup(name)
-		if !ok {
-			return "" // Validate rejects unknown tokens; be lenient at render time
+		sm := tokenRe.FindStringSubmatch(m)
+		if sm == nil || sm[0] != m {
+			return "" // unknown: Validate rejects it; never render the braces
 		}
-		if val != "" {
-			hadValue = true
+		prefix, name, pad, suffix := sm[1], sm[2], sm[3], sm[4]
+		val, _ := vars.lookup(name)
+		if val == "" {
+			return "" // and its conditional text with it
 		}
-		return val
+		hadValue = true
+		return prefix + padNumber(val, len(pad)) + suffix
 	})
 	return sanitizeSegment(out), hadToken, hadValue
+}
+
+// padNumber zero-pads the number a value starts with: "1" → "01" and
+// "1.5" → "01.5" at width 2. Values that don't start with a digit, or are
+// already as wide, are left alone.
+func padNumber(val string, width int) string {
+	digits := 0
+	for digits < len(val) && val[digits] >= '0' && val[digits] <= '9' {
+		digits++
+	}
+	if digits == 0 || digits >= width {
+		return val
+	}
+	return strings.Repeat("0", width-digits) + val
 }
 
 // groupRe matches a bracketed part of a template segment together with the
@@ -141,7 +176,7 @@ func dropEmptyGroups(seg string, vars Vars) string {
 			return g
 		}
 		for _, t := range tokens {
-			if v, _ := vars.lookup(t[1]); v != "" {
+			if v, _ := vars.lookup(t[2]); v != "" {
 				return g
 			}
 		}
