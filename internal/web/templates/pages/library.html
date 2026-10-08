@@ -24,7 +24,10 @@
 
     <div class="selection-bar">
       <span id="selection-count" class="muted">Nothing selected</span>
-      <button type="submit" class="btn-primary" id="retag-btn" disabled>Retag selected →</button>
+      <span>
+        <button type="submit" class="btn-ghost" id="sort-btn" formaction="/library/sort" disabled>Sort selected →</button>
+        <button type="submit" class="btn-primary" id="retag-btn" disabled>Retag selected →</button>
+      </span>
     </div>
   </form>
 
@@ -34,6 +37,7 @@
       document.getElementById('selection-count').textContent =
         n === 0 ? 'Nothing selected' : n + ' selected';
       document.getElementById('retag-btn').disabled = n === 0;
+      document.getElementById('sort-btn').disabled = n === 0;
     }
     // Selecting a folder means "every book under it", so descendants uncheck;
     // selecting something inside a checked folder means finer granularity, so

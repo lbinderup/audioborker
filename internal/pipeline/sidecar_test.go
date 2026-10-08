@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
+	"audioborker/internal/metadata"
 	"audioborker/internal/store"
 )
 
@@ -47,7 +48,7 @@ func TestParseChaptersTxt(t *testing.T) {
 	}
 }
 
-func TestWithSidecarChapters(t *testing.T) {
+func TestReadSidecarAndOwnChapters(t *testing.T) {
 	dir := t.TempDir()
 	book := filepath.Join(dir, "Book.m4b")
 	if err := os.WriteFile(sidecarFor(book), []byte("0:00:00.000 One\n0:30:00.000 Two\n1:00:00.000 Three\n"), 0o666); err != nil {
@@ -56,34 +57,66 @@ func TestWithSidecarChapters(t *testing.T) {
 	if got := sidecarFor(filepath.Join(dir, "Book.m4a")); got != sidecarFor(book) {
 		t.Errorf("sidecarFor ignores the extension: %s", got)
 	}
+	embedded := []ProbedChapter{{Title: "Embedded", EndMs: 5_400_000}}
 
-	// No embedded chapters: the sidecar's are the book's own.
-	none := &FileInfo{Path: book, DurationMs: 5_400_000}
-	withSidecarChapters(none)
-	if len(none.Chapters) != 3 || none.ChaptersFrom != "Book.chapters.txt" || none.Chapters[2].EndMs != 5_400_000 {
-		t.Errorf("%+v", none)
+	// The sidecar is read alongside the file's own chapters, never over them.
+	f := &FileInfo{Path: book, DurationMs: 5_400_000, Chapters: embedded}
+	readSidecar(f)
+	if len(f.Sidecar) != 3 || f.SidecarName != "Book.chapters.txt" || f.Sidecar[2].EndMs != 5_400_000 || len(f.Chapters) != 1 {
+		t.Fatalf("%+v", f)
 	}
 
-	// Embedded chapters cut short by an overflowed header give way too.
-	cut := &FileInfo{Path: book, DurationMs: 5_400_000, ChaptersTruncated: true,
-		Chapters: []ProbedChapter{{Title: "One", EndMs: 5_400_000}}}
-	withSidecarChapters(cut)
-	if len(cut.Chapters) != 3 || cut.ChaptersTruncated {
-		t.Errorf("%+v", cut)
+	cases := []struct {
+		name string
+		f    FileInfo
+		want string
+		n    int
+	}{
+		{"complete embedded set wins", FileInfo{Chapters: embedded, Sidecar: f.Sidecar}, SourceExisting, 1},
+		{"none embedded", FileInfo{Sidecar: f.Sidecar}, SourceSidecar, 3},
+		{"embedded cut short by an overflow", FileInfo{Chapters: embedded, ChaptersTruncated: true, Sidecar: f.Sidecar}, SourceSidecar, 3},
+		{"cut short, but nothing better", FileInfo{Chapters: embedded, ChaptersTruncated: true}, SourceExisting, 1},
+		{"nothing at all", FileInfo{}, "", 0},
 	}
-
-	// A complete embedded set wins.
-	full := &FileInfo{Path: book, DurationMs: 5_400_000, Chapters: []ProbedChapter{{Title: "Embedded", EndMs: 5_400_000}}}
-	withSidecarChapters(full)
-	if len(full.Chapters) != 1 || full.ChaptersFrom != "" {
-		t.Errorf("%+v", full)
+	for _, c := range cases {
+		chs, src := OwnChapters(&c.f)
+		if src != c.want || len(chs) != c.n {
+			t.Errorf("%s: %s with %d", c.name, src, len(chs))
+		}
 	}
 
 	// A sidecar for a longer edition is ignored, and says why.
 	short := &FileInfo{Path: book, DurationMs: 2_000_000}
-	withSidecarChapters(short)
-	if len(short.Chapters) != 0 || short.SidecarErr == "" {
+	readSidecar(short)
+	if len(short.Sidecar) != 0 || short.SidecarErr == "" {
 		t.Errorf("%+v", short)
+	}
+}
+
+func TestResolveChaptersSidecarMode(t *testing.T) {
+	f := &FileInfo{
+		Path: "book.m4b", DurationMs: 120_000,
+		Chapters: []ProbedChapter{{Title: "Embedded", EndMs: 120_000}},
+		Sidecar:  []ProbedChapter{{Title: "A", EndMs: 60_000}, {Title: "B", StartMs: 60_000, EndMs: 120_000}},
+	}
+	provider := &metadata.ChapterInfo{RuntimeMs: 120_000, Chapters: []metadata.Chapter{{Title: "P", LengthMs: 120_000}}}
+	none := metadata.ShiftSpec{}
+
+	if r := resolveChapters(ChapterModeSidecar, provider, []*FileInfo{f}, 120_000, "Book", none); r.Source != SourceSidecar || len(r.Chapters) != 2 {
+		t.Errorf("sidecar mode: %+v", r)
+	}
+	if r := resolveChapters(ChapterModeExisting, provider, []*FileInfo{f}, 120_000, "Book", none); r.Source != SourceExisting || len(r.Chapters) != 1 {
+		t.Errorf("existing mode: %+v", r)
+	}
+	// The shift moves the sidecar's timings like any other local list.
+	r := resolveChapters(ChapterModeSidecar, nil, []*FileInfo{f}, 120_000, "Book", metadata.ShiftSpec{Mode: "fixed", FixedMs: 500})
+	if r.Chapters[1].StartMs != 60_500 {
+		t.Errorf("shifted sidecar: %+v", r.Chapters)
+	}
+	// Asked for a sidecar that isn't there: the automatic decision, with a warning.
+	bare := &FileInfo{Path: "book.m4b", DurationMs: 120_000}
+	if r := resolveChapters(ChapterModeSidecar, provider, []*FileInfo{bare}, 120_000, "Book", none); r.Source != SourceProvider || len(r.Warnings) == 0 {
+		t.Errorf("missing sidecar: %+v", r)
 	}
 }
 

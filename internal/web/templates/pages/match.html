@@ -123,6 +123,7 @@
             <select name="chapters:{{.RelPath}}" class="match-chapters">
               <option value="">Chapters: auto</option>
               <option value="existing">{{if gt .Files 1}}Chapters: one per file (boundaries){{else}}Chapters: keep file's own{{end}}</option>
+              {{if .HasSidecar}}<option value="sidecar">Chapters: .chapters.txt</option>{{end}}
               <option value="provider">Chapters: force Audible's</option>
               {{if gt .Files 1}}
               <option value="titles-files">Chapters: Audible's titles on file boundaries</option>
@@ -237,16 +238,18 @@
 
     // ---- row summary: server-rendered description of the assigned match --
     // (title, author · ASIN, series · files, official-vs-local runtime).
+    // Unmatched rows ask too: their summary carries the overflow badge.
     function refreshRowSummary(item) {
       const box = item.querySelector('.row-summary');
       const choice = item.querySelector('input[type=radio][name^="match:"]:checked')?.value || '';
-      if (!box || !choice || box.dataset.choice === choice) return;
+      if (!box || box.dataset.choice === choice) return;
       if (choice === 'manual') { useManual(item, true); return; } // rendered from its fields
       box.dataset.choice = choice;
       const path = item.querySelector('input[name="paths"]').value;
       fetch('/match/row-summary?path=' + encodeURIComponent(path) + '&choice=' + encodeURIComponent(choice)
             + '&root=' + encodeURIComponent(matchRoot()))
         .then(r => r.text()).then(html => {
+          if (box.dataset.choice !== choice) return; // a later choice already asked
           box.innerHTML = html;
           setRowCover(item, box.querySelector('[data-cover]')?.dataset.cover);
         }).catch(() => {});
@@ -374,15 +377,15 @@
     // The list the shift moves: the one being embedded. Without an explicit
     // choice the row's lit chip says which; failing that, Audible's if loaded.
     function shiftedList(item) {
-      const lists = [...item.querySelectorAll('.chapter-list.shiftable')];
-      const provider = lists.find(l => l.closest('.provider-col'));
-      const own = lists.find(l => !l.closest('.provider-col'));
-      const mode = item.querySelector('select[name^="chapters:"]')?.value || '';
-      if (mode === 'existing' || mode === 'titles-existing') return own || provider;
-      if (mode === 'provider') return provider || own;
-      const lit = item.querySelector('.plan-src-on')?.getAttribute('onclick') || '';
-      if (lit.includes("'existing'")) return own || provider;
-      return provider || own;
+      const list = col => item.querySelector(`.${col} .chapter-list.shiftable`);
+      const lists = { existing: list('existing-col'), sidecar: list('sidecar-col'), provider: list('provider-col') };
+      let pick = item.querySelector('select[name^="chapters:"]')?.value || '';
+      if (pick === 'titles-existing') pick = lists.existing ? 'existing' : 'sidecar';
+      if (!lists[pick]) {
+        const lit = item.querySelector('.plan-src-on')?.getAttribute('onclick') || '';
+        pick = (lit.match(/'(existing|sidecar|provider)'/) || [])[1];
+      }
+      return lists[pick] || lists.provider || lists.existing || lists.sidecar;
     }
     function flashButton(btn, text) {
       const original = btn.dataset.label || (btn.dataset.label = btn.textContent.trim());
@@ -462,8 +465,9 @@
       if (!item) return;
       const mode = item.querySelector('select[name^="chapters:"]')?.value || '';
       item.querySelectorAll('.chapter-preview h3').forEach(h => h.classList.remove('source-selected'));
-      if (mode === 'existing') item.querySelector('.chapter-preview h3.src-existing')?.classList.add('source-selected');
-      else if (mode === 'provider') item.querySelector('.chapter-preview h3.src-provider')?.classList.add('source-selected');
+      if (['existing', 'sidecar', 'provider'].includes(mode)) {
+        item.querySelector(`.chapter-preview h3.src-${mode}`)?.classList.add('source-selected');
+      }
     }
 
     // ---- chapter verdict ----------------------------------------------------
@@ -777,13 +781,17 @@
       const choice = item.querySelector('input[type=radio][name^="match:"]:checked')?.value || '';
       if (hasPlan(item) && item.querySelector('.chapter-plan').dataset.choice !== choice) updateChapterPlan(item);
     }
-    document.querySelectorAll('.match-item').forEach(refreshPlanIfStale);
+    function refreshRow(item) {
+      if (!hasPlan(item)) return; // a row with an error has nothing to show
+      refreshRowSummary(item);
+      refreshPlanIfStale(item);
+    }
+    document.querySelectorAll('.match-item').forEach(refreshRow);
     document.body.addEventListener('htmx:afterSwap', () => {
       updateMatchCount();
       document.querySelectorAll('.match-item').forEach(item => {
         updateSourceHighlight(item);
-        if (item.querySelector('input[type=radio][name^="match:"]:checked')) refreshRowSummary(item);
-        refreshPlanIfStale(item);
+        refreshRow(item);
       });
     });
   </script>

@@ -9,6 +9,7 @@ import (
 	"audioborker/internal/match"
 	"audioborker/internal/metadata"
 	"audioborker/internal/metadata/audnexus"
+	"audioborker/internal/pipeline"
 	"audioborker/internal/scan"
 	"audioborker/internal/store"
 )
@@ -27,6 +28,9 @@ type matchItem struct {
 	// could not be probed.
 	Current *metadata.Book
 	ASIN    string
+
+	// HasSidecar offers the chapters.txt next to a single file as a source.
+	HasSidecar bool
 }
 
 type matchData struct {
@@ -73,6 +77,7 @@ func (s *Server) handleMatch(w http.ResponseWriter, r *http.Request) {
 			item.Err = err.Error()
 		} else {
 			item.Files = len(files)
+			item.HasSidecar = len(files) == 1 && pipeline.HasSidecar(files[0])
 		}
 		normalized := match.Normalize(path.Base(p))
 		if normalized == "" {

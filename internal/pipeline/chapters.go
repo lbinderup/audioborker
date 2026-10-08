@@ -26,6 +26,7 @@ type ResolvedChapters struct {
 const (
 	SourceProvider       = "provider"        // the remote catalog's chapter list
 	SourceExisting       = "existing"        // chapters already embedded in the input file
+	SourceSidecar        = "sidecar"         // the chapters.txt next to the input file
 	SourceFiles          = "files"           // one chapter per input file
 	SourceSingle         = "single"          // one whole-book chapter
 	SourceTitlesFiles    = "titles-files"    // provider titles on file boundaries
@@ -45,6 +46,7 @@ func runtimeTolerance(actualMs int64) int64 {
 const (
 	ChapterModeAuto     = "auto"     // provider if runtime matches → existing → boundaries
 	ChapterModeExisting = "existing" // keep the input file's own chapters
+	ChapterModeSidecar  = "sidecar"  // use the chapters.txt next to the input file
 	ChapterModeProvider = "provider" // force provider chapters even on runtime mismatch
 	// Mix modes: the provider's chapter TITLES on LOCAL timings — for rips
 	// whose boundaries are right but whose names are junk ("Track 01").
@@ -84,7 +86,7 @@ func applyShift(r ResolvedChapters, shift metadata.ShiftSpec, provider *metadata
 	switch r.Source {
 	case SourceProvider:
 		runtime = provider.RuntimeMs
-	case SourceExisting, SourceTitlesExisting:
+	case SourceExisting, SourceSidecar, SourceTitlesExisting:
 	case SourceFiles, SourceTitlesFiles:
 		r.Warnings = append(r.Warnings, "Shift ignored: file boundaries are exact.")
 		return r
@@ -100,7 +102,8 @@ func applyShift(r ResolvedChapters, shift metadata.ShiftSpec, provider *metadata
 // chooseChapters decides what chapters to embed. In "auto" mode the
 // priority is:
 //  1. Provider chapters whose runtime matches the merged audio.
-//  2. Chapters already present in a single input file.
+//  2. A single input file's own chapters (OwnChapters: those inside it, or
+//     its chapters.txt when those are missing or cut short).
 //  3. One chapter per input file (cumulative boundaries).
 //  4. A single whole-book chapter (single-file input with no data at all).
 //
@@ -120,8 +123,13 @@ func chooseChapters(mode string, provider *metadata.ChapterInfo, files []*FileIn
 		out.Warnings = append(out.Warnings, mixFallbackWarning(mode, provider, files))
 		mode = ChapterModeAuto
 	}
+	if mode == ChapterModeSidecar && (len(files) != 1 || len(files[0].Sidecar) == 0) {
+		out.Warnings = append(out.Warnings, "No usable .chapters.txt next to the file — fell back to the automatic decision.")
+		mode = ChapterModeAuto
+	}
 
-	useProvider := mode != ChapterModeExisting && provider != nil && len(provider.Chapters) > 0
+	local := mode == ChapterModeExisting || mode == ChapterModeSidecar
+	useProvider := !local && provider != nil && len(provider.Chapters) > 0
 	if useProvider {
 		delta := provider.RuntimeMs - actualMs
 		if delta < 0 {
@@ -151,15 +159,21 @@ func chooseChapters(mode string, provider *metadata.ChapterInfo, files []*FileIn
 			"Provider chapters were requested but none were available — used file-based chapters instead.")
 	}
 
-	// Single input file that already carries chapters: keep them.
-	if len(files) == 1 && len(files[0].Chapters) > 0 {
-		out.Source = SourceExisting
-		for _, c := range files[0].Chapters {
-			out.Chapters = append(out.Chapters, metadata.Chapter{
-				Title: c.Title, StartMs: c.StartMs, LengthMs: c.EndMs - c.StartMs,
-			})
+	// A single input file with chapters of its own: the kind asked for, else
+	// whichever OwnChapters picks.
+	if len(files) == 1 {
+		f := files[0]
+		chs, src := OwnChapters(f)
+		switch {
+		case mode == ChapterModeExisting && len(f.Chapters) > 0:
+			chs, src = f.Chapters, SourceExisting
+		case mode == ChapterModeSidecar:
+			chs, src = f.Sidecar, SourceSidecar
 		}
-		return out
+		if chs != nil {
+			out.Source, out.Chapters = src, toChapters(chs)
+			return out
+		}
 	}
 
 	if len(files) > 1 {
@@ -195,14 +209,14 @@ func mixTitles(mode string, provider *metadata.ChapterInfo, files []*FileInfo) (
 		local = chaptersFromBoundaries(files)
 		src = SourceTitlesFiles
 	case ChapterModeTitlesExisting:
-		if len(files) != 1 || len(files[0].Chapters) == 0 {
+		if len(files) != 1 {
 			return nil, "", nil
 		}
-		for _, c := range files[0].Chapters {
-			local = append(local, metadata.Chapter{
-				Title: c.Title, StartMs: c.StartMs, LengthMs: c.EndMs - c.StartMs,
-			})
+		own, _ := OwnChapters(files[0])
+		if own == nil {
+			return nil, "", nil
 		}
+		local = toChapters(own)
 		src = SourceTitlesExisting
 	default:
 		return nil, "", nil
@@ -277,12 +291,21 @@ func mixFallbackWarning(mode string, provider *metadata.ChapterInfo, files []*Fi
 	case ChapterModeTitlesExisting:
 		n := 0
 		if len(files) == 1 {
-			n = len(files[0].Chapters)
+			own, _ := OwnChapters(files[0])
+			n = len(own)
 		}
 		local = fmt.Sprintf("the file's %d embedded chapter(s)", n)
 	}
 	return fmt.Sprintf("Audible has %d chapter titles but they can't be lined up with %s — fell back to the automatic decision.",
 		len(provider.Chapters), local)
+}
+
+func toChapters(chs []ProbedChapter) []metadata.Chapter {
+	out := make([]metadata.Chapter, 0, len(chs))
+	for _, c := range chs {
+		out = append(out, metadata.Chapter{Title: c.Title, StartMs: c.StartMs, LengthMs: c.EndMs - c.StartMs})
+	}
+	return out
 }
 
 // chaptersFromBoundaries builds one chapter per input file from cumulative

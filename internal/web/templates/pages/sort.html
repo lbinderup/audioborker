@@ -1,0 +1,30 @@
+{{define "content"}}
+<section class="card">
+  <h1>Sort</h1>
+  <p class="muted"><code>{{.PathTemplate}}</code></p>
+
+  <form method="post" action="/library/sort/apply">
+    <ul class="sort-list">
+      {{range .Rows}}
+      <li class="sort-row">
+        <div class="sort-old">{{.Old}}</div>
+        {{if .Err}}<div class="warn-text">⚠ {{.Err}}</div>
+        {{else if .InPlace}}<div class="muted">✓ In place</div>
+        {{else}}
+        <input type="hidden" name="paths" value="{{.Old}}">
+        <div class="sort-new">→ {{.New}}</div>
+        {{end}}
+      </li>
+      {{end}}
+    </ul>
+
+    <div class="selection-bar">
+      <span class="muted">{{.Moves}} to move{{if .InPlace}} · {{.InPlace}} in place{{end}}{{if .Skipped}} · {{.Skipped}} skipped{{end}}</span>
+      <span>
+        <a href="/library" class="btn-ghost">← Back</a>
+        <button type="submit" class="btn-primary" {{if not .Moves}}disabled{{end}}>Move {{.Moves}} →</button>
+      </span>
+    </div>
+  </form>
+</section>
+{{end}}

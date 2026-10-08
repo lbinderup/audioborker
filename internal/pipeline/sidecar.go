@@ -9,12 +9,13 @@ import (
 	"strings"
 )
 
-// A Book.chapters.txt next to an audiobook counts as that book's own
-// chapters. Taggers write one alongside the m4b (m4b-tool, mp4chaps, this
-// app), and it can be the only intact copy: the tool behind Poseidon's Wake
-// sized the embedded chapters to an overflowed length header, leaving 2 of
-// 55, while its sidecar kept them all. So a sidecar stands in for embedded
-// chapters that are missing or were cut short — never for a complete set.
+// A Book.chapters.txt next to an audiobook is a chapter source of its own,
+// beside the chapters inside the file and Audible's. Taggers write one
+// alongside the m4b (m4b-tool, mp4chaps, this app), and it can be the only
+// intact copy: the tool behind Poseidon's Wake sized the embedded chapters
+// to an overflowed length header, leaving 2 of 57, while its sidecar kept
+// them all. Left to decide, the pipeline takes it over embedded chapters that
+// are missing or were cut short — never over a complete set (OwnChapters).
 //
 // Only source files are read this way. The pipeline writes a chapters.txt
 // next to its own staged copy, and verify has to count the chapters inside
@@ -40,6 +41,9 @@ func writesSidecar(setting bool, sources []string) bool {
 	return err == nil
 }
 
+// HasSidecar reports whether a chapters.txt sits next to an audio file.
+func HasSidecar(path string) bool { return fileExists(sidecarFor(path)) }
+
 func removeWithSidecar(path string) error {
 	if err := os.Remove(path); err != nil && !os.IsNotExist(err) {
 		return err
@@ -60,25 +64,36 @@ func isDir(path string) bool {
 	return err == nil && info.IsDir()
 }
 
-// withSidecarChapters swaps in the sidecar's chapters when the file's own are
-// missing or truncated. A sidecar that can't belong to this audio is ignored
-// and noted in SidecarErr.
-func withSidecarChapters(info *FileInfo) {
-	if len(info.Chapters) > 0 && !info.ChaptersTruncated {
-		return
-	}
+// readSidecar loads the chapters.txt next to a source file into Sidecar. One
+// that can't belong to this audio is ignored and noted in SidecarErr.
+func readSidecar(info *FileInfo) {
 	path := sidecarFor(info.Path)
 	raw, err := os.ReadFile(path)
 	if err != nil {
 		return // no sidecar: the common case
 	}
 	chs, err := parseChaptersTxt(string(raw), info.DurationMs)
-	switch {
-	case err != nil:
+	if err != nil {
 		info.SidecarErr = fmt.Sprintf("Ignored %s: %v.", filepath.Base(path), err)
-	case len(chs) > len(info.Chapters):
-		info.Chapters, info.ChaptersFrom, info.ChaptersTruncated = chs, filepath.Base(path), false
+		return
 	}
+	info.Sidecar, info.SidecarName = chs, filepath.Base(path)
+}
+
+// OwnChapters is what counts as a single file's own chapters when nobody
+// picked between the two kinds: those inside it, unless they are missing or
+// were cut short by an overflowed header and a chapters.txt has them whole.
+// source is SourceExisting or SourceSidecar; nil when the file has neither.
+func OwnChapters(f *FileInfo) (chs []ProbedChapter, source string) {
+	switch {
+	case len(f.Chapters) > 0 && !f.ChaptersTruncated:
+		return f.Chapters, SourceExisting
+	case len(f.Sidecar) > 0:
+		return f.Sidecar, SourceSidecar
+	case len(f.Chapters) > 0:
+		return f.Chapters, SourceExisting
+	}
+	return nil, ""
 }
 
 var (

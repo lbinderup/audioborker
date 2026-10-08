@@ -8,14 +8,18 @@
   <div class="muted row-line">{{if .SeriesLine}}{{.SeriesLine}} · {{end}}{{.Files}} audio file{{if ne .Files 1}}s{{end}}</div>
   {{if .OfficialClock}}
   <div class="row-line rt-line">Official runtime {{.OfficialClock}} vs your audio {{.LocalClock}}</div>
-  {{if .BadgeClass}}
-  <div class="row-line"><span class="rt-badge rt-{{.BadgeClass}}">⏱ {{.BadgeText}}</span></div>
   {{end}}
+  {{if or .BadgeClass .Overflow}}
+  <div class="row-line row-badges">
+    {{if .BadgeClass}}<span class="rt-badge rt-{{.BadgeClass}}">⏱ {{.BadgeText}}</span>{{end}}
+    {{with .Overflow}}<span class="rt-badge rt-overflow">⚠ {{.}}</span>{{end}}
+  </div>
   {{end}}
   {{range .Notes}}<div class="muted row-line">⚠ {{.}}</div>{{end}}
 </div>
 {{else}}
 <div class="row-title"><strong>No match assigned</strong></div>
 <div class="muted row-line">{{.Path}} · {{.Files}} audio file{{if ne .Files 1}}s{{end}}</div>
+{{with .Overflow}}<div class="row-line row-badges"><span class="rt-badge rt-overflow">⚠ {{.}}</span></div>{{end}}
 {{end}}
 {{end}}

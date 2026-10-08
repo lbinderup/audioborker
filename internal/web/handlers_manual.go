@@ -91,8 +91,9 @@ func (s *Server) manualPanel(ctx context.Context, rootToken, rel string) manualP
 		current = embedded.Book(tags)
 		in.Current = current
 		d.LocalID = embedded.ManualID(info.Tags)
-		in.ChapterCount = len(info.Chapters)
-		for i, ch := range info.Chapters {
+		own, _ := pipeline.OwnChapters(info)
+		in.ChapterCount = len(own)
+		for i, ch := range own {
 			if i == 5 {
 				break
 			}
@@ -374,6 +375,7 @@ func (s *Server) handleMatchManualCheck(w http.ResponseWriter, r *http.Request) 
 	if files, err := scan.CollectAudioFiles(s.rootDir(get), rel); err == nil {
 		data.Files = len(files)
 	}
+	data.Overflow = s.localAudio(r.Context(), s.rootDir(get), rel).overflowNote()
 	data.SeriesLine = seriesLine(book)
 	s.render.partial(w, "match", "row_summary", data)
 }

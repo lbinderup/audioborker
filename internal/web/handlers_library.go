@@ -2,12 +2,16 @@ package web
 
 import (
 	"context"
+	"errors"
 	"io/fs"
+	"log/slog"
 	"net/http"
+	"net/url"
 	"os"
 	"path"
 	"path/filepath"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 
@@ -49,6 +53,12 @@ func (s *Server) handleLibrary(w http.ResponseWriter, r *http.Request) {
 	}
 	if err != nil {
 		data.Error = "Could not read the library directory (" + set.OutputDir + "): " + err.Error()
+	}
+	if n := r.URL.Query().Get("sorted"); n != "" {
+		data.Flash = "Moved " + n + " file(s)."
+	}
+	if failed := r.URL.Query().Get("failed"); failed != "" {
+		data.Error = "Not moved: " + failed
 	}
 	s.render.render(w, "library", data)
 }
@@ -206,6 +216,7 @@ func (s *Server) handleLibraryMatch(w http.ResponseWriter, r *http.Request) {
 		// effort — without ffprobe (or on a damaged file) the filename is
 		// still a workable guess, so the Library stays usable.
 		if abs, err := scan.Resolve(set.OutputDir, rel); err == nil {
+			item.HasSidecar = pipeline.HasSidecar(abs)
 			if info, perr := pipeline.ProbeFile(ctx, s.cfg.FFprobePath, abs); perr == nil {
 				book := embedded.Book(info.Tags)
 				item.Current = book
@@ -344,4 +355,114 @@ func libraryFilesFor(root string, paths []string) []string {
 	}
 	sort.Slice(out, func(i, j int) bool { return scan.NaturalLess(out[i], out[j]) })
 	return out
+}
+
+type sortRow struct {
+	Old, New string // library-relative
+	InPlace  bool
+	Err      string
+}
+
+type sortData struct {
+	baseData
+	PathTemplate string
+	Rows         []sortRow
+	Moves        int
+	InPlace      int
+	Skipped      int
+}
+
+// sortRows works out where each selected file belongs by its own tags. The
+// preview and the move both call it, so what was shown is what moves —
+// recomputed rather than trusting paths the page sends back.
+func (s *Server) sortRows(ctx context.Context, paths []string) sortData {
+	set := s.settings()
+	data := sortData{baseData: s.base("Sort", "library"), PathTemplate: set.PathTemplate}
+	for _, rel := range libraryFilesFor(set.OutputDir, paths) {
+		row := sortRow{Old: rel}
+		abs, err := scan.Resolve(set.OutputDir, rel)
+		if err == nil {
+			if active, aerr := s.store.HasActiveJobForPath(store.KindRetag, rel); aerr == nil && active {
+				err = errors.New("queued for a retag")
+			}
+		}
+		var info *pipeline.FileInfo
+		if err == nil {
+			info, err = pipeline.ProbeFile(ctx, s.cfg.FFprobePath, abs)
+		}
+		var target string
+		if err == nil {
+			target, row.InPlace, err = pipeline.SortTarget(abs, set.OutputDir, set.PathTemplate, *embedded.Book(info.Tags))
+		}
+		switch {
+		case err != nil:
+			row.Err = err.Error()
+			data.Skipped++
+		case row.InPlace:
+			data.InPlace++
+		default:
+			row.New = libraryRel(set.OutputDir, target)
+			data.Moves++
+		}
+		data.Rows = append(data.Rows, row)
+	}
+	return data
+}
+
+func libraryRel(root, abs string) string {
+	if rel, err := filepath.Rel(root, abs); err == nil {
+		return filepath.ToSlash(rel)
+	}
+	return abs
+}
+
+// handleLibrarySort previews where the selected files would move.
+func (s *Server) handleLibrarySort(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		http.Error(w, "bad form", http.StatusBadRequest)
+		return
+	}
+	ctx, cancel := context.WithTimeout(r.Context(), 2*time.Minute)
+	defer cancel()
+	s.render.render(w, "sort", s.sortRows(ctx, r.PostForm["paths"]))
+}
+
+// handleLibrarySortApply moves the files the preview listed. Renames on one
+// volume are instant, so this runs here rather than as queued jobs.
+func (s *Server) handleLibrarySortApply(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		http.Error(w, "bad form", http.StatusBadRequest)
+		return
+	}
+	ctx, cancel := context.WithTimeout(r.Context(), 2*time.Minute)
+	defer cancel()
+	set := s.settings()
+	moved, failed := 0, []string{}
+	for _, row := range s.sortRows(ctx, r.PostForm["paths"]).Rows {
+		if row.Err != "" || row.InPlace {
+			continue
+		}
+		abs, err := scan.Resolve(set.OutputDir, row.Old)
+		if err == nil {
+			var info *pipeline.FileInfo
+			if info, err = pipeline.ProbeFile(ctx, s.cfg.FFprobePath, abs); err == nil {
+				_, _, err = pipeline.SortFile(abs, set.OutputDir, set.PathTemplate, *embedded.Book(info.Tags))
+			}
+		}
+		if err != nil {
+			failed = append(failed, row.Old+" ("+err.Error()+")")
+			continue
+		}
+		moved++
+	}
+	q := url.Values{"sorted": {strconv.Itoa(moved)}}
+	if len(failed) > 0 {
+		slog.Warn("library sort: files not moved", "reasons", failed)
+		reasons := strings.Join(failed, "; ")
+		if len(reasons) > 500 {
+			reasons = reasons[:500] + "…"
+		}
+		q.Set("failed", reasons)
+	}
+	http.Redirect(w, r, "/library?"+q.Encode(), http.StatusSeeOther)
 }

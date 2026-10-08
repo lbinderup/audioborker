@@ -388,11 +388,10 @@ func (rc *RealConverter) providerChapters(ctx context.Context, job *store.Job, c
 	return provided, warnings
 }
 
-// logSourceChapters notes where a source file's own chapters came from when
-// that wasn't the file itself.
+// logSourceChapters notes a source file's chapters.txt.
 func logSourceChapters(logf LogFunc, info *FileInfo) {
-	if info.ChaptersFrom != "" {
-		logf("%d chapters read from %s", len(info.Chapters), info.ChaptersFrom)
+	if info.SidecarName != "" {
+		logf("%d chapters in %s", len(info.Sidecar), info.SidecarName)
 	}
 	if info.SidecarErr != "" {
 		logf("%s", info.SidecarErr)

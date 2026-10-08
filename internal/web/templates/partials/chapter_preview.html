@@ -11,8 +11,8 @@
     <p class="muted">Not playable in the browser.</p>
     {{end}}
 
-    <div class="chapter-columns">
-      <div>
+    <div class="chapter-columns{{if .Sidecar}} three{{end}}">
+      <div class="existing-col">
         {{if .Multi}}
         <h3 class="src-existing">File boundaries <span class="muted">({{len .Files}} files · {{.Duration}})</span></h3>
         <div class="chapter-list">
@@ -31,7 +31,7 @@
           Use file boundaries
         </button>
         {{else}}
-        <h3 class="src-existing">{{if .ChaptersFrom}}<span title="{{.ChaptersFrom}}">From .chapters.txt</span>{{else}}Embedded chapters{{end}} {{if .Chapters}}<span class="muted">({{len .Chapters}} · {{.Duration}})</span>{{end}}</h3>
+        <h3 class="src-existing">Embedded chapters {{if .Chapters}}<span class="muted">({{len .Chapters}} · {{.Duration}})</span>{{end}}</h3>
         {{if .Chapters}}
         <div class="chapter-list shiftable">
           {{range $i, $c := .Chapters}}
@@ -48,6 +48,22 @@
         {{end}}
         {{end}}
       </div>
+
+      {{if .Sidecar}}
+      <div class="sidecar-col">
+        <h3 class="src-sidecar"><span title="{{.SidecarName}}">.chapters.txt</span> <span class="muted">({{len .Sidecar}})</span></h3>
+        <div class="chapter-list shiftable">
+          {{range $i, $c := .Sidecar}}
+          <button type="button" class="chapter-btn" data-ms="{{$c.StartMs}}" data-idx="{{add $i 1}}" onclick="seekPreview(this)">
+            <span class="chapter-idx">{{add $i 1}}</span><span class="chapter-stamp">{{$c.Stamp}}</span> {{$c.Title}}
+          </button>
+          {{end}}
+        </div>
+        <button type="button" class="btn-ghost btn-small use-chapters" onclick="useChapters(this, 'sidecar')">
+          Use these chapters
+        </button>
+      </div>
+      {{end}}
 
       <div class="provider-col">
         <h3 class="src-provider">Audible chapters</h3>

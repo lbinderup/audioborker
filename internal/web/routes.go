@@ -18,6 +18,8 @@ func (s *Server) routes() http.Handler {
 	mux.HandleFunc("GET /library/search", s.handleLibrarySearch)
 	mux.HandleFunc("POST /library/match", s.handleLibraryMatch)
 	mux.HandleFunc("GET /library/rename-preview", s.handleLibraryRenamePreview)
+	mux.HandleFunc("POST /library/sort", s.handleLibrarySort)
+	mux.HandleFunc("POST /library/sort/apply", s.handleLibrarySortApply)
 
 	mux.HandleFunc("GET /import", s.handleImport)
 	mux.HandleFunc("GET /import/tree", s.handleImportTree)

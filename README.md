@@ -39,11 +39,11 @@ chapterization abilities.
   server (HTTP Range streaming, so it works remotely too) and click any
   embedded chapter to hear whether it lines up. Load the Audible chapter
   timings beside them for comparison, then pick a side with **Use these
-  chapters** — or straight from the match list, where each book shows how
-  many chapters the file has and how many Audible has, and either count
-  picks that source. A verdict line always states what *will* be embedded and why —
-  e.g. *"Will keep the file's own 3 chapters — provider chapters expect a
-  runtime of 8h18m but your audio is 6h57m."*
+  chapters** — or straight from the match list, where each book lists its
+  chapter sources with their counts (in the file, `.chapters.txt`, Audible)
+  and the selected one is what gets embedded — decided by the same code the
+  conversion runs, with a warning when it had to fall back (e.g. Audible's
+  chapters expect 8h18m but your audio is 6h57m).
 - **Convert** — a persistent queue with **live progress**, per-job logs,
   cancel and retry. Jobs interrupted by a restart are marked as such — nothing
   hangs in "Processing" forever. Already-AAC sources are stream-copied without
@@ -53,10 +53,10 @@ chapterization abilities.
   Audible chapter data is used when its runtime matches your audio, otherwise
   the file's own chapters, otherwise chapters derived from file boundaries with
   cleaned filename titles. A multi-file book never ends up chapterless.
-  A `Book.chapters.txt` next to the file counts as its own chapters when the
-  file's are missing or cut short, and a book that came with one gets it
-  rewritten to match what was embedded. Optionally writes that sidecar for
-  every book.
+  A `Book.chapters.txt` next to the file is a third choice beside the
+  file's own chapters and Audible's (and the default when the file's are
+  missing or cut short); a book that came with one gets it rewritten to
+  match what was embedded. Optionally writes that sidecar for every book.
 - **Chapter title mix-and-match** — when your rip's *timings* are right but its
   chapter *names* are junk ("Track 01"), put Audible's titles onto your file
   boundaries or the file's own embedded timings. Counts are matched strictly
@@ -81,7 +81,9 @@ chapterization abilities.
   them to the current path template, with an old → new preview per file. The
   audio is never re-encoded, and the file is never edited in place: it is
   stream-copied, tagged, verified, and only then swapped in — so a failure or a
-  cancel always leaves the original untouched.
+  cancel always leaves the original untouched. **Sort selected** moves files
+  to the path template by the tags they already have, without a retag —
+  previewed first, never over another file.
 - **Output where you want it** — a dedicated `/output` volume with a safe path
   template (`{author}/{series_name}/{title}/{title} [{asin}]` by default; also
   `{narrator}`, `{subtitle}`, `{series_position}`, `{year}`). Missing variables

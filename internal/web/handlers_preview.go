@@ -134,10 +134,11 @@ type previewData struct {
 	Playable   bool   // first file is browser-playable
 	DurationMs int64
 	Duration   string
-	Chapters   []previewChapter // single-file only: the file's own chapters
-	// ChaptersFrom names the chapters.txt they came from ("" = embedded).
-	ChaptersFrom string
-	Err          string
+	Chapters   []previewChapter // single-file only: the chapters inside the file
+	// Sidecar is the chapters.txt next to a single file, named SidecarName.
+	Sidecar     []previewChapter
+	SidecarName string
+	Err         string
 }
 
 // handleMatchPreview renders the chapter-preview panel for one match item:
@@ -208,12 +209,8 @@ func (s *Server) handleMatchPreview(w http.ResponseWriter, r *http.Request) {
 		bounds = append(bounds, boundary{Rel: frel, Start: offset, End: offset + info.DurationMs})
 
 		if len(files) == 1 {
-			data.ChaptersFrom = info.ChaptersFrom
-			for _, c := range info.Chapters {
-				data.Chapters = append(data.Chapters, previewChapter{
-					Title: c.Title, StartMs: c.StartMs, Stamp: msClock(c.StartMs),
-				})
-			}
+			data.Chapters = previewChapters(info.Chapters)
+			data.Sidecar, data.SidecarName = previewChapters(info.Sidecar), info.SidecarName
 		}
 		offset += info.DurationMs
 	}
@@ -227,6 +224,14 @@ func (s *Server) handleMatchPreview(w http.ResponseWriter, r *http.Request) {
 		data.FilesJSON = string(raw)
 	}
 	s.render.partial(w, "match", "chapter_preview", data)
+}
+
+func previewChapters(chs []pipeline.ProbedChapter) []previewChapter {
+	var out []previewChapter
+	for _, c := range chs {
+		out = append(out, previewChapter{Title: c.Title, StartMs: c.StartMs, Stamp: msClock(c.StartMs)})
+	}
+	return out
 }
 
 type providerChaptersData struct {
@@ -287,7 +292,8 @@ type rowSummaryData struct {
 	BadgeText     string
 	Notes         []string // aggregation degradation notes (secondary source down)
 	Err           string
-	Manual        bool // tagged by hand: no catalog runtime to compare
+	Manual        bool   // tagged by hand: no catalog runtime to compare
+	Overflow      string // a file's length header overflowed; badge beside the runtime's
 }
 
 // handleMatchRowSummary renders the compact row description of the assigned
@@ -301,6 +307,10 @@ func (s *Server) handleMatchRowSummary(w http.ResponseWriter, r *http.Request) {
 	if files, err := scan.CollectAudioFiles(root, data.Path); err == nil {
 		data.Files = len(files)
 	}
+	ctx, cancel := context.WithTimeout(r.Context(), 60*time.Second)
+	defer cancel()
+	local := s.localAudio(ctx, root, data.Path)
+	data.Overflow = local.overflowNote()
 
 	asin, region, ok := strings.Cut(q.Get("choice"), "|")
 	if !ok || asin == "" {
@@ -308,9 +318,6 @@ func (s *Server) handleMatchRowSummary(w http.ResponseWriter, r *http.Request) {
 		s.render.partial(w, "match", "row_summary", data)
 		return
 	}
-
-	ctx, cancel := context.WithTimeout(r.Context(), 60*time.Second)
-	defer cancel()
 
 	res, err := s.aggregator().GetBook(ctx, asin, region, nil)
 	if err != nil {
@@ -331,7 +338,7 @@ func (s *Server) handleMatchRowSummary(w http.ResponseWriter, r *http.Request) {
 	if ch, _ := s.store.CachedChapters(aggregate.SourceAudnexus, asin, region); ch != nil && ch.RuntimeMs > 0 {
 		officialMs = ch.RuntimeMs
 	}
-	localMs := s.LocalRuntimeMs(ctx, root, data.Path)
+	localMs := local.totalMs
 	if officialMs > 0 && localMs > 0 {
 		data.OfficialClock = msClock(officialMs)
 		data.LocalClock = msClock(localMs)
@@ -377,51 +384,30 @@ func (s *Server) choiceASIN(get func(string) string) (asin, region string, ok bo
 }
 
 type chapterPlanData struct {
-	Source   string // pipeline.Source* value; also the verdict's CSS class suffix
-	Icon     string
-	Verdict  string
-	Reason   string
+	Source   string // pipeline.Source* value: which card is selected
+	Note     string // when no card describes the outcome: a title mix, one whole-book chapter
 	Shift    string // "" when no shift applies to the chosen chapters
 	Warnings []string
 	Err      string
 
-	// The two sources the row's chips pick between: the file's own chapters
-	// (or, for several files, one per file) and Audible's.
+	// The sources the row's cards pick between. Multi: one chapter per file
+	// instead of the file's own and its chapters.txt.
 	Multi         bool
 	FileCount     int
-	FileFrom      string // the chapters.txt the file's chapters come from, if any
+	SidecarCount  int
+	SidecarName   string
 	ProviderCount int
-	Overflow      string // set when a file's length header overflowed
 }
 
-// FileUsed and ProviderUsed light the chip of the list being embedded; a
-// title mix uses both, so neither is lit and the verdict says which.
 func (d chapterPlanData) FileUsed() bool {
 	return d.Source == pipeline.SourceExisting || d.Source == pipeline.SourceFiles
 }
+func (d chapterPlanData) SidecarUsed() bool  { return d.Source == pipeline.SourceSidecar }
 func (d chapterPlanData) ProviderUsed() bool { return d.Source == pipeline.SourceProvider }
 
-// overflowNote reports files whose 32-bit length header overflowed (see
-// pipeline.unwrapDuration), so a batch hit by it stands out on the match
-// screen. Players read those headers, so such a file shows a few minutes.
-func overflowNote(infos []*pipeline.FileInfo) string {
-	var hit []*pipeline.FileInfo
-	for _, info := range infos {
-		if info.HeaderMs > 0 {
-			hit = append(hit, info)
-		}
-	}
-	switch {
-	case len(hit) == 0:
-		return ""
-	case len(infos) == 1:
-		return "Length header overflowed: the file claims " + msClock(hit[0].HeaderMs) + " (fixed in the output)."
-	}
-	return fmt.Sprintf("Length headers overflowed in %d of %d files (fixed in the output).", len(hit), len(infos))
-}
-
 // handleMatchChapterPlan runs the pipeline's actual chapter decision against
-// the selected match and reports the verdict, so "auto" is never opaque.
+// the selected match and shows it as the selected card among the sources,
+// so "auto" is never opaque.
 func (s *Server) handleMatchChapterPlan(w http.ResponseWriter, r *http.Request) {
 	q := r.URL.Query()
 	mode := q.Get("mode")
@@ -456,13 +442,12 @@ func (s *Server) handleMatchChapterPlan(w http.ResponseWriter, r *http.Request) 
 		infos = append(infos, info)
 		totalMs += info.DurationMs
 	}
-	data.Overflow = overflowNote(infos)
 	data.Multi = len(infos) > 1
 	if data.Multi {
 		data.FileCount = len(infos)
 	} else if len(infos) == 1 {
 		data.FileCount = len(infos[0].Chapters)
-		data.FileFrom = infos[0].ChaptersFrom
+		data.SidecarCount, data.SidecarName = len(infos[0].Sidecar), infos[0].SidecarName
 		if e := infos[0].SidecarErr; e != "" {
 			data.Warnings = append(data.Warnings, e)
 		}
@@ -490,43 +475,15 @@ func (s *Server) handleMatchChapterPlan(w http.ResponseWriter, r *http.Request) 
 		data.Shift = "Shifted " + plan.Shift.String() + "."
 	}
 
-	n := len(plan.Chapters)
 	switch plan.Source {
-	case pipeline.SourceProvider:
-		// No reason line: the row summary right above already carries the
-		// official-vs-local runtime comparison.
-		data.Icon, data.Verdict = "🌐", fmt.Sprintf("Will embed Audible's %d chapters.", n)
-	case pipeline.SourceExisting:
-		data.Icon, data.Verdict = "📼", fmt.Sprintf("Will keep the file's own %d chapters.", n)
-		if data.FileFrom != "" {
-			data.Icon, data.Verdict = "📄", fmt.Sprintf("Will embed the %d chapters from %s.", n, data.FileFrom)
-		}
-		if mode == pipeline.ChapterModeExisting {
-			data.Reason = "You chose to keep them."
-		} else if provider == nil {
-			data.Reason = "No usable Audible chapter data" + choiceHint(q.Get("choice")) + "."
-		}
-	case pipeline.SourceFiles:
-		data.Icon, data.Verdict = "🧩", fmt.Sprintf("Will generate %d chapters from the file boundaries.", n)
-		if provider == nil && mode != pipeline.ChapterModeExisting {
-			data.Reason = "No usable Audible chapter data" + choiceHint(q.Get("choice")) + "."
-		}
 	case pipeline.SourceSingle:
-		data.Icon, data.Verdict = "▭", "Will embed one whole-book chapter."
-		data.Reason = "No chapter data from Audible or the file."
+		data.Note = "One whole-book chapter."
 	case pipeline.SourceTitlesFiles:
-		data.Icon, data.Verdict = "🔀", fmt.Sprintf("Will embed %d chapters: Audible's titles on your file boundaries.", n)
+		data.Note = fmt.Sprintf("Audible's titles on your %d file boundaries.", len(plan.Chapters))
 	case pipeline.SourceTitlesExisting:
-		data.Icon, data.Verdict = "🔀", fmt.Sprintf("Will embed %d chapters: Audible's titles on the file's own timings.", n)
+		data.Note = fmt.Sprintf("Audible's titles on the file's %d timings.", len(plan.Chapters))
 	}
 	s.render.partial(w, "match", "chapter_plan", data)
-}
-
-func choiceHint(choice string) string {
-	if choice == "" {
-		return " (no match selected yet)"
-	}
-	return ""
 }
 
 // shiftSpecFrom builds a ShiftSpec from request values (query or form). The

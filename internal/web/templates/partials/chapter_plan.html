@@ -1,18 +1,31 @@
 {{define "chapter_plan"}}
+<div class="plan-title">Chapters</div>
 {{if .Err}}
   <span class="muted">⚠ {{.Err}}</span>
 {{else}}
-  {{/* The same choice as the Chapters dialog's dropdown, from the row. */}}
-  <span class="plan-sources">
-    <button type="button" class="plan-src{{if .FileUsed}} plan-src-on{{end}}" onclick="pickChapters(this, 'existing')"
-            {{if not .FileCount}}disabled{{end}}>{{if .Multi}}🧩 {{.FileCount}} files{{else if .FileFrom}}📄 {{.FileCount}} in .chapters.txt{{else}}📼 {{if .FileCount}}{{.FileCount}}{{else}}none{{end}} in file{{end}}</button>
-    <button type="button" class="plan-src{{if .ProviderUsed}} plan-src-on{{end}}" onclick="pickChapters(this, 'provider')"
-            {{if not .ProviderCount}}disabled{{end}}>🌐 {{if .ProviderCount}}{{.ProviderCount}}{{else}}none{{end}} on Audible</button>
-  </span>
-  <span class="plan-verdict plan-{{.Source}}">{{.Icon}} {{.Verdict}}</span>
-  <span class="muted">{{.Reason}}</span>
-  {{with .Shift}}<span class="muted">{{.}}</span>{{end}}
-  {{range .Warnings}}<span class="warn-text">⚠ {{.}}</span>{{end}}
-  {{with .Overflow}}<span class="warn-text plan-overflow">⚠ {{.}}</span>{{end}}
+  {{/* The same choice as the Chapters dialog's dropdown, from the row. The
+       selected card is what the conversion will embed. */}}
+  <div class="plan-sources" role="radiogroup">
+    {{if .Multi}}
+    <button type="button" role="radio" aria-checked="{{.FileUsed}}" class="plan-src{{if .FileUsed}} plan-src-on{{end}}"
+            onclick="pickChapters(this, 'existing')">One per file <b>{{.FileCount}}</b></button>
+    {{else}}
+    <button type="button" role="radio" aria-checked="{{.FileUsed}}" class="plan-src{{if .FileUsed}} plan-src-on{{end}}"
+            onclick="pickChapters(this, 'existing')" {{if not .FileCount}}disabled{{end}}>In file <b>{{if .FileCount}}{{.FileCount}}{{else}}none{{end}}</b></button>
+    {{if .SidecarCount}}
+    <button type="button" role="radio" aria-checked="{{.SidecarUsed}}" class="plan-src{{if .SidecarUsed}} plan-src-on{{end}}"
+            onclick="pickChapters(this, 'sidecar')" title="{{.SidecarName}}">.chapters.txt <b>{{.SidecarCount}}</b></button>
+    {{end}}
+    {{end}}
+    <button type="button" role="radio" aria-checked="{{.ProviderUsed}}" class="plan-src{{if .ProviderUsed}} plan-src-on{{end}}"
+            onclick="pickChapters(this, 'provider')" {{if not .ProviderCount}}disabled{{end}}>Audible <b>{{if .ProviderCount}}{{.ProviderCount}}{{else}}none{{end}}</b></button>
+  </div>
+  {{if or .Note .Shift .Warnings}}
+  <div class="plan-notes">
+    {{with .Note}}<span class="muted">{{.}}</span>{{end}}
+    {{with .Shift}}<span class="muted">{{.}}</span>{{end}}
+    {{range .Warnings}}<span class="warn-text">⚠ {{.}}</span>{{end}}
+  </div>
+  {{end}}
 {{end}}
 {{end}}

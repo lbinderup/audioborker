@@ -25,11 +25,11 @@ type FileInfo struct {
 	// ChaptersTruncated marks embedded chapters sized to an overflowed
 	// header: the last one was stretched to the real end, the rest are lost.
 	ChaptersTruncated bool
-	// ChaptersFrom names the chapters.txt the chapters came from ("" = the
-	// file's own); SidecarErr says why one next to the file was ignored.
-	// Both are set only by ProbeSource.
-	ChaptersFrom string
-	SidecarErr   string
+	// Sidecar holds the chapters.txt next to the file, named SidecarName;
+	// SidecarErr says why one there was ignored. Set only by ProbeSource.
+	Sidecar     []ProbedChapter
+	SidecarName string
+	SidecarErr  string
 	// Tags is the container-level metadata ffprobe reports. Key spelling is
 	// whatever the writing tool used — ffprobe lowercases the standard atoms
 	// and passes freeform ones through verbatim — so read it through
@@ -54,9 +54,8 @@ func ProbeFile(ctx context.Context, ffprobePath, path string) (*FileInfo, error)
 	return prober{ffprobe: ffprobePath}.probe(ctx, path)
 }
 
-// ProbeSource is ProbeFile for a book's source file, whose chapters.txt
-// counts as its own chapters when the embedded ones are missing or cut
-// short (see withSidecarChapters).
+// ProbeSource is ProbeFile for a book's source file: it also reads the
+// chapters.txt next to it, a chapter source of its own (see sidecar.go).
 func ProbeSource(ctx context.Context, ffprobePath, path string) (*FileInfo, error) {
 	return prober{ffprobe: ffprobePath}.probeSource(ctx, path)
 }
@@ -64,7 +63,7 @@ func ProbeSource(ctx context.Context, ffprobePath, path string) (*FileInfo, erro
 func (p prober) probeSource(ctx context.Context, path string) (*FileInfo, error) {
 	info, err := p.probe(ctx, path)
 	if err == nil {
-		withSidecarChapters(info)
+		readSidecar(info)
 	}
 	return info, err
 }

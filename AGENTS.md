@@ -56,7 +56,8 @@ copy → chapters → tag → verify → replace).
   point-in-time copies, so retries reproduce exactly and settings edits never
   mutate in-flight jobs. Do not "helpfully" re-read live settings in the pipeline.
 - **Chapter decisions are computed in exactly one place.** The match screen's
-  verdict line calls `pipeline.PlanChapters`, which calls the same
+  chapter cards (the selected one is what gets embedded) come from
+  `pipeline.PlanChapters`, which calls the same
   `resolveChapters` the conversion runs. Never fork this logic for display.
   The title mix modes (`titles-files`/`titles-existing` — provider titles on
   local timings) live inside `resolveChapters` too, and degrade to the
@@ -121,6 +122,11 @@ copy → chapters → tag → verify → replace).
   merge stage must never "optimize" a single AAC input back into a raw byte
   copy — that bug shipped once and carried foreign atoms (ISBN, RATING) into
   the library.
+- **Sorting the library is a retag's rename without the retag.**
+  `pipeline.SortFile` takes its target from `retagTarget` (so it agrees with
+  the rename preview and refuses an occupied path), renames only — never a
+  copy+delete — and takes the file's chapters.txt along. The apply step
+  recomputes every target rather than trusting paths the preview page sends.
 - **Cleanup is forced to `leave` for retag jobs.** `cleanupSource` resolves
   `InputDir + InputPath`, which for a retag *is* the file just written — a
   `delete` default would destroy the book it had just fixed.
@@ -135,11 +141,13 @@ copy → chapters → tag → verify → replace).
   near-perfect hit, the language matches the region, and the runner-up is
   clearly worse — a confidently wrong pre-selection costs far more than a
   click, so keep it strict.
-- **A `.chapters.txt` next to a source file is that file's own chapters.**
-  `ProbeSource` reads it when the embedded chapters are missing or were cut
-  short by an overflowed header (Poseidon's Wake kept 2 of 57 inside, all 57
-  in the sidecar); a complete embedded set wins. Use `ProbeSource` only for a
-  book's *source*: the pipeline writes a chapters.txt next to its staged
+- **A `.chapters.txt` next to a source file is a chapter source of its own.**
+  `ProbeSource` reads it into `FileInfo.Sidecar`, beside the embedded
+  chapters; the user can pick it (`sidecar` mode), and left to decide the
+  pipeline takes it over embedded chapters that are missing or were cut short
+  by an overflowed header (`OwnChapters`; Poseidon's Wake kept 2 of 57
+  inside, all 57 in the sidecar) — never over a complete set. Use
+  `ProbeSource` only for a book's *source*: the pipeline writes a chapters.txt next to its staged
   copy, and verify must count the chapters inside the file, or tone failing
   to write them would hide behind that sidecar. A book that came with a
   sidecar leaves with one rewritten to match what was baked in
