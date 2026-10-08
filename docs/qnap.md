@@ -153,8 +153,8 @@ Open `http://<nas>:8684` and go to **Settings** first. The defaults already
 match the volume layout above, but confirm:
 
 - **Output path template** — default
-  `{author}/{series_name}/{title}/{title} [{asin}]`; the preview shows both a
-  series book and a standalone as you type.
+  `{author}/{series_name}/{Book series_position:00 - }{title}/{title} [{asin}]`; the preview shows
+  both a series book and a standalone as you type.
 - **Region** — `us` unless your ASINs come from another Audible storefront.
 - **Cleanup mode** — starts at "leave sources in place"; switch to move/delete
   once you trust it.

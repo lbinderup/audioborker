@@ -85,11 +85,11 @@ chapterization abilities.
   to the path template by the tags they already have, without a retag —
   previewed first, never over another file.
 - **Output where you want it** — a dedicated `/output` volume with a safe path
-  template (`{author}/{series_name}/{title}/{title} [{asin}]` by default; also
-  `{narrator}`, `{subtitle}`, `{series_position}`, `{year}`). Missing variables
-  drop cleanly — a standalone book simply skips its series folder level, with
-  no ` - Title` stubs and no empty folders. Text inside a variable's braces
-  only appears with a value, and `:00` zero-pads a number:
+  template (`{author}/{series_name}/{Book series_position:00 - }{title}/{title} [{asin}]` by default; also
+  `{narrator}`, `{subtitle}`, `{year}`). Missing variables drop cleanly — a
+  standalone book simply skips its series folder level, with no ` - Title`
+  stubs and no empty folders. Text inside a variable's braces only appears
+  with a value, and `:00` zero-pads a number: the default's
   `{Book series_position:00 - }{title}` is `Book 01 - Title` in a series and
   plain `Title` without one. The settings page previews both a series book
   and a standalone as you type.

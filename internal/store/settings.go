@@ -49,7 +49,7 @@ func Defaults(inputDir, outputDir string) Settings {
 		OutputDir:         outputDir,
 		CompletedSubdir:   "",
 		CleanupMode:       "leave",
-		PathTemplate:      "{author}/{series_name}/{title}/{title} [{asin}]",
+		PathTemplate:      "{author}/{series_name}/{Book series_position:00 - }{title}/{title} [{asin}]",
 		MetadataProvider:  "audnexus",
 		AudnexusURL:       "https://api.audnex.us",
 		RegionDefault:     "us",
